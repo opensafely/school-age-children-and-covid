@@ -1,3 +1,4 @@
+opensafely/covid-identification/2020-06-03
 opensafely/ethnicity/2020-04-27
 opensafely/smoking-clear/2020-04-29
 opensafely/smoking-unclear/2020-04-29
