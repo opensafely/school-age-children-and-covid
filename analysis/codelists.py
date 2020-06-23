@@ -5,9 +5,9 @@ from cohortextractor import (
 
 
 # OUTCOME CODELISTS
-covid_identification = codelist_from_csv(
+covid_codelist = codelist_from_csv(
     "codelists/opensafely-covid-identification.csv",
-    system="ICD-10",
+    system="icd10",
     column="icd10_code",
 )
 
@@ -36,7 +36,7 @@ unclear_smoking_codes = codelist_from_csv(
 
 # CLINICAL CONDITIONS CODELISTS
 chronic_respiratory_disease_codes = codelist_from_csv(
-    "codelists/chronic-respiratory-disease.csv", system="ctv3", column="CTV3ID",
+    "codelists/opensafely-chronic-respiratory-disease.csv", system="ctv3", column="CTV3ID",
 )
 
 current_asthma_codes = codelist_from_csv(
@@ -108,7 +108,7 @@ chronic_liver_disease_codes = codelist_from_csv(
 )
 
 stroke = codelist_from_csv(
-    "codelists/opensafely-stroke.csv", system="ctv3", column="CTV3ID")
+    "codelists/opensafely-stroke-updated.csv", system="ctv3", column="CTV3ID")
 
 dementia = codelist_from_csv(
     "codelists/opensafely-dementia.csv", system="ctv3", column="CTV3ID")
@@ -117,6 +117,10 @@ other_neuro = codelist_from_csv(
     "codelists/opensafely-other-neurological-conditions.csv", system="ctv3", column="CTV3ID")
 
 creatinine_codes = codelist(["XE2q5"], system="ctv3")
+
+esrf_codes = codelist_from_csv(
+    "codelists/opensafely-chronic-kidney-disease.csv", system="ctv3", column="CTV3ID",
+)
 
 hypertension_codes = codelist_from_csv(
     "codelists/opensafely-hypertension.csv", system="ctv3", column="CTV3ID",

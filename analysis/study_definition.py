@@ -33,6 +33,7 @@ study = StudyDefinition(
         has_follow_up=patients.registered_with_one_practice_between(
             "2019-02-01", "2020-01-31" ### 1 year prior to 1st Feb 2020
         ),
+    ),
 
     # OUTCOMES
     died_date_cpns=patients.with_death_recorded_in_cpns(
@@ -326,7 +327,7 @@ study = StudyDefinition(
 
     # END STAGE RENAL DISEASE - DIALYSIS, TRANSPLANT OR END STAGE RENAL DISEASE
     esrf=patients.with_these_clinical_events(
-        dialysis_codes, return_first_date_in_period=True, include_month=True,
+        esrf_codes, return_first_date_in_period=True, include_month=True,
         return_expectations={"date": {"latest": "2020-02-29"}},
     ),
 
