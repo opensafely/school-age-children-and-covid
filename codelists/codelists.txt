@@ -16,10 +16,10 @@ opensafely/solid-organ-transplantation/2020-04-10
 opensafely/asplenia/2020-06-02
 opensafely/temporary-immunosuppresion/2020-04-24
 opensafely/aplastic-anaemia/2020-04-24
-opensafely/chronic-liver-disease/2020-04-07
+opensafely/chronic-liver-disease/2020-06-02
 opensafely/dementia/2020-04-22
 opensafely/stroke-updated/2020-06-02
-opensafely/other-neurological-conditions/2020-04-22
+opensafely/other-neurological-conditions/2020-06-02
 opensafely/chronic-kidney-disease/2020-04-14
 opensafely/hypertension/2020-04-28
 opensafely/ra-sle-psoriasis/2020-04-14
