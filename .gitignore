@@ -3,3 +3,5 @@ model.log
 */input.csv
 __pycache__
 .python-version
+.DS_Store
+.idea/
