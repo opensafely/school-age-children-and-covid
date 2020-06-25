@@ -76,6 +76,12 @@ study = StudyDefinition(
         date_format="YYYY-MM-DD",
         return_expectations={"date": {"earliest": "2020-03-01"}},
     ),
+   covid_identification_in_primary_care_case=patients.with_these_clinical_events(
+        covid_identification_in_primary_care_case_codes,
+        return_first_date_in_period=True,
+        include_month=True,
+        return_expectations={"date": {"earliest": "2020-03-01"}},
+    ), 
 
     ## DEMOGRAPHIC COVARIATES
     # AGE
@@ -341,4 +347,5 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-02-29"}},
 
     ),
+    
 )
