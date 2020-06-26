@@ -8,6 +8,7 @@ DESCRIPTION OF FILE:	program 00, data management for project
 						reformat variables 
 						categorise variables
 						label variables 
+						apply exclusion criteria
 DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
@@ -17,7 +18,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 * Open a log file
 
 cap log close
-log using $logdir\00_cr_create_analysis_dataset, replace t
+log using $logdir\01_cr_create_analysis_dataset, replace t
 
 **************************** HOUSEHOLD VARS*******************************************
 
@@ -596,6 +597,34 @@ ds, not(varlabel)
 drop `r(varlist)'
 	
 
+	
+
+/* APPLY INCLUSION/EXCLUIONS==================================================*/ 
+
+noi di "DROP MISSING GENDER:"
+drop if inlist(sex,"I", "U")
+
+noi di "DROP AGE <35:"
+drop if age < 35 
+
+noi di "DROP AGE >110:"
+drop if age > 110 & age != .
+
+noi di "DROP AGE MISSING:"
+drop if age == . 
+
+noi di "DROP IMD MISSING"
+drop if imd == .u
+
+noi di "DROP IF DEAD BEFORE INDEX"
+drop if stime_cpnsdeath <= date("$indexdate", "DMY")
+drop if stime_onscoviddeath <= date("$indexdate", "DMY")
+drop if stime_onsnoncoviddeath <= date("$indexdate", "DMY")
+
+sort patient_id
+save $tempdir\analysis_dataset, replace	
+	
+	
 * Close log file 
 log close
 

@@ -1,0 +1,101 @@
+------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\log\02_an_checks.log
+  log type:  text
+ opened on:  26 Jun 2020, 11:53:56
+
+. 
+. * Open Stata dataset
+. 
+end of do-file
+
+. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD23f4_000000.tmp"
+
+. use $tempdir\analysis_dataset, clear
+file tempdata\analysis_dataset.dta not found
+r(601);
+
+end of do-file
+
+r(601);
+
+. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD23f4_000000.tmp"
+
+. import delimited input.csv, clear
+(37 vars, 10,000 obs)
+
+. set more off 
+
+. 
+. ***********************HOUSE-KEEPING*******************************************
+. * Create directories required 
+. capture mkdir output
+
+. capture mkdir log
+
+. capture mkdir tempdata
+
+. 
+. * Set globals that will print in programs and direct output
+. global pri_outcome        "tpp_infec"
+
+. global sec_outcome        "comb_death_ITU"
+
+. 
+. global outdir     "output" 
+
+. global logdir     "log"
+
+. global tempdir    "tempdata"
+
+. global varlist          i.obese4cat                                     ///
+>                                         i.smoke_nomiss                          ///
+>                                         i.imd                                           ///
+>                                         i.ckd                                           ///
+>                                         i.hypertension                          ///
+>                                         i.heart_failure                         ///
+>                                         i.other_heart_disease           ///
+>                                         i.diabcat                                       ///
+>                                         i.cancer_ever                           ///
+>                                         i.statin                                        ///
+>                                         i.flu_vaccine                           ///
+>                                         i.pneumococcal_vaccine          ///
+>                                         i.exacerbations                         ///
+>                                         i.asthma_ever                           ///
+>                                         i.immunodef_any
+
+.                                         
+. global table_pri_outcome "COVID-19 infection"
+
+. global table_sec_outcome "COVID-19 Death or ITU admission"
+
+. 
+. global ymax 0.005
+
+. 
+. ********************************************************************************
+. 
+. /*  Pre-analysis data manipulation  */
+. do "01_cr_analysis_dataset.do"
+
+. /*==============================================================================
+> DO FILE NAME:                   00_cr_analysis_dataset
+> PROJECT:                                Exposure children and COVID risk
+> DATE:                                   25th June 2020 
+> AUTHOR:                                 Harriet Forbes adapted from A Wong, A Schultze, C Rentsch,
+>                                                  K Baskharan, E Williamson                                      
+>                                         
+> DESCRIPTION OF FILE:    program 00, data management for project  
+>                                                 reformat variables 
+>                                                 categorise variables
+>                                                 label variables 
+>                                                 apply exclusion criteria
+> DATASETS USED:                  data in memory (from analysis/input.csv)
+> DATASETS CREATED:               none
+> OTHER OUTPUT:                   logfiles, printed to folder analysis/$logdir
+>                                                         
+> ==============================================================================*/
+. 
+. * Open a log file
+. 
+. cap log close
