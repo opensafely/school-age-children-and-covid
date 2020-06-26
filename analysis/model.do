@@ -1,7 +1,7 @@
 *Model do file
 
 *Import dataset into STATA
-cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
+cd  `c(pwd)'/output /*sets working directory to analysis folder*/
 import delimited input.csv, clear
 set more off 
 
@@ -18,21 +18,22 @@ global sec_outcome 	  "comb_death_ITU"
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global varlist 		i.obese4cat					///
-					i.smoke_nomiss				///
-					i.imd 						///
-					i.ckd	 					///
-					i.hypertension			 	///
-					i.heart_failure				///
-					i.other_heart_disease		///
-					i.diabcat 					///
-					i.cancer_ever 				///
-					i.statin 					///
-					i.flu_vaccine 				///
-					i.pneumococcal_vaccine		///
-					i.exacerbations 			///
-					i.asthma_ever				///
-					i.immunodef_any
+global varlist 		i.obese4cat						///
+					i.smoke_nomiss					///
+					i.imd 							///
+					i.asthma						///
+					i.chronic_respiratory_disease 	///
+					i.chronic_cardiac_disease		///
+					i.diabetes 						///
+					i.chronic_liver_disease  		///
+					i.neurological_disease 			///
+					i.ra_sle_psoriasis				///
+					i.immunodef_any 				///
+					i.cancer 						///
+					i.ckd							///
+					i.hypertension			 	
+					
+					
 					
 global table_pri_outcome "COVID-19 infection"
 global table_sec_outcome "COVID-19 Death or ITU admission"
@@ -43,3 +44,6 @@ global ymax 0.005
 
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
+
+/*  Checks  */
+do "02_an_data_checks.do"

@@ -16,7 +16,6 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 ==============================================================================*/
 
 * Open a log file
-
 cap log close
 log using $logdir\01_cr_create_analysis_dataset, replace t
 
@@ -120,8 +119,8 @@ foreach var of varlist 	chronic_respiratory_disease ///
 
 
 * Some names too long for loops below, shorten
-rename permanent_immunodeficiency perm_immunodef
-rename temporary_immunodeficiency temp_immunodef
+rename permanent_immunodeficiency_date perm_immunodef_date
+rename temporary_immunodeficiency_date temp_immunodef_date
 rename bmi_date_measured_date  			bmi_measured_date
 
 
@@ -326,6 +325,32 @@ gen temp2  = inrange(temp_immunodef, (date("$indexdate", "DMY") - 365), date("$i
 egen immunodef_any = rowmax(temp1 temp2)
 drop temp1 temp2 
 order immunodef_any, after(temp_immunodef)
+
+
+
+/*  Blood pressure   */
+
+* Categorise
+gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
+replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
+replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
+replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
+replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
+
+label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"	///
+					4 "High, stage II" .u "Unknown"
+label values bpcat bpcat
+
+recode bpcat .u=1, gen(bpcat_nomiss)
+label values bpcat_nomiss bpcat
+
+* Create non-missing indicator of known high blood pressure
+gen bphigh = (bpcat==4)
+
+/*  Hypertension  */
+
+gen htdiag_or_highbp = bphigh
+recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 
 /* eGFR */
@@ -557,6 +582,9 @@ label var immunodef_any					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
 label var neurological_disease 			"Neurological disease"					
 label var ra_sle_psoriasis				"Autoimmune disease"
+lab var egfr							eGFR
+lab var perm_immunodef  				"Permanent immunosuppression"
+lab var temp_immunodef  				"Temporary immunosuppression"
 
 label var asthma_date						"Asthma date"
 label var ckd_date     						"Chronic kidney disease Date" 
@@ -568,6 +596,12 @@ label var cancer_date 						"Cancer Date"
 label var chronic_liver_disease_date  		"Chronic liver disease Date"
 label var neurological_disease_date 		"Neurological disease  Date"	
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
+lab var perm_immunodef_date  				"Permanent immunosuppression date"
+lab var temp_immunodef_date   				"Temporary immunosuppression date"
+
+lab var  bphigh "non-missing indicator of known high blood pressure"
+lab var bpcat "Blood pressure four levels, non-missing"
+lab var htdiag_or_highbp "High blood pressure or hypertension diagnosis"
 
 * Outcomes and follow-up
 label var enter_date					"Date of study entry"
