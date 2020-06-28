@@ -1,8 +1,9 @@
 *Model do file
 
 *Import dataset into STATA
-cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
 import delimited `c(pwd)'/output/input.csv, clear
+
+cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
 set more off 
 
 ***********************HOUSE-KEEPING*******************************************
