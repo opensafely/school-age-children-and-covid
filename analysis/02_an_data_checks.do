@@ -24,7 +24,7 @@ log using $logdir\02_an_checks, replace t
 use $tempdir\analysis_dataset, clear
 
 *run ssc install if not already installed on your computer
-*ssc install datacheck 
+ssc install datacheck 
 
 *Duplicate patient check
 datacheck _n==1, by(patient_id) nol
