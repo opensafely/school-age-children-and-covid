@@ -299,8 +299,7 @@ study = StudyDefinition(
     permanent_immunodeficiency=patients.with_these_clinical_events(
         combine_codelists(hiv_codes,
                           permanent_immune_codes,
-                          sickle_cell_codes,
-                          spleen_codes)
+                          sickle_cell_codes)
         ,
         on_or_before="2020-01-31",
         return_last_date_in_period=True,
@@ -313,18 +312,15 @@ study = StudyDefinition(
         return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
+    asplenia=patients.with_these_clinical_events(
+        spleen_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-01-31"}},
+    ),
+
     ### TEMPROARY IMMUNE
     temporary_immunodeficiency=patients.with_these_clinical_events(
-        temp_immune_codes,
-        between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
-        return_last_date_in_period=True,
-        include_month=True,
-        return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"}
-        },
-    ),
-    asplenia=patients.with_these_clinical_events(
-        aplastic_codes,
+        combine_codelists(temp_immune_codes,
+                        aplastic_codes),
         between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
         return_last_date_in_period=True,
         include_month=True,
