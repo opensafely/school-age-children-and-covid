@@ -322,6 +322,7 @@ study = StudyDefinition(
         return_expectations={
             "date": {"earliest": "2019-03-01", "latest": "2020-01-31"}
         },
+    ),
     asplenia=patients.with_these_clinical_events(
         aplastic_codes,
         between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
