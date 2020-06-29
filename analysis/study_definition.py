@@ -31,6 +31,13 @@ study = StudyDefinition(
     ),
 
     # OUTCOMES
+    icu_date_admitted=patients.admitted_to_icu(
+        on_or_before="2020-06-01",
+        include_day=True,
+        returning="date_admitted",
+        find_first_match_in_period=True,
+    ),
+
     died_date_cpns=patients.with_death_recorded_in_cpns(
         on_or_before="2020-06-01",
         returning="date_of_death",
