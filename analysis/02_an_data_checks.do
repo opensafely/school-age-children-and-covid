@@ -49,7 +49,7 @@ assert inlist(sex, "M", "F")
 assert inlist(imd, 1, 2, 3, 4, 5)
 
 * EXCLUDE 2:  HH with more than 10 people
-assert inlist(household_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10)
+datacheck inlist(household_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10), nol
 
 /* EXPECTED VALUES============================================================*/ 
 
