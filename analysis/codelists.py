@@ -17,6 +17,12 @@ covid_identification_in_primary_care_case_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
+covid_identification_in_primary_care_suspected_case_codes = codelist_from_csv(
+    "codelists/opensafely-covid-identification-in-primary-care-suspect-case.csv",
+    system="ctv3",
+    column="CTV3ID",
+)
+
 # DEMOGRAPHIC CODELIST
 ethnicity_codes = codelist_from_csv(
     "codelists/opensafely-ethnicity.csv",

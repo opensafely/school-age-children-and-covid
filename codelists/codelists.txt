@@ -24,3 +24,4 @@ opensafely/chronic-kidney-disease/2020-04-14
 opensafely/hypertension/2020-04-28
 opensafely/ra-sle-psoriasis/2020-04-14
 opensafely/covid-identification-in-primary-care-case/2020-06-23
+opensafely/covid-identification-in-primary-care-suspect-case/2020-06-23
