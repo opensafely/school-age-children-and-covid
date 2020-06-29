@@ -26,13 +26,8 @@ study = StudyDefinition(
     # STUDY POPULATION
     population=patients.satisfying(
         """
-            has_follow_up AND
             (age >=18 AND age <= 110)
         """,
-
-        has_follow_up=patients.registered_with_one_practice_between(
-            "2019-02-01", "2020-01-31" ### 1 year prior to 1st Feb 2020
-        ),
     ),
 
     # OUTCOMES
@@ -145,6 +140,14 @@ study = StudyDefinition(
             "category": {"ratios": {"1": 0.8, "5": 0.1, "3": 0.1}},
             "incidence": 0.75,
         },
+    ),
+
+    # FOLLOW UP
+    has_6_m_follow_up=patients.registered_with_one_practice_between(
+        "2019-08-01", "2020-01-31", ### 6 months prior to 1st Feb 2020
+        return_expectations={
+            "incidence" : 0.95,
+        }
     ),
 
     # HOUSEHOLD INFORMATION
