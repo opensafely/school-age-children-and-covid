@@ -147,6 +147,14 @@ study = StudyDefinition(
         },
     ),
 
+    # FOLLOW UP
+    has_6_m_follow_up=patients.registered_with_one_practice_between(
+        "2019-08-01", "2020-01-31", ### 6 months prior to 1st Feb 2020
+        return_expectations={
+            "incidence" : 0.95,
+        }
+    ),
+
     # HOUSEHOLD INFORMATION
     household_id=patients.household_as_of(
         "2020-02-01",
