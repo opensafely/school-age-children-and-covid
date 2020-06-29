@@ -26,13 +26,8 @@ study = StudyDefinition(
     # STUDY POPULATION
     population=patients.satisfying(
         """
-            has_follow_up AND
             (age >=18 AND age <= 110)
         """,
-
-        has_follow_up=patients.registered_with_one_practice_between(
-            "2019-02-01", "2020-01-31" ### 1 year prior to 1st Feb 2020
-        ),
     ),
 
     # OUTCOMES
