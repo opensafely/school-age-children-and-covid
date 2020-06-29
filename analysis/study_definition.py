@@ -25,14 +25,8 @@ study = StudyDefinition(
 
     # STUDY POPULATION
     population=patients.satisfying(
-        """
-            has_follow_up AND
-            (age >=18 AND age <= 110)
+        """ (age >=18 AND age <= 110)
         """,
-
-        has_follow_up=patients.registered_with_one_practice_between(
-            "2019-02-01", "2020-01-31" ### 1 year prior to 1st Feb 2020
-        ),
     ),
 
     # OUTCOMES
@@ -46,13 +40,13 @@ study = StudyDefinition(
         covid_codelist,
         on_or_before="2020-06-01",
         match_only_underlying_cause=False,
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
         on_or_before="2020-06-01",
         match_only_underlying_cause=True,
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_date_ons=patients.died_from_any_cause(
         on_or_before="2020-06-01",
@@ -66,7 +60,7 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     first_positive_test_date=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",
@@ -74,13 +68,19 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         returning="date",
         date_format="YYYY-MM-DD",
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
    covid_identification_in_primary_care_case=patients.with_these_clinical_events(
         covid_identification_in_primary_care_case_codes,
         return_first_date_in_period=True,
         include_month=True,
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}},
+    ), 
+   covid_identification_in_primary_care_suspected_case=patients.with_these_clinical_events(
+        covid_identification_in_primary_care_suspected_case_codes,
+        return_first_date_in_period=True,
+        include_month=True,
+        return_expectations={"date": {"earliest": "2020-02-01"}},
     ), 
 
     ## DEMOGRAPHIC COVARIATES
@@ -188,7 +188,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 80, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
+            "date": {"latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -201,7 +201,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 120, "stddev": 10},
-            "date": {"latest": "2020-02-29"},
+            "date": {"latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -216,7 +216,7 @@ study = StudyDefinition(
         include_month=True,
         return_expectations={
             "float": {"distribution": "normal", "mean": 60.0, "stddev": 15},
-            "date": {"earliest": "2019-02-28", "latest": "2020-02-29"},
+            "date": {"earliest": "2019-02-28", "latest": "2020-01-31"},
             "incidence": 0.95,
         },
     ),
@@ -258,36 +258,41 @@ study = StudyDefinition(
         chronic_respiratory_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     asthma=patients.with_these_clinical_events(
             current_asthma_codes,
-            on_or_before="2020-02-29",
+            on_or_before="2020-01-31",
             return_first_date_in_period=True,
             include_month=True,
-            return_expectations={"date": {"latest": "2020-02-29"}},
+            return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     diabetes=patients.with_these_clinical_events(
         diabetes_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     # CANCER - 3 TYPES
-    cancer=patients.with_these_clinical_events(
+    cancer_heam=patients.with_these_clinical_events(
+		haem_cancer_codes,
+        return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-01-31"}},
+    ),
+
+    cancer_nonhaem=patients.with_these_clinical_events(
         combine_codelists(lung_cancer_codes,
-                          haem_cancer_codes,
                           other_cancer_codes),
         return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     #### PERMANENT
@@ -295,24 +300,35 @@ study = StudyDefinition(
         combine_codelists(hiv_codes,
                           permanent_immune_codes,
                           sickle_cell_codes,
-                          organ_transplant_codes,
                           spleen_codes)
         ,
-        on_or_before="2020-02-29",
+        on_or_before="2020-01-31",
         return_last_date_in_period=True,
         include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
+    ),
+
+    organ_trans=patients.with_these_clinical_events(
+        organ_transplant_codes, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     ### TEMPROARY IMMUNE
     temporary_immunodeficiency=patients.with_these_clinical_events(
-        combine_codelists(temp_immune_codes,
-                          aplastic_codes),
-        between=["2019-03-01", "2020-02-29"],  ## THIS IS RESTRICTED TO LAST YEAR
+        temp_immune_codes,
+        between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
-            "date": {"earliest": "2019-03-01", "latest": "2020-02-29"}
+            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"}
+        },
+    asplenia=patients.with_these_clinical_events(
+        aplastic_codes,
+        between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"}
         },
     ),
 
@@ -320,21 +336,24 @@ study = StudyDefinition(
         chronic_liver_disease_codes,
         return_first_date_in_period=True,
         include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
-    neurological_disease=patients.with_these_clinical_events(
-        combine_codelists(other_neuro,
-                          stroke,
+    stroke_dementia=patients.with_these_clinical_events(
+        combine_codelists(stroke,
                           dementia),
         return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
+    other_neuro=patients.with_these_clinical_events(
+        other_neuro, return_first_date_in_period=True, include_month=True,
+        return_expectations={"date": {"latest": "2020-01-31"}},
+    ),
     # END STAGE RENAL DISEASE - DIALYSIS, TRANSPLANT OR END STAGE RENAL DISEASE
     esrf=patients.with_these_clinical_events(
         esrf_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
 
     # hypertension
@@ -344,7 +363,7 @@ study = StudyDefinition(
 
     ra_sle_psoriasis=patients.with_these_clinical_events(
         ra_sle_psoriasis_codes, return_first_date_in_period=True, include_month=True,
-        return_expectations={"date": {"latest": "2020-02-29"}},
+        return_expectations={"date": {"latest": "2020-01-31"}},
 
     ),
     
