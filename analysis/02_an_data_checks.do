@@ -143,7 +143,6 @@ tab smoke smoke_nomiss, m
 *tab diabcat diabetes, m
 
 * CKD
-tab ckd egfr_cat, m
 tab reduced egfr_cat, m
 
 
@@ -180,7 +179,6 @@ foreach var of varlist  asthma						///
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_heam_cat 						///
-					ckd							///
 					reduced_kidney_function_cat ///
 					hypertension		///	 	
 										{
@@ -204,7 +202,6 @@ foreach var of varlist asthma						///
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_heam_cat 						///
-					ckd							///
 					reduced_kidney_function_cat ///
 					hypertension			 ///	
 										{
@@ -226,7 +223,6 @@ foreach var of varlist  asthma						///
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_heam_cat 						///
-					ckd							///
 					reduced_kidney_function_cat ///
 					hypertension			 	///
 					{

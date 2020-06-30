@@ -54,9 +54,9 @@ drop min_kids
 
 *Number kids aged 1-12
 bysort household_id: egen number_kids=count(kids)
+gen gp_number_kids=number_kids
+recode gp_number_kids 4/max=4
 drop kids
-
-
 
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE MADE */
 drop if age<18
@@ -408,7 +408,7 @@ recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
 * 0 = "No CKD" 	2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
 label define ckd 0 "No CKD" 1 "CKD"
 label values ckd ckd
-label var ckd "CKD stage calc without eth"
+*label var ckd "CKD stage calc without eth"
 
 * Convert into CKD group
 *recode ckd 2/5=1, gen(chronic_kidney_disease)
@@ -684,9 +684,11 @@ drop if imd == .u
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
 
-
+noi di "DROP IF COVID IN TPP BEFORE INDEX"
+drop if date_covid_tpp_prob_or_susp <= date("$indexdate", "DMY")
 	
-	
+noi di "DROP IF DIED/ADMITTED COVID BEFORE INDEX"
+drop if date_covid_death_itu <= date("$indexdate", "DMY")
 	
 ***************
 *  Save data  *
@@ -695,12 +697,16 @@ sort patient_id
 save $tempdir\analysis_dataset, replace	
 
 
+use $tempdir\analysis_dataset, clear
+
 * Save a version set on CPNS survival outcome
 stset stime_covid_death_itu, fail(covid_death_itu) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", replace
 
+
+use $tempdir\analysis_dataset, clear
 * Save a version set on ONS covid death outcome
 stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
