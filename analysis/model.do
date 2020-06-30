@@ -27,11 +27,15 @@ global varlist 		i.obese4cat						///
 					i.chronic_cardiac_disease		///
 					i.diabetes 						///
 					i.chronic_liver_disease  		///
-					i.neurological_disease 			///
+					i.other_neuro 			///
 					i.ra_sle_psoriasis				///
-					i.immunodef_any 				///
-					i.cancer 						///
-					i.ckd							///
+					i.other_immuno 				///
+					i.asplenia 						///
+					i.organ_trans					///
+					i.stroke_dementia				///
+					i.cancer_heam_cat 					///
+					i.cancer_exhaem_cat 				///
+					i.reduced_kidney_function							///
 					i.hypertension			 	
 					
 					
@@ -48,3 +52,16 @@ do "01_cr_analysis_dataset.do"
 
 /*  Checks  */
 do "02_an_data_checks.do"
+
+
+*********************************************************************
+*IF PARALLEL WORKING - FOLLOWING CAN BE RUN IN ANY ORDER/IN PARALLEL*
+*       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
+*********************************************************************
+do "03_an_descriptive_tables.do"
+
+foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
+	do "04_an_descriptive_table_1.do" `outcome'
+	}
+	
+*do "an_descriptive_plots.do"

@@ -1,9 +1,9 @@
 /*==============================================================================
-DO FILE NAME:			03_an_checks
-PROJECT:				ICS in COVID-19 
-AUTHOR:					A Wong, A Schultze, C Rentsch
-						Adapted from K Baskharan, E Williamson
-DATE: 					10th of May 2020 
+DO FILE NAME:			02_an_data_checks
+PROJECT:				Exposure children and COVID risk
+AUTHOR:					HFORBES Adapted from A Wong, A Schultze, C Rentsch
+						 K Baskharan, E Williamson
+DATE: 					30th June 2020 
 DESCRIPTION OF FILE:	Run sanity checks on all variables
 							- Check variables take expected ranges 
 							- Cross-check logical relationships 
@@ -11,19 +11,19 @@ DESCRIPTION OF FILE:	Run sanity checks on all variables
 							- Check stsettings 
 DATASETS USED:			$tempdir\analysis_dataset.dta
 DATASETS CREATED: 		None
-OTHER OUTPUT: 			Log file: $logdir\03_an_checks
+OTHER OUTPUT: 			Log file: $logdir\02_an_data_checks
 							
 ==============================================================================*/
 
 * Open a log file
 
 capture log close
-log using $logdir\02_an_checks, replace t
+log using $logdir\02_an_data_checks, replace t
 
 * Open Stata dataset
 use $tempdir\analysis_dataset, clear
 
-*run ssc install if not already installed on your computer
+*run ssc install - retain as it seems the server needs to reinstall each time
 ssc install datacheck 
 
 *Duplicate patient check
@@ -60,7 +60,7 @@ datacheck inlist(kids_cat3, 0,1, 2), nol
 datacheck kids_cat2_0_18yrs<., nol
 datacheck inlist(kids_cat2_0_18yrs, 0,1), nol
 
-datacheck kids_cat2_1_11yrs<., nol
+datacheck kids_cat2_1_12yrs<., nol
 datacheck inlist(kids_cat2_0_18yrs, 0,1), nol
 
 datacheck number_kids<., nol
@@ -96,12 +96,13 @@ foreach var of varlist  		asthma						///
 					chronic_cardiac_disease		///
 					diabetes 						///
 					chronic_liver_disease  		///
-					neurological_disease 			///
+					other_neuro 			///
+					stroke_dementia ///
 					ra_sle_psoriasis				///
 					perm_immunodef  ///
-					temp_immunodef  ///				
-					cancer 						///
-					ckd							///
+					temp_immunodef  ///
+					organ_trans 			/// 
+					asplenia 			/// 
 					hypertension			 	///
 					{
 						
@@ -117,15 +118,14 @@ foreach comorb in $varlist {
 }
 
 * Outcome dates
-summ  stime_cpnsdeath stime_onscoviddeath,   format
-summ  died_date_onsnoncovid died_date_cpns died_date_onscovid, format
+summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
 tab kids_cat3 kids_cat2_0_18yrs
-tab kids_cat3 kids_cat2_1_11yrs
-tab kids_cat2_0_18yrs kids_cat2_1_11yrs
+tab kids_cat3 kids_cat2_1_12yrs
+tab kids_cat2_0_18yrs kids_cat2_1_12yrs
 tab number_kids
 
 * BMI
@@ -144,6 +144,7 @@ tab smoke smoke_nomiss, m
 
 * CKD
 tab ckd egfr_cat, m
+tab reduced egfr_cat, m
 
 
 /* EXPECTED RELATIONSHIPS=====================================================*/ 
@@ -171,11 +172,16 @@ foreach var of varlist  asthma						///
 					chronic_cardiac_disease		///
 					diabetes 						///
 					chronic_liver_disease  		///
-					neurological_disease 			///
+					other_neuro 			///
+					stroke_dementia ///
 					ra_sle_psoriasis				///
-					immunodef_any 				///
-					cancer 						///
+					other_immuno 				///
+					organ_trans 			/// 
+					asplenia 			/// 
+					cancer_exhaem_cat 						///
+					cancer_heam_cat 						///
 					ckd							///
+					reduced_kidney_function_cat ///
 					hypertension		///	 	
 										{
 
@@ -190,11 +196,16 @@ foreach var of varlist asthma						///
 					chronic_cardiac_disease		///
 					diabetes 						///
 					chronic_liver_disease  		///
-					neurological_disease 			///
+					other_neuro 			///
+					stroke_dementia ///
 					ra_sle_psoriasis				///
-					immunodef_any 				///
-					cancer 						///
+					other_immuno 				///
+					organ_trans 			/// 
+					asplenia 			/// 
+					cancer_exhaem_cat 						///
+					cancer_heam_cat 						///
 					ckd							///
+					reduced_kidney_function_cat ///
 					hypertension			 ///	
 										{
 						
@@ -207,11 +218,16 @@ foreach var of varlist  asthma						///
 					chronic_cardiac_disease		///
 					diabetes 						///
 					chronic_liver_disease  		///
-					neurological_disease 			///
+					other_neuro 			///
+					stroke_dementia ///
 					ra_sle_psoriasis				///
-					immunodef_any 				///
-					cancer 						///
+					other_immuno 				///
+					organ_trans 			/// 
+					asplenia 			/// 
+					cancer_exhaem_cat 						///
+					cancer_heam_cat 						///
 					ckd							///
+					reduced_kidney_function_cat ///
 					hypertension			 	///
 					{
 	
@@ -221,7 +237,7 @@ foreach var of varlist  asthma						///
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
-tab onscoviddeath cpnsdeath, row col
+tab covid_death_itu covid_tpp_prob_or_susp  , row col
 
 
 * Close log file 
