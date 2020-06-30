@@ -35,7 +35,7 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
 		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
-			cap estimates use ./output/models/an_univariable_cox_models_`outcome'_AGESEX_`variable'
+			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
 			if _rc!=0 local noestimatesflag 1
 			}
 
@@ -44,33 +44,33 @@ local endwith "_tab"
 		*FOR REST - use the "main" multivariate model
 		if "`variable'"=="agegroup" {
 			if "`modeltype'"=="minadj" {
-				cap estimates use ./output/models/an_univariable_cox_models_`outcome'_AGESEX_agegroupsex
+				cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_agegroupsex
 				if _rc!=0 local noestimatesflag 1
 				}
 			if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/models/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agegroup_bmicat_noeth
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agegroup_bmicat_noeth
 				if _rc!=0 local noestimatesflag 1
 				}
 			}
 		else if "`variable'"=="male" {
 			if "`modeltype'"=="minadj" {
-				cap estimates use ./output/models/an_univariable_cox_models_`outcome'_AGESEX_agesplsex
+				cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_agesplsex
 				if _rc!=0 local noestimatesflag 1			
 				}
 			if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/models/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
 				if _rc!=0 local noestimatesflag 1
 				}
 			}
 		else if "`variable'"=="ethnicity" {
 			if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/models/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCeth  
 				if _rc!=0 local noestimatesflag 1
 				}
 			}			
 		else {
 			if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/models/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
 				if _rc!=0 local noestimatesflag 1
 				}
 		}
