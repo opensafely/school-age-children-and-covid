@@ -11,7 +11,7 @@ set more off
 capture mkdir output
 capture mkdir log
 capture mkdir tempdata
-capture mkdir output\models
+mkdir output\models
 
 
 * Set globals that will print in programs and direct output
