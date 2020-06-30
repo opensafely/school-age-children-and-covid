@@ -49,11 +49,11 @@ foreach var of any `varlist' {
 	else local model "age1 age2 age3 i.male i.`var'"
 
 	*Fit and save model
-	cap erase ./output/models/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
+	cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
 	capture stcox `model' , strata(stp) vce(cluster household_size)
 	if _rc==0 {
 		estimates
-		estimates save ./output/models/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace
+		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace
 		}
 	else di "WARNING - `var' vs `outcome' MODEL DID NOT SUCCESSFULLY FIT"
 
