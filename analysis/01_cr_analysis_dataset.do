@@ -21,14 +21,14 @@ log using $logdir\01_cr_create_analysis_dataset, replace t
 
 **************************** HOUSEHOLD VARS*******************************************
 
-*No kids/kids under 11/up to 18
-*Identify kids under 11, or kids under 18
-gen kids=1 if age<11
+*No kids/kids under 12/up to 18
+*Identify kids under 12, or kids under 18
+gen kids=1 if age<12
 recode kids .=2 if age<18 
 bysort household_id: egen min_kids=min(kids) 
 gen kids_cat3=min_kids
 recode kids_cat3 .=0 
-lab define kids_cat3  0 "No kids" 1 "Kids under 11" 2 "Kids under 18"
+lab define kids_cat3  0 "No kids" 1 "Kids under 12" 2 "Kids under 18"
 lab val kids_cat3 kids_cat3
 drop min_kids
 drop kids
@@ -43,16 +43,16 @@ lab val kids_cat2 kids_cat2
 drop min_kids
 drop kids
 
-*Children aged 1-11
-gen kids=1 if age>=1 & age<11
+*Children aged 1-12
+gen kids=1 if age>=1 & age<12
 bysort household_id: egen min_kids=min(kids) 
-gen kids_cat2_1_11yrs=min_kids
-recode kids_cat2_1_11yrs .=0 
-lab define kids_cat2_1_11yrs  0 "No kids aged 1 to under 11" 1 "Kids aged 1 to under 11"
-lab val kids_cat2_1_11yrs kids_cat2_1_11yrs
+gen kids_cat2_1_12yrs=min_kids
+recode kids_cat2_1_12yrs .=0 
+lab define kids_cat2_1_12yrs  0 "No kids aged 1 to under 12" 1 "Kids aged 1 to under 12"
+lab val kids_cat2_1_12yrs kids_cat2_1_12yrs
 drop min_kids
 
-*Number kids aged 1-11
+*Number kids aged 1-12
 bysort household_id: egen number_kids=count(kids)
 drop kids
 
@@ -61,17 +61,19 @@ drop kids
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE MADE */
 drop if age<18
 
+*Calculate number adults per household
+bysort household_id: gen no_adults_hh=_N
 
 
 /* SET FU DATES===============================================================*/ 
 * Censoring dates for each outcome (largely, last date outcome data available)
-global cpnsdeathcensor 		    = "28/04/2020"
+*****NEEDS UPDATING WHEN INFO AVAILABLE*******************
 global onscoviddeathcensor   	= "22/05/2020"
 global icnarc_admissioncensor 	= "07/05/2020"
 global tpp_infec_censor			= "26/06/2020"
 
 *Start dates
-global indexdate 			    = "01/03/2020"
+global indexdate 			    = "01/02/2020"
 
 
 /* CONVERT STRINGS TO DATE====================================================*/
@@ -82,11 +84,15 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
-						cancer  ///
+						cancer_heam  ///
+						cancer_nonhaem  ///
 						permanent_immunodeficiency  ///
 						temporary_immunodeficiency  ///
+						organ_trans 			/// 
+						asplenia 			/// 
 						chronic_liver_disease  ///
-						neurological_disease  ///
+						other_neuro  ///
+						stroke_dementia				///
 						esrf  ///
 						hypertension  ///
 						ra_sle_psoriasis  ///
@@ -119,10 +125,11 @@ foreach var of varlist 	chronic_respiratory_disease ///
 
 
 * Some names too long for loops below, shorten
-rename permanent_immunodeficiency_date perm_immunodef_date
-rename temporary_immunodeficiency_date temp_immunodef_date
+rename permanent_immunodeficiency_date 	perm_immunodef_date
+rename temporary_immunodeficiency_date 	temp_immunodef_date
 rename bmi_date_measured_date  			bmi_measured_date
-
+rename covid_identification_in_primary_ covid_tpp_probable
+rename v8								covid_tpp_suspected
 
 /* CREATE BINARY VARIABLES====================================================*/
 *  Make indicator variables for all conditions where relevant 
@@ -131,11 +138,15 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
-						cancer  ///
+						cancer_heam  ///
+						cancer_nonhaem  ///
 						perm_immunodef  ///
 						temp_immunodef  ///
+						organ_trans 			/// 
+						asplenia 			/// 
 						chronic_liver_disease  ///
-						neurological_disease  ///
+						other_neuro  ///
+						stroke_dementia				///
 						esrf  ///
 						hypertension  ///
 						ra_sle_psoriasis  ///
@@ -305,15 +316,25 @@ label values smoke_nomiss smoke
 
 /* CLINICAL COMORBIDITIES */ 
 
-/* GP consultation rate: NOT INCLUDED YET  
-replace gp_consult_count = 0 if gp_consult_count <1 
+/*  Cancer */
+label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
 
-* those with no count assumed to have no visits 
-replace gp_consult_count = 0 if gp_consult_count == . 
-gen gp_consult = (gp_consult_count >=1)
-*/
+* Haematological malignancies
+gen     cancer_heam_cat = 4 if inrange(cancer_heam_date, d(1/1/1900), d(1/2/2015))
+replace cancer_heam_cat = 3 if inrange(cancer_heam_date, d(1/2/2015), d(1/2/2019))
+replace cancer_heam_cat = 2 if inrange(cancer_heam_date, d(1/2/2019), d(1/2/2020))
+recode  cancer_heam_cat . = 1
+label values cancer_heam_cat cancer
 
-/*  Cancer ever - captured in study definition  */
+
+* All other cancers
+gen     cancer_exhaem_cat = 4 if inrange(cancer_nonhaem_date,  d(1/1/1900), d(1/2/2015)) 
+replace cancer_exhaem_cat = 3 if inrange(cancer_nonhaem_date,  d(1/2/2015), d(1/2/2019))
+replace cancer_exhaem_cat = 2 if inrange(cancer_nonhaem_date,  d(1/2/2019), d(1/2/2020)) 
+recode  cancer_exhaem_cat . = 1
+label values cancer_exhaem_cat cancer
+
+
 /*  Immunosuppression  */
 
 * Immunosuppressed:
@@ -322,9 +343,9 @@ gen gp_consult = (gp_consult_count >=1)
 gen temp1  = 1 if perm_immunodef!=.
 gen temp2  = inrange(temp_immunodef, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
 
-egen immunodef_any = rowmax(temp1 temp2)
+egen other_immuno = rowmax(temp1 temp2)
 drop temp1 temp2 
-order immunodef_any, after(temp_immunodef)
+order other_immuno, after(temp_immunodef)
 
 
 
@@ -353,23 +374,17 @@ gen htdiag_or_highbp = bphigh
 recode htdiag_or_highbp 0 = 1 if hypertension==1 
 
 
-/* eGFR */
-rename creatinine_date_date creatinine_measured_date
-rename creatinine_date creatinine_measured
+************
+*   eGFR   *
+************
 
 * Set implausible creatinine values to missing (Note: zero changed to missing)
 replace creatinine = . if !inrange(creatinine, 20, 3000) 
-
-* Remove creatinine dates if no measurements, and vice versa 
-
-replace creatinine = . if creatinine_measured_date == . 
-replace creatinine_measured_date = . if creatinine == . 
-replace creatinine_measured = . if creatinine == . 
-
+	
 * Divide by 88.4 (to convert umol/l to mg/dl)
 gen SCr_adj = creatinine/88.4
 
-gen min = .
+gen min=.
 replace min = SCr_adj/0.7 if male==0
 replace min = SCr_adj/0.9 if male==1
 replace min = min^-0.329  if male==0
@@ -389,25 +404,23 @@ label var egfr "egfr calculated using CKD-EPI formula with no eth"
 
 * Categorise into ckd stages
 egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
-recode egfr_cat 0 = 5 15 = 4 30 = 3 45 = 2 60 = 0, generate(ckd_egfr)
-
+recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
 * 0 = "No CKD" 	2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
-
-* Add in end stage renal failure and create a single CKD variable 
-* Missing assumed to not have CKD 
-gen ckd = 0
-replace ckd = 1 if ckd_egfr != . & ckd_egfr >= 1
-replace ckd = 1 if esrf == 1
-
 label define ckd 0 "No CKD" 1 "CKD"
 label values ckd ckd
 label var ckd "CKD stage calc without eth"
 
-* Create date (most recent measure prior to index)
-gen temp1_ckd_date = creatinine_measured_date if ckd_egfr >=1
-gen temp2_ckd_date = esrf_date if esrf == 1
-gen ckd_date = max(temp1_ckd_date,temp2_ckd_date) 
-format ckd_date %td 
+* Convert into CKD group
+*recode ckd 2/5=1, gen(chronic_kidney_disease)
+*replace chronic_kidney_disease = 0 if creatinine==. 
+	
+recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
+replace reduced_kidney_function_cat = 1 if creatinine==. 
+label define reduced_kidney_function_catlab ///
+	1 "None" 2 "Stage 3a/3b egfr 30-60	" 3 "Stage 4/5 egfr<30"
+label values reduced_kidney_function_cat reduced_kidney_function_catlab 
+lab var  reduced "Reduced kidney function"
+
 
 /*/* Hb1AC */
 
@@ -468,22 +481,29 @@ gen enter_date = date("$indexdate", "DMY")
 
 * Date of study end (typically: last date of outcome data available)
 **** NOTE!! NEEDS UPDATING!!!!
-gen cpnsdeathcensor_date		= date("$cpnsdeathcensor", 		"DMY")
-gen onscoviddeathcensor_date 	= date("$onscoviddeathcensor", 	"DMY")
-
+gen onscoviddeathcensor_date 	    = date("$onscoviddeathcensor", 	"DMY")
+gen icnarc_admissioncensor_date  	= date("$icnarc_admissioncensor", 	"DMY")
+gen tpp_infec_censor_date    	    = date("$tpp_infec_censor", 	"DMY")
+ 	
 * Format the dates
 format 	enter_date					///
-		cpnsdeathcensor_date 		///
-		onscoviddeathcensor_date 	%td
+		onscoviddeathcensor_date	///
+		icnarc_admissioncensor_date ///
+		tpp_infec_censor_date   %td
+		
+		
+		
+			/****   Outcome definitions   ****/
+* Dates of: Primary care case/suspected case, ITU admission, ONS-covid death
 
-/*   Outcomes   */
 
-* Dates of: ITU admission, CPNS death, ONS-covid death
 * Recode to dates from the strings 
-foreach var of varlist 	died_date_cpns 	///
-						died_date_ons 	///
+foreach var of varlist 	died_date_ons 	///
 						first_tested_for_covid 	///
 						first_positive_test_date 		///
+						covid_tpp_probable		///
+						covid_tpp_suspected ///
+						icu_date_admitted ///
 				{
 						
 	confirm string variable `var'
@@ -501,39 +521,41 @@ gen died_date_onscovid = died_date_ons if died_ons_covid_flag_any == 1
 * If missing date of death resulting died_date will also be missing
 gen died_date_onsnoncovid = died_date_ons if died_ons_covid_flag_any != 1 
 
+
+*Date Covid death in ONS or ITU admission in ICNARC
+gen date_covid_death_itu = min(died_date_onsnoncovid, icu_date_admitted)
+
+*Date probable or suspected covid in TPP
+gen date_covid_tpp_prob_or_susp = min(died_date_onsnoncovid, icu_date_admitted)
+
+format date_covid_death_itu %td
+format date_covid_tpp_prob_or_susp %td
+
 format died_date_ons %td
 format died_date_onscovid %td 
 format died_date_onsnoncovid %td
 
 * Binary indicators for outcomes
-gen cpnsdeath 		= (died_date_cpns		< .)
-gen onscoviddeath 	= (died_date_onscovid 	< .)
-gen onsnoncoviddeath = (died_date_onsnoncovid < .)
+gen covid_death_itu = (date_covid_death_itu < .)
+gen covid_tpp_prob_or_susp = (date_covid_tpp_prob_or_susp < .)
 
-/*  Create survival times  */
 
+
+					/**** Create survival times  ****/
 * For looping later, name must be stime_binary_outcome_name
 
 * Survival time = last followup date (first: end study, death, or that outcome)
-gen stime_cpnsdeath  	= min(cpnsdeathcensor_date, 	died_date_cpns, died_date_ons)
-gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
+*gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
+gen stime_covid_death_itu = min(onscoviddeathcensor_date, died_date_ons, date_covid_death_itu)
+gen stime_covid_tpp_prob_or_susp = min(tpp_infec_censor_date, 	died_date_ons, date_covid_tpp_prob_or_susp)
 
-* Equivalent to onscoviddeath, but creating a separate variable for clarity 
-gen stime_onsnoncoviddeath = min(onscoviddeathcensor_date, died_date_ons)
 
 * If outcome was after censoring occurred, set to zero
-replace cpnsdeath 		= 0 if (died_date_cpns		> cpnsdeathcensor_date) 
-replace onscoviddeath 	= 0 if (died_date_onscovid	> onscoviddeathcensor_date) 
-replace onsnoncoviddeath = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date)
+replace covid_death_itu 	= 0 if (date_covid_death_itu	> onscoviddeathcensor_date) 
+replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > tpp_infec_censor_date)
 
 * Format date variables
 format  stime* %td 
-
-
-
-
-
-
 
 
 /* LABEL VARIABLES============================================================*/
@@ -542,8 +564,8 @@ format  stime* %td
 *HH variable
 label var kids_cat3 "Presence of children or young people in the household"
 label var kids_cat2_0_18yrs "Presence of under 18s in the household"
-label var  kids_cat2_1_11yrs "Presence of children aged 1-<11 years in the household"
-label var  number_kids "Number of children aged 1-<11 years in household"
+label var  kids_cat2_1_12yrs "Presence of children aged 1-<12 years in the household"
+label var  number_kids "Number of children aged 1-<12 years in household"
 label var  household_size "Number people in household"
 label var  household_id "Household ID"
 
@@ -564,65 +586,77 @@ label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
 label var ethnicity					"Ethnicity"
 label var stp 						"Sustainability and Transformation Partnership"
-
+lab var no_adults_hh				"Number adults in household"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
 
 * Comorbidities of interest 
 label var asthma						"Asthma ever"
-label var ckd     					 	"Chronic kidney disease" 
 label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
 label var diabetes						"Diabetes"
-label var cancer						"Cancer"
-label var immunodef_any					"Immunosuppressed (combination algorithm)"
+label var cancer_heam_cat						"Haematological cancer"
+label var cancer_exhaem_cat						"Non-haematological cancer"
+label var organ_trans 					"Solid organ transplant"
+label var asplenia 						"Asplenia"
+label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
-label var neurological_disease 			"Neurological disease"					
+label var other_neuro 			"Neurological disease"			
+label var stroke_dementia 			    "Stroke or dementia"							
 label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							eGFR
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
 
 label var asthma_date						"Asthma date"
-label var ckd_date     						"Chronic kidney disease Date" 
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
 label var diabetes_date						"Diabetes Date"
-label var cancer_date 						"Cancer Date"
+label var cancer_heam_date 					"Haem cancer Date"
+label var cancer_nonhaem_date 				"Non-haem cancer Date"
 label var chronic_liver_disease_date  		"Chronic liver disease Date"
-label var neurological_disease_date 		"Neurological disease  Date"	
+label var other_neuro_date 		"Neurological disease  Date"
+label var stroke_dementia_date			    "Stroke or dementia date"							
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
-
+label var organ_trans_date  					"Solid organ transplant date"
+label var asplenia_date  						"Asplenia date"
 lab var  bphigh "non-missing indicator of known high blood pressure"
 lab var bpcat "Blood pressure four levels, non-missing"
 lab var htdiag_or_highbp "High blood pressure or hypertension diagnosis"
 
 * Outcomes and follow-up
 label var enter_date					"Date of study entry"
-label var cpnsdeathcensor_date 			"Date of admin censoring for cpns deaths"
 label var onscoviddeathcensor_date 		"Date of admin censoring for ONS deaths"
+label var icnarc_admissioncensor_date 	"Date of admin censoring for ITU admissions"
+label var tpp_infec_censor_date 		"Date of admin censoring for covid TPP cases"
 
-label var cpnsdeath						"Failure/censoring indicator for outcome: CPNS covid death"
-label var onscoviddeath					"Failure/censoring indicator for outcome: ONS covid death"
-label var onsnoncoviddeath				"Failure/censoring indicator for outcome: ONS non-covid death"
+label var covid_death_itu				"Failure/censoring indicator for outcome: covid death/ITU adm."
+label var covid_tpp_prob_or_susp		"Failure/censoring indicator for outcome: covid prob/susp. case"
 
-label var died_date_cpns				"Date of CPNS Death"
-label var died_date_onscovid 			"Date of ONS COVID Death"
-label var died_date_onsnoncovid			"Date of ONS non-COVID death"
+label var date_covid_death_itu 			"Date of ONS COVID Death or ICNARC ITU admission"
+label var date_covid_tpp_prob_or_susp	"Date of covid TPP case (probable or suspected)"
 
 label var first_tested_for_covid 		"Date of first COVID test in SGSS"
 label var first_positive_test_date		"Date of first positive COVID test in SGSS"
 
 * Survival times
-label var  stime_cpnsdeath 				"Survival time (date); outcome CPNS covid death"
-label var  stime_onscoviddeath 			"Survival time (date); outcome ONS covid death"
-label var  stime_onsnoncoviddeath		"Survival tme (date); outcome ONS non covid death"
+label var  stime_covid_death_itu 			"Survival time (date); outcome covid death/ITU adm."
+label var  stime_covid_tpp_prob_or_susp		"Survival tme (date); outcome "
+
+*Key DATES
+label var   died_date_ons				"Date death ONS"
+
+
+ 
+
+
+
 
 
 /* TIDY DATA==================================================================*/
@@ -638,9 +672,6 @@ drop `r(varlist)'
 noi di "DROP MISSING GENDER:"
 drop if inlist(sex,"I", "U")
 
-noi di "DROP AGE <35:"
-drop if age < 35 
-
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
@@ -650,13 +681,32 @@ drop if age == .
 noi di "DROP IMD MISSING"
 drop if imd == .u
 
-noi di "DROP IF DEAD BEFORE INDEX"
-drop if stime_cpnsdeath <= date("$indexdate", "DMY")
-drop if stime_onscoviddeath <= date("$indexdate", "DMY")
-drop if stime_onsnoncoviddeath <= date("$indexdate", "DMY")
+noi di "DROP IF DIED BEFORE INDEX"
+drop if died_date_ons <= date("$indexdate", "DMY")
 
+
+	
+	
+	
+***************
+*  Save data  *
+***************
 sort patient_id
 save $tempdir\analysis_dataset, replace	
+
+
+* Save a version set on CPNS survival outcome
+stset stime_covid_death_itu, fail(covid_death_itu) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", replace
+
+* Save a version set on ONS covid death outcome
+stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+	
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", replace
+	
 	
 	
 * Close log file 
