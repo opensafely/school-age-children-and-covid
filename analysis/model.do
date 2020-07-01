@@ -11,6 +11,8 @@ set more off
 capture mkdir output
 capture mkdir log
 capture mkdir tempdata
+capture mkdir output\models
+
 
 * Set globals that will print in programs and direct output
 global pri_outcome 	  "tpp_infec"
@@ -64,4 +66,45 @@ foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
 	do "04_an_descriptive_table_1.do" `outcome'
 	}
 	
-*do "an_descriptive_plots.do"
+do "05_an_descriptive_plots.do"
+
+
+*Univariate models can be run in parallel Stata instances for speed
+*Command is "do an_univariable_cox_models <OUTCOME> <VARIABLE(s) TO RUN>
+*The following breaks down into 4 batches, 
+*  which can be done in separate Stata instances
+*Can be broken down further but recommend keeping in alphabetical order
+*   because of the ways the resulting log files are named
+
+*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
+
+foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
+
+	do "06_univariate_analysis.do" `outcome' ///
+		kids_cat3  ///
+		kids_cat2_0_18yrs  ///
+		kids_cat2_1_12yrs  ///
+		gp_number_kids
+
+************************************************************
+	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
+	do "07_an_multivariable_cox_models.do" `outcome'
+}	
+	
+	
+************************************************************
+*PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
+*MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
+*and AN_SENS... DO FILES HAVE FINISHED
+*(THESE ARE VERY QUICK)*
+************************************************************
+foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
+	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
+}	
+	
+	*do "09_an_agesplinevisualisation.do" `outcome'
+	
+	
+	
+	
+	

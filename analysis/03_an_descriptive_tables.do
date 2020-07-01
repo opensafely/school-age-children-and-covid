@@ -4,7 +4,7 @@
 *
 *	Do-file:		03_an_descriptive_tables.do
 *
-*	Project:		Risk factors for poor outcomes in Covid-19
+*	Project:		Exposure children and COVID risk
 *
 *	Programmed by:	HFORBES based on Elizabeth Williamson
 *
