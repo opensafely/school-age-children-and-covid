@@ -69,7 +69,7 @@ timer on 1
 			i.chronic_cardiac_disease 		///
 			i.diabetes						///
 			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
+			i.cancer_heam_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
@@ -91,7 +91,7 @@ foreach exposure_type in 	kids_cat3  ///
 		gp_number_kids {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
@@ -100,7 +100,7 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
  
 *Age group model (not adj ethnicity)
-basecoxmodel, exposure("`exposure_type'") age("ib3.agegroup") bp("i.htdiag_or_highbp") ethnicity(0)
+basecoxmodel, exposure("i.`exposure_type'") age("ib3.agegroup") bp("i.htdiag_or_highbp") ethnicity(0)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agegroup_bmicat_noeth, replace
@@ -109,7 +109,7 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 *Complete case ethnicity model
-basecoxmodel, exposure("`exposure_type'") age("age1 age2 age3") bp("i.htdiag_or_highbp") ethnicity(1)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") bp("i.htdiag_or_highbp") ethnicity(1)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCeth, replace

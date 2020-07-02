@@ -19,12 +19,14 @@ cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues i=`min'/`max'{
+forvalues age=0/1{
+
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents ("`variable'") _tab ("`i'") _tab
+	file write tablecontents_int ("`variable'") _tab ("`i'") _tab _tab ("`age'")
 	
-	foreach modeltype of any minadj fulladj {
+	foreach modeltype of any fulladj {
 	
 		local noestimatesflag 0 /*reset*/
 
@@ -33,25 +35,27 @@ local endwith "_tab"
 
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
-		
-		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
-			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
-			if _rc!=0 local noestimatesflag 1
-			}
+
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
+				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
 				if _rc!=0 local noestimatesflag 1
 				}
-		
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
 		
 		if `noestimatesflag'==0{
+			if `age'==0 {
 			cap lincom `i'.`variable', eform
-			if _rc==0 file write tablecontents %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
-				else file write tablecontents %4.2f ("ERR IN MODEL") `endwith'
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+				}
+			if `age'==1 {
+			cap lincom `i'.`variable'+ 1.age66#`i'.`variable', eform
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+				}
 			}
-			else file write tablecontents %4.2f ("DID NOT FIT") `endwith' 
+			else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith' 
 			
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
@@ -61,11 +65,12 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				post HRestimates ("`outcome'") ("`variable'") (`i') (`hr') (`lb') (`ub') (r(p))
+				post HRestimates_int ("`outcome'") ("`variable'") (`i') (`age') (`hr') (`lb') (`ub') (r(p))
 				drop `variable'
 				}
 		}	
-		} /*min adj, full adj*/
+		} /*age*/
+		} /*full adj*/
 		
 } /*variable levels*/
 
@@ -74,47 +79,50 @@ end
 *Generic code to write a full row of "ref category" to the output file
 cap prog drop refline
 prog define refline
-file write tablecontents _tab _tab ("1.00 (ref)") _tab ("1.00 (ref)")  _n
-*post HRestimates ("`outcome'") ("`variable'") (`refcat') (1) (1) (1) (.)
+file write tablecontents_int _tab _tab ("1.00 (ref)") _tab ("1.00 (ref)")  _n
+*post HRestimates_int ("`outcome'") ("`variable'") (`refcat') (1) (1) (1) (.)
 end
 ***********************************************************************************************************************
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 
-cap file close tablecontents
-file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
+cap file close tablecontents_int
+file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
 
-tempfile HRestimates
+
+tempfile HRestimates_int
 cap postutil clear
-postfile HRestimates str10 outcome str27 variable level hr lci uci pval using `HRestimates'
-
+postfile HRestimates_int str10 outcome str27 variable level age hr lci uci pval using `HRestimates_int'
 
 *Primary exposure
 refline
-outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
-file write tablecontents _n
+outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
+file write tablecontents_int _n
 
 *Kids under 18
 refline
-outputHRsforvar, variable("kids_cat2_0_18yrs") min(1) max(1) outcome(`outcome')
-file write tablecontents _n
+outputHRsforvar, variable("kids_cat2_0_18yrs") min(1) max(1) outcome(`outcome') 
+file write tablecontents_int _n
 
 *kids 1-11 years
 refline
-outputHRsforvar, variable("kids_cat2_1_12yrs") min(1) max(1) outcome(`outcome')
-file write tablecontents _n
+outputHRsforvar, variable("kids_cat2_1_12yrs") min(1) max(1) outcome(`outcome') 
+file write tablecontents_int _n
 
 *Number kids
 refline
 outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
-file write tablecontents _n 
+file write tablecontents_int _n 
 
 
-file close tablecontents
+file close tablecontents_int
 
-postclose HRestimates
+postclose HRestimates_int
 
-use `HRestimates', clear
+use `HRestimates_int', clear 
+
+
+/*TBC.....
 
 gen varorder = 1 
 local i=2
@@ -154,7 +162,9 @@ expand 2 if level == -1, gen(expanded)
 replace level = -99 if expanded==1
 
 for var hr lci uci pval : replace X=. if level<0
-sort varorder level
+
+
+sort varorder level age
 
 gen varx = 0.07
 gen levelx = 0.071
