@@ -98,13 +98,16 @@ foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
+foreach outcome of any covid_tpp_prob_or_susp covid_death_itu  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
+	do "09_an_agesplinevisualisation.do" `outcome'
 }	
 	
-	*do "09_an_agesplinevisualisation.do" `outcome'
-	
-	
-	
-	
-	
+*INTERACTIONS
+foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
+do "10_an_interaction_cox_models" `outcome'	
+
+}
+foreach outcome of any covid_tpp_prob_or_susp covid_death_itu  {
+	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
+	}
