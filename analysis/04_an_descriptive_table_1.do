@@ -96,15 +96,16 @@ file write tablecontent _n
 **COMORBIDITIES
 *RESPIRATORY
 tabulatevariable, variable(chronic_respiratory_disease) start(1) end(1) outcome(`outcome')
+file write tablecontent _n  
 *ASTHMA
-tabulatevariable, variable(asthma) start(1) end(1) outcome(`outcome') /*ever asthma*/
+tabulatevariable, variable(asthma) start(1) end(2) outcome(`outcome') /*ever asthma*/
 *CARDIAC
 tabulatevariable, variable(chronic_cardiac_disease) start(1) end(1) outcome(`outcome')
 *DIABETES
 tabulatevariable, variable(diabetes) start(1) end(1) outcome(`outcome') /*controlled, then uncontrolled, then missing a1c*/
 file write tablecontent _n
 *CANCER EX HAEM
-tabulatevariable, variable(cancer_heam_cat) start(2) end(4) outcome(`outcome') /*<1, 1-4.9, 5+ years ago*/
+tabulatevariable, variable(cancer_haem_cat) start(2) end(4) outcome(`outcome') /*<1, 1-4.9, 5+ years ago*/
 file write tablecontent _n
 *CANCER HAEM
 tabulatevariable, variable(cancer_exhaem_cat) start(2) end(4) outcome(`outcome') /*<1, 1-4.9, 5+ years ago*/

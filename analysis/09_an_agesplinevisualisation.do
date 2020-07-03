@@ -16,7 +16,7 @@ if _rc==0{
 	chronic_liver_disease stroke_dementia other_neuro organ_trans ///
 	asplenia ra_sle_psoriasis other_immuno: replace X = 0 
 
-	for var obese4cat smoke_nomiss imd asthma diabetes cancer_exhaem_cat cancer_heam_cat  ///
+	for var obese4cat smoke_nomiss imd asthma diabetes cancer_exhaem_cat cancer_haem_cat  ///
 	reduced_kidney_function_cat: replace X = 1 
 	
 	predict xb, xb

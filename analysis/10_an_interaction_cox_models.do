@@ -42,6 +42,18 @@ log using "./output/an_interaction_cox_models_`outcome'", text replace
 
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+stset
+
+*Split data by time of study period: days to April 3rd (31 d March, 3d April)
+stsplit cat_time, at(0,34, 200)
+recode cat_time 34=1 200=2 
+recode `outcome' .=0 
+tab cat_time
+ 
+/*Overlapping time periods
+gen cat_time0=1 if cat==0
+gen cat_time1=1 if cat==0 | cat==0.25
+*/
 	
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -64,7 +76,7 @@ timer on 1
 			i.chronic_cardiac_disease 		///
 			i.diabetes						///
 			i.cancer_exhaem_cat	 			///
-			i.cancer_heam_cat  				///
+			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
@@ -80,19 +92,20 @@ timer list
 end
 *************************************************************************************
 
+foreach int_type in age66 male cat_time {
 
 *Age interaction for 2-level exposure vars
 foreach exposure_type in 	kids_cat2_0_18yrs  kids_cat2_1_12yrs  {
 
 *Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.age66#1.`exposure_type')
+basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type')
 if _rc==0{
-testparm 1.age66#1.`exposure_type'
+testparm 1.`int_type'#1.`exposure_type'
 di _n "`exposure_type' <66" _n "****************"
 lincom 1.`exposure_type', eform
 di "`exposure_type' 66+" _n "****************"
-lincom 1.`exposure_type' + 1.age66#1.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
+estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 }
@@ -105,14 +118,14 @@ foreach exposure_type in kids_cat3  {
 basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
 
 *Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.age66#1.`exposure_type' 1.age66#2.`exposure_type')
+basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
 if _rc==0{
-testparm 1.age66#i.`exposure_type'
+testparm 1.`int_type'#i.`exposure_type'
 di _n "`exposure_type' <66" _n "****************"
 lincom 2.`exposure_type', eform
 di "`exposure_type' 66+" _n "****************"
-lincom 2.`exposure_type' + 1.age66#2.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
@@ -120,20 +133,22 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 *Age interactions with 4-level vars
 foreach exposure_type in gp_number_kids {
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.age66#1.`exposure_type' 1.age66#2.`exposure_type' 1.age66#3.`exposure_type' 1.age66#4.`exposure_type')
+basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type' 1.`int_type'#3.`exposure_type' 1.`int_type'#4.`exposure_type')
 if _rc==0{
-testparm 1.age66#i.`exposure_type'
+testparm 1.`int_type'#i.`exposure_type'
 di _n "`exposure_type' <66" _n "****************"
 lincom 2.`exposure_type', eform
 lincom 3.`exposure_type', eform
 lincom 4.`exposure_type', eform
 di "`exposure_type' 66+" _n "****************"
-lincom 2.`exposure_type' + 1.age66#2.`exposure_type', eform
-lincom 3.`exposure_type' + 1.age66#3.`exposure_type', eform
-lincom 4.`exposure_type' + 1.age66#4.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+lincom 3.`exposure_type' + 1.`int_type'#3.`exposure_type', eform
+lincom 4.`exposure_type' + 1.`int_type'#4.`exposure_type', eform
+estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+}
+
 }
 
 log close

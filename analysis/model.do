@@ -35,7 +35,7 @@ global varlist 		i.obese4cat						///
 					i.asplenia 						///
 					i.organ_trans					///
 					i.stroke_dementia				///
-					i.cancer_heam_cat 					///
+					i.cancer_haem_cat 					///
 					i.cancer_exhaem_cat 				///
 					i.reduced_kidney_function							///
 					i.hypertension			 	
@@ -104,10 +104,12 @@ foreach outcome of any covid_tpp_prob_or_susp covid_death_itu  {
 }	
 	
 *INTERACTIONS
+*Create models
 foreach outcome of any covid_death_itu covid_tpp_prob_or_susp {
 do "10_an_interaction_cox_models" `outcome'	
-
 }
-foreach outcome of any covid_tpp_prob_or_susp covid_death_itu  {
+
+*Tabulate results
+foreach outcome of any  covid_death_itu covid_tpp_prob_or_susp {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
-	}
+}
