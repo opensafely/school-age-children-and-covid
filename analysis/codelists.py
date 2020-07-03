@@ -57,6 +57,28 @@ current_asthma_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
+asthma_codes = codelist_from_csv(
+    "codelists/opensafely-asthma-diagnosis.csv", system="ctv3", column="CTV3ID"
+)
+
+salbutamol_codes = codelist_from_csv(
+    "codelists/opensafely-asthma-inhaler-salbutamol-medication.csv",
+    system="snomed",
+    column="id",
+)
+
+ics_codes = codelist_from_csv(
+    "codelists/opensafely-asthma-inhaler-steroid-medication.csv",
+    system="snomed",
+    column="id",
+)
+
+pred_codes = codelist_from_csv(
+    "codelists/opensafely-asthma-oral-prednisolone-medication.csv",
+    system="snomed",
+    column="snomed_id",
+)
+
 chronic_cardiac_disease_codes = codelist_from_csv(
     "codelists/opensafely-chronic-cardiac-disease.csv",
     system="ctv3",

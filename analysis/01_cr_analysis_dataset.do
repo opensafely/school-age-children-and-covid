@@ -82,10 +82,9 @@ global indexdate 			    = "01/02/2020"
 15 to enable  them to be processed as dates 											  */
 
 foreach var of varlist 	chronic_respiratory_disease ///
-						asthma  ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
-						cancer_heam  ///
+						cancer_haem  ///
 						cancer_nonhaem  ///
 						permanent_immunodeficiency  ///
 						temporary_immunodeficiency  ///
@@ -129,17 +128,14 @@ foreach var of varlist 	chronic_respiratory_disease ///
 rename permanent_immunodeficiency_date 	perm_immunodef_date
 rename temporary_immunodeficiency_date 	temp_immunodef_date
 rename bmi_date_measured_date  			bmi_measured_date
-rename covid_identification_in_primary_ covid_tpp_probable
-rename v8								covid_tpp_suspected
 
 /* CREATE BINARY VARIABLES====================================================*/
 *  Make indicator variables for all conditions where relevant 
 
 foreach var of varlist 	chronic_respiratory_disease ///
-						asthma  ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
-						cancer_heam  ///
+						cancer_haem  ///
 						cancer_nonhaem  ///
 						perm_immunodef  ///
 						temp_immunodef  ///
@@ -321,11 +317,11 @@ label values smoke_nomiss smoke
 label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
 
 * Haematological malignancies
-gen     cancer_heam_cat = 4 if inrange(cancer_heam_date, d(1/1/1900), d(1/2/2015))
-replace cancer_heam_cat = 3 if inrange(cancer_heam_date, d(1/2/2015), d(1/2/2019))
-replace cancer_heam_cat = 2 if inrange(cancer_heam_date, d(1/2/2019), d(1/2/2020))
-recode  cancer_heam_cat . = 1
-label values cancer_heam_cat cancer
+gen     cancer_haem_cat = 4 if inrange(cancer_haem_date, d(1/1/1900), d(1/2/2015))
+replace cancer_haem_cat = 3 if inrange(cancer_haem_date, d(1/2/2015), d(1/2/2019))
+replace cancer_haem_cat = 2 if inrange(cancer_haem_date, d(1/2/2019), d(1/2/2020))
+recode  cancer_haem_cat . = 1
+label values cancer_haem_cat cancer
 
 
 * All other cancers
@@ -469,6 +465,20 @@ label values diabcat diabcat
 * Delete unneeded variables
 drop hba1c_pct hba1c_percentage hba1c_mmol_per_mol
 */
+
+
+
+/*  Asthma  */
+
+
+* Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+rename asthma asthmacat
+recode asthmacat 0=1 1=2 2=3
+label define asthmacat 1 "No" 2 "Yes, no OCS" 3 "Yes with OCS"
+label values asthmacat asthmacat
+
+gen asthma = (asthmacat==2|asthmacat==3)
+
 
 
 
@@ -619,13 +629,13 @@ label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
 
 * Comorbidities of interest 
-label var asthma						"Asthma ever"
+label var asthma						"Asthma category"
 label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
 label var diabetes						"Diabetes"
-label var cancer_heam_cat						"Haematological cancer"
+label var cancer_haem_cat						"Haematological cancer"
 label var cancer_exhaem_cat						"Non-haematological cancer"
 label var organ_trans 					"Solid organ transplant"
 label var asplenia 						"Asplenia"
@@ -638,12 +648,11 @@ lab var egfr							eGFR
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
 
-label var asthma_date						"Asthma date"
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
 label var chronic_cardiac_disease_date		"Other Heart Diseases Date"
 label var diabetes_date						"Diabetes Date"
-label var cancer_heam_date 					"Haem cancer Date"
+label var cancer_haem_date 					"Haem cancer Date"
 label var cancer_nonhaem_date 				"Non-haem cancer Date"
 label var chronic_liver_disease_date  		"Chronic liver disease Date"
 label var other_neuro_date 		"Neurological disease  Date"

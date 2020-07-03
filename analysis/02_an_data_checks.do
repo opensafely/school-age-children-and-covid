@@ -91,8 +91,7 @@ datacheck inlist(smoke_nomiss, 1, 2, 3), nol
 
 * Check date ranges for all comorbidities 
 
-foreach var of varlist  		asthma						///
-					chronic_respiratory_disease 	///
+foreach var of varlist  chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
 					diabetes 						///
 					chronic_liver_disease  		///
@@ -178,7 +177,7 @@ foreach var of varlist  asthma						///
 					organ_trans 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
-					cancer_heam_cat 						///
+					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
 					hypertension		///	 	
 										{
@@ -201,7 +200,7 @@ foreach var of varlist asthma						///
 					organ_trans 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
-					cancer_heam_cat 						///
+					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
 					hypertension			 ///	
 										{
@@ -222,7 +221,7 @@ foreach var of varlist  asthma						///
 					organ_trans 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
-					cancer_heam_cat 						///
+					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
 					hypertension			 	///
 					{

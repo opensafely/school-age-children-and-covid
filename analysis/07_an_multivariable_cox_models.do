@@ -69,7 +69,7 @@ timer on 1
 			i.chronic_cardiac_disease 		///
 			i.diabetes						///
 			i.cancer_exhaem_cat	 			///
-			i.cancer_heam_cat  				///
+			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///

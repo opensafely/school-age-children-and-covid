@@ -56,7 +56,7 @@ foreach var in chronic_respiratory_disease ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
 						cancer_exhaem_cat 						///
-						cancer_heam_cat 						///
+						cancer_haem_cat 						///
 						other_immuno 	///
 						organ_trans 			/// 
 						asplenia 			/// 
@@ -109,7 +109,7 @@ foreach outvar of varlist covid_death_itu covid_tpp_prob_or_susp {
 						chronic_cardiac_disease  ///
 						diabetes  ///
 						cancer_exhaem_cat 						///
-						cancer_heam_cat 						///
+						cancer_haem_cat 						///
 						other_immuno 	///
 						organ_trans 			/// 
 						asplenia 			/// 

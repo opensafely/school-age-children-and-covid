@@ -19,7 +19,9 @@ cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues i=`min'/`max'{
-forvalues age=0/1{
+foreach int_type in age66 male cat_time {
+
+forvalues age=0/1 {
 
 local endwith "_tab"
 
@@ -37,7 +39,7 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
+				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
 				if _rc!=0 local noestimatesflag 1
 				}
 		***********************
@@ -50,7 +52,7 @@ local endwith "_tab"
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			if `age'==1 {
-			cap lincom `i'.`variable'+ 1.age66#`i'.`variable', eform
+			cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
 			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
@@ -65,10 +67,11 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				post HRestimates_int ("`outcome'") ("`variable'") (`i') (`age') (`hr') (`lb') (`ub') (r(p))
+				post HRestimates_int ("`outcome'") ("`variable'") ("`int_type'") (`i') (`age') (`hr') (`lb') (`ub') (r(p))
 				drop `variable'
 				}
 		}	
+		} 
 		} /*age*/
 		} /*full adj*/
 		
@@ -92,7 +95,7 @@ file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'
 
 tempfile HRestimates_int
 cap postutil clear
-postfile HRestimates_int str10 outcome str27 variable level age hr lci uci pval using `HRestimates_int'
+postfile HRestimates_int str10 outcome str27 variable str27 int_type level age hr lci uci pval using `HRestimates_int'
 
 *Primary exposure
 refline
@@ -119,17 +122,15 @@ file close tablecontents_int
 
 postclose HRestimates_int
 
-use `HRestimates_int', clear 
-
-
-/*TBC.....
+use `HRestimates_int', clear
+drop if variable=="gp_number_kids"
 
 gen varorder = 1 
 local i=2
 foreach var of any 		kids_cat3  ///
 		kids_cat2_0_18yrs  ///
 		kids_cat2_1_12yrs  ///
-		gp_number_kids {
+		 {
 replace varorder = `i' if variable=="`var'"
 local i=`i'+1
 }
@@ -149,55 +150,63 @@ replace level = 3 if expanded == 1 & variable=="gp_number_kids"
 
 gen varorder = 1 if variable!=variable[_n-1]
 replace varorder = sum(varorder)
-sort varorder level
+sort varorder level int_type
 
 
 drop expanded
 expand 2 if variable!=variable[_n-1], gen(expanded)
 replace level = -1 if expanded==1
 drop expanded
-*expand 3 if variable=="htdiag_or_highbp" & level==-1, gen(expanded)
-*replace level = -99 if variable=="htdiag_or_highbp" & expanded==1
+
 expand 2 if level == -1, gen(expanded)
 replace level = -99 if expanded==1
+drop expanded
+
+expand 2 if level == 1 & int_type=="age66" & age==0, gen(expanded)
+replace level = 1.5 if expanded==1
+drop expanded
+drop if level==1.5 & int_type=="age66" & hr!=1
 
 for var hr lci uci pval : replace X=. if level<0
 
 
-sort varorder level age
+sort varorder  level int_type age
+list in 1/10
 
 gen varx = 0.07
 gen levelx = 0.071
+gen intx=0.073
 gen lowerlimit = 0.15
 
-*Names
-gen Name = variable if (level==-1&!(level[_n+1]==0&variable!="kids_cat2_1_12yrs"))|(level==1&level[_n-1]==0&variable!="kids_cat2_1_12yrs")
-replace Name = variable if (level==0&!(level[_n+1]==0&variable!="kids_cat2_0_18yrs"))|(level==1&level[_n-1]==0&variable!="kids_cat2_0_18yrs")
-*replace Name = subinstr(Name, "_", " ", 10)
-*replace Name = upper(substr(Name,1,1)) + substr(Name,2,.)
+gen Name = variable if (level==-99)
 replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
 replace Name = "Presence of under 18s in household" if Name=="kids_cat2_0_18yrs"
 replace Name = "Presence of children aged 1-<12 years in household" if Name=="kids_cat2_1_12yrs"
-replace Name = "Number children under 12 years in household" if Name=="gp_number_kids"
 
 
+gen obsno=_n
 *Levels
 gen leveldesc = ""
-replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==1
-replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids_cat3" & level==2
+replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
+replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids_cat3" & level==1.5
 
-*replace leveldesc = "Children under 18 years" if variable=="kids_cat2_0_18yrs" & level==1
+drop if variable=="kids_cat2_0_18yrs" & level==-1
+drop if variable=="kids_cat2_1_12yrs" & level==-1
 
-*replace leveldesc = "Children age 1-<12 years" if variable=="kids_cat2_1_12yrs" & level==1
+*Inte labels
+gen intNAME=""
+replace intNAME="Age under 66 years" if int_type=="age66" & age==0
+replace intNAME="Age 66 years and above" if int_type=="age66" & age==1
+replace intNAME="Female" if int_type=="male" & age==0
+replace intNAME="Male" if int_type=="male" & age==1
+replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & age==0
+replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & age==1
 
-replace leveldesc = "1" if variable=="gp_number_kids" & level==1
-replace leveldesc = "2" if variable=="gp_number_kids" & level==2
-replace leveldesc = "3" if variable=="gp_number_kids" & level==3
-replace leveldesc = "4 or more" if variable=="gp_number_kids" & level==4
+replace intNAME="" if Name!=""
+replace intNAME="" if leveldesc!=""
 
-*replace leveldesc = "Absent" if level==0
-*replace leveldesc = "Present" if level==1 & leveldesc==""
-drop if level==0 & variable!="male"
+
+drop if hr==1 & lci==1 &leveldesc==""
 
 
 gen obsorder=_n
@@ -207,7 +216,8 @@ sort obsorder
 
 *merge 1:1 variable level using c:\statatemp\tptemp, update replace
 
-replace Name="" if level==-1 & variable=="kids_cat2_1_12yrs"
+*replace Name="" if level==-1 & variable=="kids_cat2_1_12yrs"
+
 
 gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
 
@@ -216,8 +226,9 @@ scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 	|| scatter graphorder lowerlimit, m(i) mlab(displayhrci) mlabcol(black) mlabsize(tiny) ///
 	|| scatter graphorder varx , m(i) mlab(Name) mlabsize(tiny) mlabcol(black) 	///
 	|| scatter graphorder levelx, m(i) mlab(leveldesc) mlabsize(tiny) mlabcol(gs8) 	///
+	|| scatter graphorder intx, m(i) mlab(intNAME) mlabsize(tiny) mlabcol(gs8) 	///
 		xline(1,lp(dash)) 															///
 		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
-		legend(off)  ysize(4) 
+		legend(off)  ysize(8) 
 
 graph export ./output/an_tablecontent_HRtable_HRforest_`outcome'.svg, as(svg) replace
