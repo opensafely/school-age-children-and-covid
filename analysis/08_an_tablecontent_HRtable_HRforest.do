@@ -24,7 +24,7 @@ local endwith "_tab"
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
-	foreach modeltype of any minadj fulladj {
+	foreach modeltype of any minadj demogadj fulladj {
 	
 		local noestimatesflag 0 /*reset*/
 
@@ -36,6 +36,10 @@ local endwith "_tab"
 		
 		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
 			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
+			if _rc!=0 local noestimatesflag 1
+			}
+		if "`modeltype'"=="demogadj" {
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_agespline_bmicat_noeth
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
@@ -94,16 +98,6 @@ refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
 file write tablecontents _n
 
-*Kids under 18
-refline
-outputHRsforvar, variable("kids_cat2_0_18yrs") min(1) max(1) outcome(`outcome')
-file write tablecontents _n
-
-*kids 1-11 years
-refline
-outputHRsforvar, variable("kids_cat2_1_12yrs") min(1) max(1) outcome(`outcome')
-file write tablecontents _n
-
 *Number kids
 refline
 outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
@@ -119,8 +113,6 @@ use `HRestimates', clear
 gen varorder = 1 
 local i=2
 foreach var of any 		kids_cat3  ///
-		kids_cat2_0_18yrs  ///
-		kids_cat2_1_12yrs  ///
 		gp_number_kids {
 replace varorder = `i' if variable=="`var'"
 local i=`i'+1
@@ -148,8 +140,6 @@ drop expanded
 expand 2 if variable!=variable[_n-1], gen(expanded)
 replace level = -1 if expanded==1
 drop expanded
-*expand 3 if variable=="htdiag_or_highbp" & level==-1, gen(expanded)
-*replace level = -99 if variable=="htdiag_or_highbp" & expanded==1
 expand 2 if level == -1, gen(expanded)
 replace level = -99 if expanded==1
 
@@ -161,13 +151,8 @@ gen levelx = 0.071
 gen lowerlimit = 0.15
 
 *Names
-gen Name = variable if (level==-1&!(level[_n+1]==0&variable!="kids_cat2_1_12yrs"))|(level==1&level[_n-1]==0&variable!="kids_cat2_1_12yrs")
-replace Name = variable if (level==0&!(level[_n+1]==0&variable!="kids_cat2_0_18yrs"))|(level==1&level[_n-1]==0&variable!="kids_cat2_0_18yrs")
-*replace Name = subinstr(Name, "_", " ", 10)
-*replace Name = upper(substr(Name,1,1)) + substr(Name,2,.)
+gen Name=""
 replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
-replace Name = "Presence of under 18s in household" if Name=="kids_cat2_0_18yrs"
-replace Name = "Presence of children aged 1-<12 years in household" if Name=="kids_cat2_1_12yrs"
 replace Name = "Number children under 12 years in household" if Name=="gp_number_kids"
 
 
@@ -176,28 +161,16 @@ gen leveldesc = ""
 replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==1
 replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids_cat3" & level==2
 
-*replace leveldesc = "Children under 18 years" if variable=="kids_cat2_0_18yrs" & level==1
-
-*replace leveldesc = "Children age 1-<12 years" if variable=="kids_cat2_1_12yrs" & level==1
-
 replace leveldesc = "1" if variable=="gp_number_kids" & level==1
 replace leveldesc = "2" if variable=="gp_number_kids" & level==2
 replace leveldesc = "3" if variable=="gp_number_kids" & level==3
 replace leveldesc = "4 or more" if variable=="gp_number_kids" & level==4
-
-*replace leveldesc = "Absent" if level==0
-*replace leveldesc = "Present" if level==1 & leveldesc==""
-drop if level==0 & variable!="male"
-
 
 gen obsorder=_n
 gsort -obsorder
 gen graphorder = _n
 sort obsorder
 
-*merge 1:1 variable level using c:\statatemp\tptemp, update replace
-
-replace Name="" if level==-1 & variable=="kids_cat2_1_12yrs"
 
 gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
 
