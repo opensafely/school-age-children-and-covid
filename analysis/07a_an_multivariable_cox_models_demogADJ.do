@@ -70,7 +70,6 @@ timer off 1
 timer list
 end
 *************************************************************************************
-
 foreach exposure_type in kids_cat3  ///
 		gp_number_kids {
 
@@ -101,7 +100,6 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEM
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
- 
  
 }
 

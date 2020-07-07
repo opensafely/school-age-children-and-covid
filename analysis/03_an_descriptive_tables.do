@@ -48,7 +48,7 @@ tab smoke, m
 tab bpcat
 tab bpcat, m
 tab htdiag_or_highbp
-
+ta shield
 
 * Comorbidities
 foreach var in chronic_respiratory_disease ///
@@ -82,6 +82,7 @@ tab stp
 * Outcomes
 tab covid_death_itu
 tab covid_tpp_prob_or_susp
+tab covid_tpp_prob
 
 
 
@@ -92,7 +93,7 @@ tab covid_tpp_prob_or_susp
 *  Number (%) with each outcome  *
 **********************************
 
-foreach outvar of varlist covid_death_itu covid_tpp_prob_or_susp {
+foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 
 *** Repeat for each outcome
 
@@ -102,6 +103,7 @@ foreach outvar of varlist covid_death_itu covid_tpp_prob_or_susp {
 	tab bmicat 								`outvar', col m 
 	tab smoke 								`outvar', col m
 	tab obese4cat							`outvar', col m 
+	tab shield   							`outvar', col m 
 
 	* Comorbidities
 	foreach var in chronic_respiratory_disease ///
@@ -140,14 +142,20 @@ use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
 sts list , at(0 80) by(agegroup male) fail
 
 ***************************************
-*  Cumulative incidence of TPP COVID CASES *
+*  Cumulative incidence of TPP COVID PROB/SUSP CASES *
 ***************************************
 
 use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 
+***************************************
+*  Cumulative incidence of TPP COVID PROBABLE CASES *
+***************************************
 
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+
+sts list , at(0 80) by(agegroup male) fail
 
 * Close the log file
 log close

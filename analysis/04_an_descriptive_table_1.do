@@ -83,10 +83,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) start(1) end(5) outcome(`outcome')
 file write tablecontent _n 
 
-tabulatevariable, variable(no_adults_hh) start(1) end(3) outcome(`outcome')
-file write tablecontent _n 
-
-tabulatevariable, variable(kids_cat3) start(0) end(2) outcome(`outcome')
+tabulatevariable, variable(additional_people) start(1) end(3) outcome(`outcome')
 file write tablecontent _n 
 
 tabulatevariable, variable(bpcat) start(1) end(4) missing outcome(`outcome')
@@ -127,6 +124,7 @@ tabulatevariable, variable(ra_sle_psoriasis) start(1) end(1) outcome(`outcome')
 *OTHER IMMUNOSUPPRESSION
 tabulatevariable, variable(other_immuno) start(1) end(1) outcome(`outcome')
 
-
+*OTHER IMMUNOSUPPRESSION
+tabulatevariable, variable(shield) start(1) end(1) outcome(`outcome')
 
 file close tablecontent
