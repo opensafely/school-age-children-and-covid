@@ -81,8 +81,9 @@ timer on 1
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans				///
+			i.organ_trans			    	///
 			i.asplenia 						///
+			i.additional_people				///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno			///
 			`interaction'							///
@@ -92,24 +93,7 @@ timer list
 end
 *************************************************************************************
 
-foreach int_type in age66 male cat_time {
-
-*Age interaction for 2-level exposure vars
-foreach exposure_type in 	kids_cat2_0_18yrs  kids_cat2_1_12yrs  {
-
-*Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type')
-if _rc==0{
-testparm 1.`int_type'#1.`exposure_type'
-di _n "`exposure_type' <66" _n "****************"
-lincom 1.`exposure_type', eform
-di "`exposure_type' 66+" _n "****************"
-lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
-}
-else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
-}
-
+foreach int_type in age66 male cat_time shield {
 
 *Age interaction for 3-level exposure vars
 foreach exposure_type in kids_cat3  {

@@ -30,10 +30,10 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agegroup_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCnoeth.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmicat_noeth.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agegroup_bmicat_noeth.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmicat_CCeth.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmicat_CCnoeth.ster
 
 
 * Open a log file
@@ -63,21 +63,7 @@ timer on 1
 			i.smoke_nomiss					///
 			`ethnicity'						///
 			i.imd 							///
-			`bp'							///
-			i.chronic_respiratory_disease 	///
-			i.asthma					///
-			i.chronic_cardiac_disease 		///
-			i.diabetes						///
-			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
-			i.chronic_liver_disease 		///
-			i.stroke_dementia		 		///
-			i.other_neuro					///
-			i.reduced_kidney_function_cat	///
-			i.organ_trans 				///
-			i.asplenia 						///
-			i.ra_sle_psoriasis  			///
-			i.other_immuno			///
+			i.additional_people				///
 			`if'							///
 			, strata(stp) vce(cluster household_size)
 timer off 1
@@ -86,15 +72,13 @@ end
 *************************************************************************************
 
 foreach exposure_type in 	kids_cat3  ///
-		kids_cat2_0_18yrs  ///
-		kids_cat2_1_12yrs  ///
 		gp_number_kids {
 
 *Age spline model (not adj ethnicity)
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agespline_bmicat_noeth, replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
@@ -103,7 +87,7 @@ else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 basecoxmodel, exposure("i.`exposure_type'") age("ib3.agegroup") bp("i.htdiag_or_highbp") ethnicity(0)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agegroup_bmicat_noeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agegroup_bmicat_noeth, replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
@@ -112,7 +96,7 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") bp("i.htdiag_or_highbp") ethnicity(1)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agespline_bmicat_CCeth, replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"
