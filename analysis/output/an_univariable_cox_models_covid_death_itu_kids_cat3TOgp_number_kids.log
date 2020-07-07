@@ -1,0 +1,163 @@
+-------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_univariable_cox_models_covid_death_itu_kid
+> s_cat3TOgp_number_kids.log
+  log type:  text
+ opened on:   7 Jul 2020, 13:30:34
+
+. 
+. * Open dataset and fit specified model(s)
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+
+. 
+. 
+. foreach var of any `varlist' {
+  2. 
+.         *Special cases
+.         if "`var'"=="agesplsex" local model "age1 age2 age3 i.male"
+  3.         else if "`var'"=="agegroupsex" local model "ib3.agegroup i.male"
+  4.         else if "`var'"=="bmicat" local model "age1 age2 age3 i.male ib2.bmicat"
+  5.         *General form of model
+.         else local model "age1 age2 age3 i.male i.`var'"
+  6. 
+.         *Fit and save model
+.         cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
+  7.         capture stcox `model' , strata(stp) vce(cluster household_size)
+  8.         if _rc==0 {
+  9.                 estimates
+ 10.                 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace
+ 11.                 }
+ 12.         else di "WARNING - `var' vs `outcome' MODEL DID NOT SUCCESSFULLY FIT"
+ 13. 
+. }
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects      =        5,028             Number of obs    =       5,028
+No. of failures      =           12
+Time at risk         =       557306
+                                                Wald chi2(6)     =   227576.06
+Log pseudolikelihood =   -73.909325             Prob > chi2      =      0.0000
+
+                           (Std. Err. adjusted for 7 clusters in household_size)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+          age1 |   .9890844   .0893795    -0.12   0.903     .8285405    1.180736
+          age2 |   1.034467   .3022111     0.12   0.908     .5835054    1.833953
+          age3 |   .8622507   .6534695    -0.20   0.845     .1952261    3.808284
+        1.male |   1.421978   .8545618     0.59   0.558     .4378735    4.617819
+               |
+     kids_cat3 |
+Kids under 12  |    .591421   .3453812    -0.90   0.368     .1882815    1.857744
+Kids under 18  |   .7240043   .5682139    -0.41   0.681     .1554891    3.371182
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat3.ster not found)
+file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat3.ster saved
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects      =        5,028             Number of obs    =       5,028
+No. of failures      =           12
+Time at risk         =       557306
+                                                Wald chi2(5)     =      269.44
+Log pseudolikelihood =   -73.926692             Prob > chi2      =      0.0000
+
+                              (Std. Err. adjusted for 7 clusters in household_size)
+-----------------------------------------------------------------------------------
+                  |               Robust
+               _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------+----------------------------------------------------------------
+             age1 |   .9896105   .0903972    -0.11   0.909     .8273899    1.183637
+             age2 |   1.032741   .3040919     0.11   0.913     .5799014    1.839199
+             age3 |   .8658866   .6609386    -0.19   0.850     .1939687    3.865364
+           1.male |   1.415435   .8623228     0.57   0.568     .4288583    4.671602
+                  |
+kids_cat2_0_18yrs |
+   Kids under 18  |   .6021859   .3409011    -0.90   0.370     .1985456    1.826421
+-----------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat2_0_18yrs.ster not found)
+file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat2_0_18yrs.ster saved
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects      =        5,028             Number of obs    =       5,028
+No. of failures      =           12
+Time at risk         =       557306
+                                                Wald chi2(5)     =      323.45
+Log pseudolikelihood =   -74.037475             Prob > chi2      =      0.0000
+
+                                     (Std. Err. adjusted for 7 clusters in household_size)
+------------------------------------------------------------------------------------------
+                         |               Robust
+                      _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------------------+----------------------------------------------------------------
+                    age1 |   .9882247   .0910139    -0.13   0.898     .8250141    1.183723
+                    age2 |   1.037495   .3085864     0.12   0.902     .5791744    1.858499
+                    age3 |   .8557046   .6598226    -0.20   0.840     .1887876    3.878593
+                  1.male |   1.433421   .8485055     0.61   0.543     .4492726    4.573384
+                         |
+       kids_cat2_1_12yrs |
+Kids aged 1 to under 12  |   .7612937   .3851765    -0.54   0.590     .2824144     2.05219
+------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat2_1_12yrs.ster not found)
+file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_kids_cat2_1_12yrs.ster saved
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+active results
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- no ties
+
+No. of subjects      =        5,028             Number of obs    =       5,028
+No. of failures      =           12
+Time at risk         =       557306
+                                                Wald chi2(6)     =   812207.20
+Log pseudolikelihood =   -72.784535             Prob > chi2      =      0.0000
+
+                           (Std. Err. adjusted for 7 clusters in household_size)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+          age1 |   .9864067   .0933818    -0.14   0.885     .8193584    1.187512
+          age2 |   1.051071   .3216634     0.16   0.871     .5769463    1.914823
+          age3 |   .8228392   .6518461    -0.25   0.806     .1741809    3.887134
+        1.male |   1.404241   .8616182     0.55   0.580     .4218508    4.674384
+               |
+gp_number_kids |
+            1  |   .5300015   .3564506    -0.94   0.345     .1418419    1.980385
+            2  |   .6187868   .5971013    -0.50   0.619     .0933619    4.101211
+            3  |   .4336144   .2208609    -1.64   0.101     .1597884     1.17669
+            4  |   1.601211   .8603809     0.88   0.381     .5585615    4.590139
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_gp_number_kids.ster not found)
+file ./output/an_univariable_cox_models_covid_death_itu_AGESEX_gp_number_kids.ster saved
+
+. 
+. 
+. * Close log file
+. log close
+      name:  <unnamed>
+       log:  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_univariable_cox_models_covid_death_itu_kid
+> s_cat3TOgp_number_kids.log
+  log type:  text
+ closed on:   7 Jul 2020, 13:30:35
+-------------------------------------------------------------------------------------------------------------------------------------------

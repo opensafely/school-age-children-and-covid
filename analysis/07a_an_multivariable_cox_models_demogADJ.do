@@ -51,7 +51,7 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basecoxmodel
 prog define basecoxmodel
-	syntax , exposure(string) age(string) bp(string) [ethnicity(real 0) if(string)] 
+	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
 
 	if `ethnicity'==1 local ethnicity "i.ethnicity"
 	else local ethnicity

@@ -1,0 +1,10 @@
+		1.00 (ref)	1.00 (ref)
+kids_cat3	1	0.95 (0.85-1.07)	DID NOT FIT	DID NOT FIT
+kids_cat3	2	0.92 (0.81-1.03)	DID NOT FIT	DID NOT FIT
+
+		1.00 (ref)	1.00 (ref)
+gp_number_kids	1	0.99 (0.89-1.11)	DID NOT FIT	DID NOT FIT
+gp_number_kids	2	1.02 (0.90-1.15)	DID NOT FIT	DID NOT FIT
+gp_number_kids	3	0.93 (0.82-1.06)	DID NOT FIT	DID NOT FIT
+gp_number_kids	4	0.87 (0.67-1.13)	DID NOT FIT	DID NOT FIT
+

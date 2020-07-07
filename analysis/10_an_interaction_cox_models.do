@@ -58,8 +58,7 @@ gen cat_time1=1 if cat==0 | cat==0.25
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
 prog define basemodel
-	syntax , exposure(string)  age(string) bp(string) [ethnicity(real 0) interaction(string)] 
-
+	syntax , exposure(string)  age(string) [ethnicity(real 0) interaction(string)] 
 	if `ethnicity'==1 local ethnicity "i.ethnicity"
 	else local ethnicity
 timer clear
