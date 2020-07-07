@@ -51,7 +51,7 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basecoxmodel
 prog define basecoxmodel
-	syntax , exposure(string) age(string) bp(string) [ethnicity(real 0) if(string)] 
+	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
 
 	if `ethnicity'==1 local ethnicity "i.ethnicity"
 	else local ethnicity
@@ -59,8 +59,8 @@ timer clear
 timer on 1
 	capture stcox 	`exposure' `age' 					///
 			i.male 							///
-			i.obese4cat						///
-			i.smoke_nomiss					///
+			`bmi'					///
+			`smoking'					///
 			`ethnicity'						///
 			i.imd 							///
 			i.additional_people				///
@@ -70,36 +70,36 @@ timer off 1
 timer list
 end
 *************************************************************************************
-
-foreach exposure_type in 	kids_cat3  ///
+foreach exposure_type in kids_cat3  ///
 		gp_number_kids {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agespline_bmicat_noeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth, replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
- 
-*Age group model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("ib3.agegroup") bp("i.htdiag_or_highbp") ethnicity(0)
-if _rc==0{
-estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agegroup_bmicat_noeth, replace
-*estat concordance /*c-statistic*/
-}
-else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+
 
 *Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") bp("i.htdiag_or_highbp") ethnicity(1)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_agespline_bmicat_CCeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_CCeth, replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"
+
+*Complete case ethnicity, BMI, smoking model
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(1) bmi(i.bmicat) smoking(i.smoke)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_CCeth_bmi_smok, replace
+*estat concordance /*c-statistic*/
+ }
+ else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
  
 }
 

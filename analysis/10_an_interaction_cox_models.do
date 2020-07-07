@@ -58,8 +58,7 @@ gen cat_time1=1 if cat==0 | cat==0.25
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
 prog define basemodel
-	syntax , exposure(string)  age(string) bp(string) [ethnicity(real 0) interaction(string)] 
-
+	syntax , exposure(string)  age(string) [ethnicity(real 0) interaction(string)] 
 	if `ethnicity'==1 local ethnicity "i.ethnicity"
 	else local ethnicity
 timer clear
@@ -68,11 +67,10 @@ timer on 1
 			i.male 							///
 			i.obese4cat						///
 			i.smoke_nomiss					///
-			`ethnicity'						///
 			i.imd 							///
-			`bp'							///
+			i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
-			i.asthma					///
+			i.asthma						///
 			i.chronic_cardiac_disease 		///
 			i.diabetes						///
 			i.cancer_exhaem_cat	 			///
@@ -99,10 +97,10 @@ foreach int_type in age66 male cat_time shield {
 foreach exposure_type in kids_cat3  {
 
 *Age spline model (not adj ethnicity, no interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0)
+basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
 
 *Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
+basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
 if _rc==0{
 testparm 1.`int_type'#i.`exposure_type'
 di _n "`exposure_type' <66" _n "****************"
@@ -115,7 +113,7 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 }
 
-*Age interactions with 4-level vars
+/*Age interactions with 4-level vars: NOT in protocol - do not run
 foreach exposure_type in gp_number_kids {
 basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type' 1.`int_type'#3.`exposure_type' 1.`int_type'#4.`exposure_type')
 if _rc==0{
@@ -132,6 +130,7 @@ estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 }
+*/
 
 }
 
