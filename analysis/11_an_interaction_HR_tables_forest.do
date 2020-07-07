@@ -19,7 +19,7 @@ cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues i=`min'/`max'{
-foreach int_type in age66 male cat_time {
+foreach int_type in age66 male cat_time shield {
 
 forvalues age=0/1 {
 
@@ -102,16 +102,6 @@ refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
 file write tablecontents_int _n
 
-*Kids under 18
-refline
-outputHRsforvar, variable("kids_cat2_0_18yrs") min(1) max(1) outcome(`outcome') 
-file write tablecontents_int _n
-
-*kids 1-11 years
-refline
-outputHRsforvar, variable("kids_cat2_1_12yrs") min(1) max(1) outcome(`outcome') 
-file write tablecontents_int _n
-
 *Number kids
 refline
 outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
@@ -128,8 +118,6 @@ drop if variable=="gp_number_kids"
 gen varorder = 1 
 local i=2
 foreach var of any 		kids_cat3  ///
-		kids_cat2_0_18yrs  ///
-		kids_cat2_1_12yrs  ///
 		 {
 replace varorder = `i' if variable=="`var'"
 local i=`i'+1
@@ -180,8 +168,6 @@ gen lowerlimit = 0.15
 
 gen Name = variable if (level==-99)
 replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
-replace Name = "Presence of under 18s in household" if Name=="kids_cat2_0_18yrs"
-replace Name = "Presence of children aged 1-<12 years in household" if Name=="kids_cat2_1_12yrs"
 
 
 gen obsno=_n
@@ -189,9 +175,6 @@ gen obsno=_n
 gen leveldesc = ""
 replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
 replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids_cat3" & level==1.5
-
-drop if variable=="kids_cat2_0_18yrs" & level==-1
-drop if variable=="kids_cat2_1_12yrs" & level==-1
 
 *Inte labels
 gen intNAME=""
@@ -201,7 +184,8 @@ replace intNAME="Female" if int_type=="male" & age==0
 replace intNAME="Male" if int_type=="male" & age==1
 replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & age==0
 replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & age==1
-
+replace intNAME="Unlikely to be shielding" if int_type=="shield" & age==0
+replace intNAME="Probable shielding" if int_type=="shield" & age==1
 replace intNAME="" if Name!=""
 replace intNAME="" if leveldesc!=""
 
@@ -213,11 +197,6 @@ gen obsorder=_n
 gsort -obsorder
 gen graphorder = _n
 sort obsorder
-
-*merge 1:1 variable level using c:\statatemp\tptemp, update replace
-
-*replace Name="" if level==-1 & variable=="kids_cat2_1_12yrs"
-
 
 gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
 
@@ -231,4 +210,4 @@ scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
 		legend(off)  ysize(8) 
 
-graph export ./output/an_tablecontent_HRtable_HRforest_`outcome'.svg, as(svg) replace
+graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'.svg, as(svg) replace

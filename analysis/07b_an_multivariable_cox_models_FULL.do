@@ -117,7 +117,6 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
- 
 }
 
 log close

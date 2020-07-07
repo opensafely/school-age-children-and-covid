@@ -57,12 +57,6 @@ datacheck inlist(household_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10), nol
 datacheck kids_cat3<., nol
 datacheck inlist(kids_cat3, 0,1, 2), nol
 
-datacheck kids_cat2_0_18yrs<., nol
-datacheck inlist(kids_cat2_0_18yrs, 0,1), nol
-
-datacheck kids_cat2_1_12yrs<., nol
-datacheck inlist(kids_cat2_0_18yrs, 0,1), nol
-
 datacheck number_kids<., nol
 datacheck inlist(number_kids, 0,1,2,3,4,5,6,7,8,9), nol
 
@@ -118,14 +112,14 @@ foreach comorb in $varlist {
 
 * Outcome dates
 summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
+summ  date_covid_death_itu  date_covid_tpp_prob, format
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-tab kids_cat3 kids_cat2_0_18yrs
-tab kids_cat3 kids_cat2_1_12yrs
-tab kids_cat2_0_18yrs kids_cat2_1_12yrs
-tab number_kids
+tab kids_cat3 additional
+tab number_kids add
+tab add kids_cat3
 
 * BMI
 bysort bmicat: summ bmi
@@ -152,17 +146,26 @@ tab agegroup bmicat, 	row
 tab agegroup smoke, 	row  
 tab agegroup ethnicity, row 
 tab agegroup imd, 		row 
+tab agegroup shield,    row 
 
 tab bmicat smoke, 		 row   
 tab bmicat ethnicity, 	 row 
 tab bmicat imd, 	 	 row 
 tab bmicat hypertension, row 
+tab bmicat shield,    row 
+
                             
 tab smoke ethnicity, 	row 
 tab smoke imd, 			row 
 tab smoke hypertension, row 
-                            
+tab smoke shield,    row 
+                      
 tab ethnicity imd, 		row 
+tab shield imd, 		row 
+
+tab shield ethnicity, 		row 
+
+
 
 * Relationships with age
 foreach var of varlist  asthma						///
@@ -233,6 +236,7 @@ foreach var of varlist  asthma						///
 /* SENSE CHECK OUTCOMES=======================================================*/
 
 tab covid_death_itu covid_tpp_prob_or_susp  , row col
+tab covid_death_itu covid_tpp_prob  , row col
 
 
 * Close log file 

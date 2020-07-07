@@ -19,62 +19,154 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 cap log close
 log using $logdir\01_cr_create_analysis_dataset, replace t
 
+
+/* CREATE VARIABLES===========================================================*/
+
+/* DEMOGRAPHICS */ 
+
+* Sex
+gen male = 1 if sex == "M"
+replace male = 0 if sex == "F"
+
+* Ethnicity 
+replace ethnicity = .u if ethnicity == .
+
+label define ethnicity 	1 "White"  					///
+						2 "Mixed" 					///
+						3 "Asian or Asian British"	///
+						4 "Black"  					///
+						5 "Other"					///
+						.u "Unknown"
+
+label values ethnicity ethnicity
+
+* STP 
+rename stp stp_old
+bysort stp_old: gen stp = 1 if _n==1
+replace stp = sum(stp)
+drop stp_old
+
+/*  IMD  */
+* Group into 5 groups
+rename imd imd_o
+egen imd = cut(imd_o), group(5) icodes
+
+* add one to create groups 1 - 5 
+replace imd = imd + 1
+
+* - 1 is missing, should be excluded from population 
+replace imd = .u if imd_o == -1
+drop imd_o
+
+* Reverse the order (so high is more deprived)
+recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+
+label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+label values imd imd 
+
+/*  Age variables  */ 
+
+* Create categorised age 
+recode age 18/29.9999 = 1 /// 
+		   30/39.9999 = 2 /// 
+           40/49.9999 = 3 ///
+		   50/59.9999 = 4 ///
+	       60/69.9999 = 5 ///
+		   70/79.9999 = 6 ///
+		   80/max = 7, gen(agegroup) 
+
+label define agegroup 	1 "18-<30" ///
+						2 "30-<40" ///
+						3 "40-<50" ///
+						4 "50-<60" ///
+						5 "60-<70" ///
+						6 "70-<80" ///
+						7 "80+"
+						
+label values agegroup agegroup
+
+* Create binary age (for age stratification)
+recode age min/65.999999999 = 0 ///
+           66/max = 1, gen(age66)
+
+* Check there are no missing ages
+assert age < .
+assert agegroup < .
+assert age66 < .
+
+* Create restricted cubic splines for age
+mkspline age = age, cubic nknots(4)
+
+
+
+
+
+/* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+
+noi di "DROP MISSING GENDER:"
+recode male .=9
+recode male .u=9
+bysort household_id: egen male_drop=max(male)
+drop if male_drop==9
+
+noi di "DROP AGE MISSING:"
+recode age .=9
+recode age .u=9
+bysort household_id: egen age_drop=max(age)
+drop if age_drop==9
+
+noi di "DROP IMD MISSING"
+recode imd .=9
+recode imd .u=9
+bysort household_id: egen imd_drop=max(imd)
+drop if imd_drop==9
+
 **************************** HOUSEHOLD VARS*******************************************
 
 *No kids/kids under 12/up to 18
 *Identify kids under 12, or kids under 18
-gen kids=1 if age<12
-recode kids .=2 if age<18 
-bysort household_id: egen min_kids=min(kids) 
+gen nokids=1 if age<12
+recode nokids .=2 if age<18 
+bysort household_id: egen min_kids=min(nokids) 
 gen kids_cat3=min_kids
 recode kids_cat3 .=0 
 lab define kids_cat3  0 "No kids" 1 "Kids under 12" 2 "Kids under 18"
 lab val kids_cat3 kids_cat3
 drop min_kids
-drop kids
 
-*Children aged under18
-gen kids=1 if age<18
-bysort household_id: egen min_kids=min(kids) 
-gen kids_cat2_0_18yrs=min_kids
-recode kids_cat2 .=0 
-lab define kids_cat2  0 "No kids under 18" 1 "Kids under 18"
-lab val kids_cat2 kids_cat2
-drop min_kids
-drop kids
 
-*Children aged 1-12
-gen kids=1 if age>=1 & age<12
-bysort household_id: egen min_kids=min(kids) 
-gen kids_cat2_1_12yrs=min_kids
-recode kids_cat2_1_12yrs .=0 
-lab define kids_cat2_1_12yrs  0 "No kids aged 1 to under 12" 1 "Kids aged 1 to under 12"
-lab val kids_cat2_1_12yrs kids_cat2_1_12yrs
-drop min_kids
-
+recode nokids 2=.
+recode nokids 1=. if age<1 
 *Number kids aged 1-12
-bysort household_id: egen number_kids=count(kids)
+bysort household_id: egen number_kids=count(nokids)
 gen gp_number_kids=number_kids
 recode gp_number_kids 4/max=4
 lab var gp_number_kids "Number kids under 12 years in hh"
-drop kids
+drop nokids
 
-/* DROP ALL KIDS, AS HH COMPOSITION VARS ARE MADE */
+*Number of additional people in household
+bysort household_id: gen additional_people=_N-1
+recode additional_people 4/max=4
+
+/* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 drop if age<18
 
-*Calculate number adults per household
-bysort household_id: gen no_adults_hh=_N
+
 
 
 /* SET FU DATES===============================================================*/ 
 * Censoring dates for each outcome (largely, last date outcome data available)
 *****NEEDS UPDATING WHEN INFO AVAILABLE*******************
-global onscoviddeathcensor   	= "22/05/2020"
-global icnarc_admissioncensor 	= "07/05/2020"
-global tpp_infec_censor			= "26/06/2020"
+global onscoviddeathcensor   	= "16/06/2020"
+global icnarc_admissioncensor 	= "16/06/2020" /*NOT USING THIS DATE*/
+global tpp_infec_censor			= "16/06/2020" /*NOT USING THIS DATE*/
 
 *Start dates
 global indexdate 			    = "01/02/2020"
+
+
+
+
 
 
 /* CONVERT STRINGS TO DATE====================================================*/
@@ -163,82 +255,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 }
 
 
-/* CREATE VARIABLES===========================================================*/
-
-/* DEMOGRAPHICS */ 
-
-* Sex
-gen male = 1 if sex == "M"
-replace male = 0 if sex == "F"
-
-* Ethnicity 
-replace ethnicity = .u if ethnicity == .
-
-label define ethnicity 	1 "White"  					///
-						2 "Mixed" 					///
-						3 "Asian or Asian British"	///
-						4 "Black"  					///
-						5 "Other"					///
-						.u "Unknown"
-
-label values ethnicity ethnicity
-
-* STP 
-rename stp stp_old
-bysort stp_old: gen stp = 1 if _n==1
-replace stp = sum(stp)
-drop stp_old
-
-/*  IMD  */
-* Group into 5 groups
-rename imd imd_o
-egen imd = cut(imd_o), group(5) icodes
-
-* add one to create groups 1 - 5 
-replace imd = imd + 1
-
-* - 1 is missing, should be excluded from population 
-replace imd = .u if imd_o == -1
-drop imd_o
-
-* Reverse the order (so high is more deprived)
-recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
-
-label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
-label values imd imd 
-
-/*  Age variables  */ 
-
-* Create categorised age 
-recode age 18/29.9999 = 1 /// 
-		   30/39.9999 = 2 /// 
-           40/49.9999 = 3 ///
-		   50/59.9999 = 4 ///
-	       60/69.9999 = 5 ///
-		   70/79.9999 = 6 ///
-		   80/max = 7, gen(agegroup) 
-
-label define agegroup 	1 "18-<30" ///
-						2 "30-<40" ///
-						3 "40-<50" ///
-						4 "50-<60" ///
-						5 "60-<70" ///
-						6 "70-<80" ///
-						7 "80+"
-						
-label values agegroup agegroup
-
-* Create binary age (for age stratification)
-recode age min/65.999999999 = 0 ///
-           66/max = 1, gen(age66)
-
-* Check there are no missing ages
-assert age < .
-assert agegroup < .
-assert age66 < .
-
-* Create restricted cubic splines for age
-mkspline age = age, cubic nknots(4)
 
 
 /*  Body Mass Index  */
@@ -337,14 +353,12 @@ label values cancer_exhaem_cat cancer
 * Immunosuppressed:
 * Permanent immunodeficiency ever, OR 
 * Temporary immunodeficiency  last year
-gen temp1  = 1 if perm_immunodef!=.
-gen temp2  = inrange(temp_immunodef, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
+gen temp1  = 1 if perm_immunodef_date!=.
+gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
 
 egen other_immuno = rowmax(temp1 temp2)
 drop temp1 temp2 
 order other_immuno, after(temp_immunodef)
-
-
 
 /*  Blood pressure   */
 
@@ -479,9 +493,12 @@ label values asthmacat asthmacat
 
 gen asthma = (asthmacat==2|asthmacat==3)
 
-
-
-
+/*  Probable shielding  */
+*need to add renal replacement therapy*
+gen shield=1 if organ_trans==1 | asthmacat==2 | asthmacat==3 | ///
+chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
+asplenia==1 | other_immuno==1
+recode shield .=0
 
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
@@ -498,9 +515,7 @@ gen tpp_infec_censor_date    	    = date("$tpp_infec_censor", 	"DMY")
  	
 * Format the dates
 format 	enter_date					///
-		onscoviddeathcensor_date	///
-		icnarc_admissioncensor_date ///
-		tpp_infec_censor_date   %td
+		onscoviddeathcensor_date   %td
 		 	
 		
 			/****   Outcome definitions   ****/
@@ -538,8 +553,6 @@ foreach var of varlist 	covid_tpp_probable ///
 
 * Recode to dates from the strings 
 foreach var of varlist 	died_date_ons 	///
-						first_tested_for_covid 	///
-						first_positive_test_date 		///
 						icu_date_admitted ///
 				{
 						
@@ -561,9 +574,10 @@ gen died_date_onsnoncovid = died_date_ons if died_ons_covid_flag_any != 1
 
 *Date Covid death in ONS or ITU admission in ICNARC
 gen date_covid_death_itu = min(died_date_onsnoncovid, icu_date_admitted)
-
 *Date probable or suspected covid in TPP
 gen date_covid_tpp_prob_or_susp = min(covid_tpp_probable, covid_tpp_suspected)
+*Date probable covid in TPP
+rename covid_tpp_probable date_covid_tpp_prob
 
 format date_covid_death_itu %td
 format date_covid_tpp_prob_or_susp %td
@@ -575,6 +589,7 @@ format died_date_onsnoncovid %td
 * Binary indicators for outcomes
 gen covid_death_itu = (date_covid_death_itu < .)
 gen covid_tpp_prob_or_susp = (date_covid_tpp_prob_or_susp < .)
+gen covid_tpp_prob = (date_covid_tpp_prob < .)
 
 
 
@@ -584,12 +599,14 @@ gen covid_tpp_prob_or_susp = (date_covid_tpp_prob_or_susp < .)
 * Survival time = last followup date (first: end study, death, or that outcome)
 *gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
 gen stime_covid_death_itu = min(onscoviddeathcensor_date, died_date_ons, date_covid_death_itu)
-gen stime_covid_tpp_prob_or_susp = min(tpp_infec_censor_date, 	died_date_ons, date_covid_tpp_prob_or_susp)
+gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp)
+gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob)
 
 
 * If outcome was after censoring occurred, set to zero
 replace covid_death_itu 	= 0 if (date_covid_death_itu	> onscoviddeathcensor_date) 
-replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > tpp_infec_censor_date)
+replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
+replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
 
 * Format date variables
 format  stime* %td 
@@ -600,8 +617,6 @@ format  stime* %td
 
 *HH variable
 label var kids_cat3 "Presence of children or young people in the household"
-label var kids_cat2_0_18yrs "Presence of under 18s in the household"
-label var  kids_cat2_1_12yrs "Presence of children aged 1-<12 years in the household"
 label var  number_kids "Number of children aged 1-<12 years in household"
 label var  household_size "Number people in household"
 label var  household_id "Household ID"
@@ -623,10 +638,11 @@ label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
 label var ethnicity					"Ethnicity"
 label var stp 						"Sustainability and Transformation Partnership"
-lab var no_adults_hh				"Number adults in household"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
+lab var additional_people			"Number of additional people in household"
+
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
@@ -665,6 +681,7 @@ label var asplenia_date  						"Asplenia date"
 lab var  bphigh "non-missing indicator of known high blood pressure"
 lab var bpcat "Blood pressure four levels, non-missing"
 lab var htdiag_or_highbp "High blood pressure or hypertension diagnosis"
+lab var shield "Probable shielding"
 
 * Outcomes and follow-up
 label var enter_date					"Date of study entry"
@@ -674,20 +691,22 @@ label var tpp_infec_censor_date 		"Date of admin censoring for covid TPP cases"
 
 label var covid_death_itu				"Failure/censoring indicator for outcome: covid death/ITU adm."
 label var covid_tpp_prob_or_susp		"Failure/censoring indicator for outcome: covid prob/susp. case"
-
+label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid prob case"
 label var date_covid_death_itu 			"Date of ONS COVID Death or ICNARC ITU admission"
 label var date_covid_tpp_prob_or_susp	"Date of covid TPP case (probable or suspected)"
-
+label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
 label var first_tested_for_covid 		"Date of first COVID test in SGSS"
 label var first_positive_test_date		"Date of first positive COVID test in SGSS"
 
 * Survival times
 label var  stime_covid_death_itu 			"Survival time (date); outcome covid death/ITU adm."
 label var  stime_covid_tpp_prob_or_susp		"Survival tme (date); outcome "
+label var  stime_covid_tpp_prob				"Survival tme (date); outcome "
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
-
+label var  has_3_m_follow_up			"Has 3 months follow-up"
+label var  has_12_m_follow_up			"Has 12 months follow-up"
 
  
 
@@ -705,17 +724,13 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-noi di "DROP MISSING GENDER:"
-drop if inlist(sex,"I", "U")
+
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
-noi di "DROP AGE MISSING:"
-drop if age == . 
-
-noi di "DROP IMD MISSING"
-drop if imd == .u
+noi di "DROP THOSE WITHOUT 3 MO FUP"
+drop if has_3_m_follow_up == .
 
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
@@ -748,7 +763,15 @@ stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 	
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", replace
+
+
+
+use $tempdir\analysis_dataset, clear
+* Save a version set on ONS covid death outcome
+stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 	
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace
 	
 	
 * Close log file 
