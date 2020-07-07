@@ -34,16 +34,16 @@ local endwith "_tab"
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
-		if "`modeltype'"=="minadj" {
+		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
 			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_CCeth_bmi_smok
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_CCeth_bmi_smoke  
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -86,7 +86,7 @@ end
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 
 cap file close tablecontents
-file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
+file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_SENSE_CCETH_BMI_SMOK.txt, t w replace 
 
 tempfile HRestimates
 cap postutil clear
@@ -97,11 +97,6 @@ postfile HRestimates str10 outcome str27 variable level hr lci uci pval using `H
 refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
 file write tablecontents _n
-
-*Number kids
-refline
-outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
-file write tablecontents _n 
 
 
 file close tablecontents

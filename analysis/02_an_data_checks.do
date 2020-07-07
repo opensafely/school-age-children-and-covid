@@ -9,7 +9,7 @@ DESCRIPTION OF FILE:	Run sanity checks on all variables
 							- Cross-check logical relationships 
 							- Explore expected relationships 
 							- Check stsettings 
-DATASETS USED:			$tempdir\analysis_dataset.dta
+DATASETS USED:			$tempdir\`analysis_dataset'.dta
 DATASETS CREATED: 		None
 OTHER OUTPUT: 			Log file: $logdir\02_an_data_checks
 							

@@ -25,7 +25,7 @@
 
 * Open a log file
 capture log close
-log using "output/03_an_descriptive_tables", text replace
+log using "$logdir\03_an_descriptive_tables", replace t
 
 use $tempdir\analysis_dataset, clear
 

@@ -38,7 +38,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmica
 
 * Open a log file
 capture log close
-log using "./output/an_multivariable_cox_models_`outcome'", text replace
+log using "$logdir\an_multivariable_cox_models_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
@@ -101,6 +101,22 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEM
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
  
+}
+
+
+*SENSITIVITY ANALYSIS: 12 months FUP
+drop if has_12_m_follow_up == .
+foreach exposure_type in kids_cat3   {
+
+*Age spline model (not adj ethnicity)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_12mo, replace
+*estat concordance /*c-statistic*/
+}
+else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+
 }
 
 log close
