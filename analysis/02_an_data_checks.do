@@ -106,7 +106,7 @@ foreach var of varlist  chronic_respiratory_disease 	///
 foreach comorb in $varlist { 
 
 	local comorb: subinstr local comorb "i." ""
-	tab `comorb', m
+	safetab `comorb', m
 	
 }
 
@@ -117,53 +117,53 @@ summ  date_covid_death_itu  date_covid_tpp_prob, format
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-tab kids_cat3 additional
-tab number_kids add
-tab add kids_cat3
+safetab kids_cat3 additional
+safetab number_kids add
+safetab add kids_cat3
 
 * BMI
 bysort bmicat: summ bmi
-tab bmicat obese4cat, m
+safetab bmicat obese4cat, m
 
 * Age
 bysort agegroup: summ age
-tab agegroup age66, m
+safetab agegroup age66, m
 
 * Smoking
-tab smoke smoke_nomiss, m
+safetab smoke smoke_nomiss, m
 
 * Diabetes
-*tab diabcat diabetes, m
+*safetab diabcat diabetes, m
 
 * CKD
-tab reduced egfr_cat, m
+safetab reduced egfr_cat, m
 
 
 /* EXPECTED RELATIONSHIPS=====================================================*/ 
 
 /*  Relationships between demographic/lifestyle variables  */
-tab agegroup bmicat, 	row 
-tab agegroup smoke, 	row  
-tab agegroup ethnicity, row 
-tab agegroup imd, 		row 
-tab agegroup shield,    row 
+safetab agegroup bmicat, 	row 
+safetab agegroup smoke, 	row  
+safetab agegroup ethnicity, row 
+safetab agegroup imd, 		row 
+safetab agegroup shield,    row 
 
-tab bmicat smoke, 		 row   
-tab bmicat ethnicity, 	 row 
-tab bmicat imd, 	 	 row 
-tab bmicat hypertension, row 
-tab bmicat shield,    row 
+safetab bmicat smoke, 		 row   
+safetab bmicat ethnicity, 	 row 
+safetab bmicat imd, 	 	 row 
+safetab bmicat hypertension, row 
+safetab bmicat shield,    row 
 
                             
-tab smoke ethnicity, 	row 
-tab smoke imd, 			row 
-tab smoke hypertension, row 
-tab smoke shield,    row 
+safetab smoke ethnicity, 	row 
+safetab smoke imd, 			row 
+safetab smoke hypertension, row 
+safetab smoke shield,    row 
                       
-tab ethnicity imd, 		row 
-tab shield imd, 		row 
+safetab ethnicity imd, 		row 
+safetab shield imd, 		row 
 
-tab shield ethnicity, 		row 
+safetab shield ethnicity, 		row 
 
 
 
@@ -186,7 +186,7 @@ foreach var of varlist  asthma						///
 										{
 
 		
- 	tab agegroup `var', row 
+ 	safetab agegroup `var', row 
  }
 
 
@@ -208,7 +208,7 @@ foreach var of varlist asthma						///
 					hypertension			 ///	
 										{
 						
- 	tab male `var', row 
+ 	safetab male `var', row 
 }
 
  * Relationships with smoking
@@ -229,14 +229,14 @@ foreach var of varlist  asthma						///
 					hypertension			 	///
 					{
 	
- 	tab smoke `var', row 
+ 	safetab smoke `var', row 
 }
 
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
-tab covid_death_itu covid_tpp_prob_or_susp  , row col
-tab covid_death_itu covid_tpp_prob  , row col
+safetab covid_death_itu covid_tpp_prob_or_susp  , row col
+safetab covid_death_itu covid_tpp_prob  , row col
 
 
 * Close log file 

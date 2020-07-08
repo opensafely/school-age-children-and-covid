@@ -26,10 +26,10 @@ log using "$logdir\EXPLORE_covid_death_ITU_sex_age", replace t
 
 use $tempdir\analysis_dataset, clear
 
-tab covid_death_itu
+safetab covid_death_itu
 
-tab covid_death_itu agegroup, col chi
+safetab covid_death_itu agegroup, col chi
 
-tab covid_death_itu male, col chi
+safetab covid_death_itu male, col chi
 
 log close
