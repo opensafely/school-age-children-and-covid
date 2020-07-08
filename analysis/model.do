@@ -27,8 +27,10 @@ do "01_cr_analysis_dataset.do"
 /*  Checks  */
 do "02_an_data_checks.do"
 
+/*  TABS  */
+do "EXPLORE_covid_death_ITU_sex_age.do"
 
-*********************************************************************
+/*********************************************************************
 *IF PARALLEL WORKING - FOLLOWING CAN BE RUN IN ANY ORDER/IN PARALLEL*
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
@@ -51,18 +53,16 @@ do "05_an_descriptive_plots.do"
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 
 foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
-
 	do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
-
+	do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
+		kids_cat3 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
 	do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 	do "07b_an_multivariable_cox_models_FULL.do" `outcome'
-
 }	
-	
 	
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
@@ -77,11 +77,29 @@ foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	
 *INTERACTIONS
 *Create models
-foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
+foreach outcome of any covid_tpp_prob covid_death_itu {
 do "10_an_interaction_cox_models" `outcome'	
 }
 
 *Tabulate results
-foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
+foreach outcome of any covid_tpp_prob covid_death_itu {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
+
+
+***SENSE ANALYSIS
+*CC ETH
+foreach outcome of any covid_tpp_prob covid_death_itu {
+	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
+	}
+
+*CC ETH BMI SMOK
+foreach outcome of any covid_tpp_prob covid_death_itu {
+	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
+	}
+
+*DROP IF <12M FUP
+*CC ETH BMI SMOK
+foreach outcome of any covid_tpp_prob covid_death_itu {
+	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
+	}

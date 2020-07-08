@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		03_an_descriptive_tables.do
+*	Do-file:		03_an_descriptive_safetables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -12,11 +12,11 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file: output/03_an_descriptive_tables.log
+*	Other output:	Log file: output/03_an_descriptive_safetables.log
 *
 ********************************************************************************
 *
-*	Purpose:		This do-file runs some basic tabulations on the analysis
+*	Purpose:		This do-file runs some basic safetabulations on the analysis
 *					dataset.
 *  
 ********************************************************************************
@@ -25,7 +25,7 @@
 
 * Open a log file
 capture log close
-log using "output/03_an_descriptive_tables", text replace
+log using "$logdir\03_an_descriptive_safetables", replace t
 
 use $tempdir\analysis_dataset, clear
 
@@ -37,17 +37,17 @@ use $tempdir\analysis_dataset, clear
 
 * Demographics
 summ age
-tab agegroup
-tab age66
-tab male
-tab bmicat
-tab bmicat, m
-tab obese4cat
-tab smoke
-tab smoke, m
-tab bpcat
-tab bpcat, m
-tab htdiag_or_highbp
+safetab agegroup
+safetab age66
+safetab male
+safetab bmicat
+safetab bmicat, m
+safetab obese4cat
+safetab smoke
+safetab smoke, m
+safetab bpcat
+safetab bpcat, m
+safetab htdiag_or_highbp
 ta shield
 
 * Comorbidities
@@ -69,20 +69,20 @@ foreach var in chronic_respiratory_disease ///
 						ra_sle_psoriasis  ///
 						{
 						
-tab `var'
+safetab `var'
 }
 
-tab imd 
-tab imd, m
-tab ethnicity
-tab ethnicity, m
-tab stp
+safetab imd 
+safetab imd, m
+safetab ethnicity
+safetab ethnicity, m
+safetab stp
 
 
 * Outcomes
-tab covid_death_itu
-tab covid_tpp_prob_or_susp
-tab covid_tpp_prob
+safetab covid_death_itu
+safetab covid_tpp_prob_or_susp
+safetab covid_tpp_prob
 
 
 
@@ -98,12 +98,12 @@ foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp 
 *** Repeat for each outcome
 
 	* Demographics
-	tab agegroup 							`outvar', col
-	tab male 								`outvar', col
-	tab bmicat 								`outvar', col m 
-	tab smoke 								`outvar', col m
-	tab obese4cat							`outvar', col m 
-	tab shield   							`outvar', col m 
+	safetab agegroup 							`outvar', col
+	safetab male 								`outvar', col
+	safetab bmicat 								`outvar', col m 
+	safetab smoke 								`outvar', col m
+	safetab obese4cat							`outvar', col m 
+	safetab shield   							`outvar', col m 
 
 	* Comorbidities
 	foreach var in chronic_respiratory_disease ///
@@ -123,13 +123,13 @@ foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp 
 						hypertension  ///
 						ra_sle_psoriasis  ///
 						{
-	tab `var' 		`outvar', col
+	safetab `var' 		`outvar', col
 }
 	
-	tab imd  								`outvar', col m
-	tab ethnicity 							`outvar', col m
-	*tab urban 								`outvar', col
-	tab stp 								`outvar', col
+	safetab imd  								`outvar', col m
+	safetab ethnicity 							`outvar', col m
+	*safetab urban 								`outvar', col
+	safetab stp 								`outvar', col
 }
 
 

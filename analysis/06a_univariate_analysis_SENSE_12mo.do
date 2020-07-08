@@ -38,26 +38,24 @@ log using "$logdir\an_univariable_cox_models_`outcome'", replace t
 * Open dataset and fit specified model(s)
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
-
+*SENSITIVITY ANALYSIS: 12 months FUP
+drop if has_12_m_follow_up == .
 foreach var of any `varlist' {
 
-	*Special cases
-	if "`var'"=="agesplsex" local model "age1 age2 age3 i.male"
-	else if "`var'"=="agegroupsex" local model "ib3.agegroup i.male"
-	else if "`var'"=="bmicat" local model "age1 age2 age3 i.male ib2.bmicat"
 	*General form of model
 	else local model "age1 age2 age3 i.male i.`var'"
 
 	*Fit and save model
-	cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
+	cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'_12mo.ster
 	capture stcox `model' , strata(stp) vce(cluster household_size)
 	if _rc==0 {
 		estimates
-		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace
+		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'_12mo.ster, replace
 		}
 	else di "WARNING - `var' vs `outcome' MODEL DID NOT SUCCESSFULLY FIT"
 
 }
+
 
 * Close log file
 log close

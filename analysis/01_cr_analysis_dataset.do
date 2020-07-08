@@ -745,7 +745,7 @@ drop if date_covid_death_itu <= date("$indexdate", "DMY")
 *  Save data  *
 ***************
 sort patient_id
-save $tempdir\analysis_dataset, replace	
+save $tempdir\analysis_dataset, replace
 
 
 use $tempdir\analysis_dataset, clear
@@ -770,7 +770,8 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on ONS covid death outcome
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-	
+
+
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace
 	
 	
