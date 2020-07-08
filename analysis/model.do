@@ -27,8 +27,10 @@ do "01_cr_analysis_dataset.do"
 /*  Checks  */
 do "02_an_data_checks.do"
 
+/*  TABS  */
+do "EXPLORE_covid_death_ITU_sex_age.do"
 
-*********************************************************************
+/*********************************************************************
 *IF PARALLEL WORKING - FOLLOWING CAN BE RUN IN ANY ORDER/IN PARALLEL*
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
