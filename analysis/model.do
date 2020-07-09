@@ -76,9 +76,12 @@ foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 ************************************************************
 foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-	do "09_an_agesplinevisualisation.do" `outcome'
 }	
-	
+
+foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
+	do "09_an_agesplinevisualisation.do" `outcome'
+}
+
 *INTERACTIONS
 *Create models
 foreach outcome of any covid_tpp_prob covid_death_itu {
