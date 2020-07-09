@@ -75,7 +75,7 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.additional_people				///
+			i.tot_people_hh				///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
@@ -124,7 +124,18 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
-}
+*Complete case ethnicity model
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCnoeth_bmi_smoke, replace
+*estat concordance /*c-statistic*/
+ }
+ else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ }
+
+
+
 
 *SENSITIVITY ANALYSIS: 12 months FUP
 drop if has_12_m_follow_up == .
