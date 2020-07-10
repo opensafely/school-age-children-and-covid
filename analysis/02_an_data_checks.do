@@ -117,9 +117,9 @@ summ  date_covid_death_itu  date_covid_tpp_prob, format
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-safetab kids_cat3 additional
-safetab number_kids add
-safetab add kids_cat3
+safetab kids_cat3 tot_people_hh
+safetab number_kids tot_people_hh
+safetab household_size tot_people_hh
 
 * BMI
 bysort bmicat: summ bmi

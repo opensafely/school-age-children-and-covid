@@ -24,20 +24,6 @@ local endwith "_tab"
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
-	
-	*put total N, PYFU and Rate in table
-	cou if `variable' == `i' & `outcome' == 1
-	local event = r(N)
-    bysort `variable': egen total_follow_up = total(_t)
-	su total_follow_up if `variable' == `i'
-	local person_week = r(mean)/7
-	local rate = 1000*(`event'/`person_week')
-	
-	file write tablecontents (`event') _tab %10.0f (`person_week') _tab %3.2f (`rate') _tab
-	drop total_follow_up
-	
-	
-	*models
 	foreach modeltype of any minadj demogadj fulladj {
 	
 		local noestimatesflag 0 /*reset*/
@@ -48,16 +34,16 @@ local endwith "_tab"
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
-		if "`modeltype'"=="minadj" {
+		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
 			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_CCnoeth_bmi_smok
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_CCnoeth_bmi_smoke  
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -79,8 +65,8 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				post HRestimates ("`outcome'") ("`variable'") (`i') (`event') (`person_week') (`rate') (`hr') (`lb') (`ub') (r(p))
-				*drop `variable'
+				post HRestimates ("`outcome'") ("`variable'") (`i') (`hr') (`lb') (`ub') (r(p))
+				drop `variable'
 				}
 		}	
 		} /*min adj, full adj*/
@@ -100,11 +86,11 @@ end
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 
 cap file close tablecontents
-file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
+file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_CCnoeth_bmi_smok.txt, t w replace 
 
 tempfile HRestimates
 cap postutil clear
-postfile HRestimates str10 outcome str27 variable level N PYFU rate hr lci uci pval using `HRestimates'
+postfile HRestimates str10 outcome str27 variable level hr lci uci pval using `HRestimates'
 
 
 *Primary exposure

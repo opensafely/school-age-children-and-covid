@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		03_an_descriptive_safetables.do
+*	Do-file:		04a_an_descriptive_safetables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -25,7 +25,7 @@
 
 * Open a log file
 capture log close
-log using "$logdir\03_an_descriptive_safetables", replace t
+log using "$logdir\04a_an_descriptive_safetables", replace t
 
 use $tempdir\analysis_dataset, clear
 
@@ -90,20 +90,18 @@ safetab covid_tpp_prob
 
 
 **********************************
-*  Number (%) with each outcome  *
+*  Number (%) with each exposure  *
 **********************************
-
-foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 
 *** Repeat for each outcome
 
 	* Demographics
-	safetab agegroup 							`outvar', col
-	safetab male 								`outvar', col
-	safetab bmicat 								`outvar', col m 
-	safetab smoke 								`outvar', col m
-	safetab obese4cat							`outvar', col m 
-	safetab shield   							`outvar', col m 
+	safetab agegroup 							kids_cat3, col
+	safetab male 								kids_cat3, col
+	safetab bmicat 								kids_cat3, col m 
+	safetab smoke 								kids_cat3, col m
+	safetab obese4cat							kids_cat3, col m 
+	safetab shield   							kids_cat3, col m 
 
 	* Comorbidities
 	foreach var in chronic_respiratory_disease ///
@@ -123,15 +121,13 @@ foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp 
 						hypertension  ///
 						ra_sle_psoriasis  ///
 						{
-	safetab `var' 		`outvar', col
+	safetab `var' 		kids_cat3, col
 }
 	
-	safetab imd  								`outvar', col m
-	safetab ethnicity 							`outvar', col m
-	*safetab urban 								`outvar', col
-	safetab stp 								`outvar', col
-}
-
+	safetab imd  								kids_cat3, col m
+	safetab ethnicity 							kids_cat3, col m
+	*safetab urban 								kids_cat3, col
+	safetab stp 								kids_cat3, col
 
 ********************************************
 *  Cumulative incidence of ONS COVID DEATH /ICNARC ITU ADM.*

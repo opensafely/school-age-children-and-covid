@@ -30,14 +30,18 @@ do "02_an_data_checks.do"
 /*  TABS  */
 do "EXPLORE_covid_death_ITU_sex_age.do"
 
-/*********************************************************************
+*********************************************************************
 *IF PARALLEL WORKING - FOLLOWING CAN BE RUN IN ANY ORDER/IN PARALLEL*
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
-do "03_an_descriptive_tables.do"
 
+do "03a_an_descriptive_tables.do"
+do "03b_an_descriptive_table_1.do" 
+
+
+do "04a_an_descriptive_tables.do"
 foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
-	do "04_an_descriptive_table_1.do" `outcome'
+do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
 do "05_an_descriptive_plots.do"
@@ -63,7 +67,7 @@ foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 	do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 	do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
-	
+
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
@@ -72,9 +76,12 @@ foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 ************************************************************
 foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-	do "09_an_agesplinevisualisation.do" `outcome'
 }	
-	
+
+foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
+	do "09_an_agesplinevisualisation.do" `outcome'
+}
+
 *INTERACTIONS
 *Create models
 foreach outcome of any covid_tpp_prob covid_death_itu {
@@ -99,7 +106,11 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 	}
 
 *DROP IF <12M FUP
-*CC ETH BMI SMOK
 foreach outcome of any covid_tpp_prob covid_death_itu {
 	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
+	}
+
+*CC BMI SMOK (not includ. ethnicity)
+foreach outcome of any covid_tpp_prob covid_death_itu {
+	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
 	}

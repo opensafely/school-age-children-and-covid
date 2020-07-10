@@ -63,7 +63,7 @@ timer on 1
 			`smoking'					///
 			`ethnicity'						///
 			i.imd 							///
-			i.additional_people				///
+			i.tot_people_hh				///
 			`if'							///
 			, strata(stp) vce(cluster household_size)
 timer off 1
@@ -100,6 +100,15 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEM
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ 
+*Complete case ethnicity, BMI, smoking model
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_CCnoeth_bmi_smok, replace
+*estat concordance /*c-statistic*/
+ }
+ else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"  
  
 }
 

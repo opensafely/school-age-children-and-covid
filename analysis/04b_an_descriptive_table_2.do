@@ -3,7 +3,7 @@
 *04_an_descriptive_table_1
 *************************************************************************
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
-* shell "Table 1" (main cohort descriptives) for the Risk Factors paper
+* shell "Table 2" (main cohort descriptives by outcome status). 
 *
 *Requires: final analysis dataset (cr_analysis_dataset.dta)
 *
@@ -55,7 +55,7 @@ end
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using ./output/04_an_descriptive_table_1_`outcome'.txt, write text replace
+file open tablecontent using ./output/04b_an_descriptive_table_2_`outcome'.txt, write text replace
 
 
 use $tempdir\analysis_dataset, clear
@@ -83,7 +83,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) start(1) end(5) outcome(`outcome')
 file write tablecontent _n 
 
-tabulatevariable, variable(additional_people) start(1) end(3) outcome(`outcome')
+tabulatevariable, variable(tot_people_hh) start(1) end(3) outcome(`outcome')
 file write tablecontent _n 
 
 tabulatevariable, variable(bpcat) start(1) end(4) missing outcome(`outcome')

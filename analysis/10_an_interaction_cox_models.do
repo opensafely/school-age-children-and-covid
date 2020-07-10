@@ -81,7 +81,7 @@ timer on 1
 			i.reduced_kidney_function_cat	///
 			i.organ_trans			    	///
 			i.asplenia 						///
-			i.additional_people				///
+			i.tot_people_hh				///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno			///
 			`interaction'							///
