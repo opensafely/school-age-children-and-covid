@@ -538,7 +538,7 @@ format 	enter_date					///
 
 foreach var of varlist 	covid_tpp_probable ///
 						covid_tpp_suspected ///
-						{
+						worms {
 							
 		capture confirm string variable `var'
 		if _rc!=0 {
@@ -620,6 +620,9 @@ replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
 * Format date variables
 format  stime* %td 
 
+
+****************CONTROL OUTCOME**************************************************
+gen worms = (worms_date < .)
 
 /* LABEL VARIABLES============================================================*/
 *  Label variables you are intending to keep, drop the rest 
@@ -718,7 +721,9 @@ label var  has_3_m_follow_up			"Has 3 months follow-up"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
 
  
-
+*Control outcome
+label var   worms				"Failure/censoring indicator for outcome: worms"
+label var   worms_date				"Date of worms"
 
 
 

@@ -23,6 +23,12 @@ covid_identification_in_primary_care_suspected_case_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
+worms_codes = codelist_from_csv(
+    "codelists/opensafely-worms.csv",
+    system="ctv3",
+    column="CTV3ID",
+)
+
 # DEMOGRAPHIC CODELIST
 ethnicity_codes = codelist_from_csv(
     "codelists/opensafely-ethnicity.csv",

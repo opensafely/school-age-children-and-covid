@@ -90,6 +90,16 @@ study = StudyDefinition(
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ), 
 
+   worms=patients.with_these_clinical_events(
+        worms_codes,
+        between=["2019-02-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
+        return_last_date_in_period=True,
+        include_month=True,
+        return_expectations={
+            "date": {"earliest": "2019-03-01", "latest": "2020-01-31"}
+        },
+    ),
+
     ## DEMOGRAPHIC COVARIATES
     # AGE
     age=patients.age_as_of(
@@ -334,7 +344,7 @@ study = StudyDefinition(
     temporary_immunodeficiency=patients.with_these_clinical_events(
         combine_codelists(temp_immune_codes,
                         aplastic_codes),
-        between=["2019-03-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
+        between=["2019-02-01", "2020-01-31"],  ## THIS IS RESTRICTED TO LAST YEAR
         return_last_date_in_period=True,
         include_month=True,
         return_expectations={
