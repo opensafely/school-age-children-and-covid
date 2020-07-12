@@ -3,7 +3,7 @@
 *Import dataset into STATA
 import delimited `c(pwd)'/output/input.csv, clear
 
-cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
+cd  `c(pwd)'/ /*sets working directory to workspace folder*/
 set more off 
 
 ***********************HOUSE-KEEPING*******************************************
