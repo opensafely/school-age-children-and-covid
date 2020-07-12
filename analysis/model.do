@@ -22,7 +22,7 @@ global tempdir    "tempdata"
 
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
-
+/*
 /*  Checks  */
 do "02_an_data_checks.do"
 
@@ -115,18 +115,26 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 	
 	
 	
-*********************************************************************
+*********************************************************************/
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *       															*
 *********************************************************************	
-	
+
+clear all
+macro drop all
+
 *Import dataset into STATA
-cd ./workspace/
 import delimited `c(pwd)'/output/input_worms.csv, clear
 
-cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
+cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
 set more off 
 
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
+	
 /*  Pre-analysis data manipulation  */
 do "WORMS_01_cr_analysis_dataset.do"
 
