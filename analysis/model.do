@@ -124,7 +124,7 @@ clear all
 macro drop all
 
 *Import dataset into STATA
-import delimited `c(pwd)'/output/input_worms.csv, clear
+import delimited ./output/input_worms.csv, clear
 
 cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
 set more off 
