@@ -122,10 +122,16 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 
 *clear all
 *macro drop all
-cd  $outdir 
+cd
+cd  ./output/
+cd  `c(pwd)'
+cd  /output/
+cd  `c(pwd)'/output/
+cd  `c(pwd)'/analysis/
+
 
 *Import dataset into STATA
-import delimited input_worms.csv, clear
+import delimited ./output/input_worms.csv, clear
 
 cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
 set more off 
