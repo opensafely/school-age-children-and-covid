@@ -8,23 +8,23 @@ set more off
 
 ***********************HOUSE-KEEPING*******************************************
 * Create directories required 
-capture mkdir analysis\output
-capture mkdir analysis\log
-capture mkdir analysis\tempdata
+capture mkdir `c(pwd)'\analysis\output
+capture mkdir `c(pwd)'\analysis\log
+capture mkdir `c(pwd)'\analysis\tempdata
 
 
 * Set globals that will print in programs and direct output
-global outdir  	  ".\analysis\output" 
-global logdir     ".\analysis\log"
-global tempdir    ".\analysis\tempdata"
+global outdir  	  "`c(pwd)'\analysis\output" 
+global logdir     "`c(pwd)'\analysis\log"
+global tempdir    "`c(pwd)'\analysis\tempdata"
 
 ********************************************************************************
 
 /*  Pre-analysis data manipulation  */
-do ".\analysis\01_cr_analysis_dataset.do"
+do "`c(pwd)'\analysis\01_cr_analysis_dataset.do"
 
 /*  Checks  */
-do ".\analysis\02_an_data_checks.do"
+do "`c(pwd)'\analysis\02_an_data_checks.do"
 
 
 *********************************************************************
