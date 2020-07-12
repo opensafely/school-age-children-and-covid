@@ -120,19 +120,20 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 *       															*
 *********************************************************************	
 
-clear all
-macro drop all
+*clear all
+*macro drop all
+cd  $outdir 
 
 *Import dataset into STATA
-import delimited ./output/input_worms.csv, clear
+import delimited input_worms.csv, clear
 
 cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
 set more off 
 
-* Set globals that will print in programs and direct output
+/* Set globals that will print in programs and direct output
 global outdir  	  "output" 
 global logdir     "log"
-global tempdir    "tempdata"
+global tempdir    "tempdata"*/
 
 	
 /*  Pre-analysis data manipulation  */
