@@ -121,6 +121,7 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 *********************************************************************	
 	
 *Import dataset into STATA
+cd `c(pwd)'
 import delimited `c(pwd)'/output/input_worms.csv, clear
 
 cd  `c(pwd)'/analysis /*sets working directory to analysis folder*/
