@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		04a_an_descriptive_safetables.do
+*	Do-file:		04a_an_descriptive_tables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -12,7 +12,7 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file: output/03_an_descriptive_safetables.log
+*	Other output:	Log file: output/04a_an_descriptive_tables.log
 *
 ********************************************************************************
 *
@@ -25,7 +25,7 @@
 
 * Open a log file
 capture log close
-log using "$logdir\04a_an_descriptive_safetables", replace t
+log using "$logdir\04a_an_descriptive_tables", replace t
 
 use $tempdir\analysis_dataset, clear
 

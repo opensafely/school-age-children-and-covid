@@ -12,7 +12,6 @@
 *
 *	Other output:	Log file: an_univariable_cox_models.log 
 *
-*	Comments: 		I had to create a folder called models within the output folder.
 ********************************************************************************
 *
 *	Purpose:		Fit age/sex adjusted Cox models, stratified by STP and 

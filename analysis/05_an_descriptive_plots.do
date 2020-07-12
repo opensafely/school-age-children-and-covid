@@ -2,7 +2,7 @@
   
 ********************************************************************************
 *
-*	Do-file:		an_descriptive_plots.do
+*	Do-file:		05_an_descriptive_plots.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -15,7 +15,8 @@
 *	Other output:	Kaplan-Meier plots (intended for publication)
 *							output/km_age_sex_covid_death_itu.svg 	
 *							output/km_age_sex_covid_tpp_prob_or_susp
-*
+*							output/km_age_sex_covid_tpp_prob
+
 ********************************************************************************
 *
 *	Purpose:		This do-file creates Kaplan-Meier plots by age and sex. 

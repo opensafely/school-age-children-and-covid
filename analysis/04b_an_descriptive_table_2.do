@@ -1,11 +1,13 @@
+*************************************************************************
+
 *Exposure children and COVID risk
   
-*04_an_descriptive_table_1
-*************************************************************************
+*04b_an_descriptive_table_2
+
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
 * shell "Table 2" (main cohort descriptives by outcome status). 
 *
-*Requires: final analysis dataset (cr_analysis_dataset.dta)
+*Requires: final analysis dataset (analysis_dataset.dta)
 *
 *Coding: HFORBES, based on Krishnan Bhaskaran
 *

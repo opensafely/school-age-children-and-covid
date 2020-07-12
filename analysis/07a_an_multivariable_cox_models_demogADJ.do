@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07_an_multivariable_cox_models.do
+*	Do-file:		07a_an_multivariable_cox_models.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -14,7 +14,7 @@
 *
 ********************************************************************************
 *
-*	Purpose:		This do-file performs multivariable (fully adjusted) 
+*	Purpose:		This do-file performs multivariable (partially adjusted) 
 *					Cox models. 
 *  
 ********************************************************************************
@@ -38,7 +38,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmica
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariable_cox_models_`outcome'", text replace
+log using "$logdir\an_multivariableDEMOG_cox_models_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
@@ -99,7 +99,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_CCeth_bmi_smok, replace
 *estat concordance /*c-statistic*/
  }
- else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ else di "WARNING CC ETHN BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
  
 *Complete case ethnicity, BMI, smoking model
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
@@ -108,7 +108,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_CCnoeth_bmi_smok, replace
 *estat concordance /*c-statistic*/
  }
- else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"  
+ else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
  
 }
 
@@ -124,7 +124,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_12mo, replace
 *estat concordance /*c-statistic*/
 }
-else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 }
 

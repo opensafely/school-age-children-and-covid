@@ -1,7 +1,7 @@
 *************************************************************************
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
-* shell table containing minimally and fully-adjusted HRs for risk factors
-* of interest, across 2 outcomes 
+* shell table containing HRs for interaction analyses.  Also output forest 
+*plot of results as SVG file. 
 *
 *Requires: final analysis dataset (analysis_dataset.dta)
 *
@@ -21,12 +21,12 @@ syntax, variable(string) min(real) max(real) outcome(string)
 forvalues i=`min'/`max'{
 foreach int_type in age66 male cat_time shield {
 
-forvalues age=0/1 {
+forvalues int_level=0/1 {
 
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents_int ("`variable'") _tab ("`i'") _tab _tab ("`age'")
+	file write tablecontents_int ("`variable'") _tab ("`i'") _tab _tab ("`int_level'")
 	
 	foreach modeltype of any fulladj {
 	
@@ -46,12 +46,12 @@ local endwith "_tab"
 		*2) WRITE THE HRs TO THE OUTPUT FILE
 		
 		if `noestimatesflag'==0{
-			if `age'==0 {
+			if `int_level'==0 {
 			cap lincom `i'.`variable', eform
 			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
-			if `age'==1 {
+			if `int_level'==1 {
 			cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
 			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
@@ -67,12 +67,12 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				post HRestimates_int ("`outcome'") ("`variable'") ("`int_type'") (`i') (`age') (`hr') (`lb') (`ub') (r(p))
+				post HRestimates_int ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
 				drop `variable'
 				}
 		}	
 		} 
-		} /*age*/
+		} /*int_level*/
 		} /*full adj*/
 		
 } /*variable levels*/
@@ -92,21 +92,14 @@ end
 cap file close tablecontents_int
 file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
 
-
 tempfile HRestimates_int
 cap postutil clear
-postfile HRestimates_int str10 outcome str27 variable str27 int_type level age hr lci uci pval using `HRestimates_int'
+postfile HRestimates_int str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
 
 *Primary exposure
 refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
 file write tablecontents_int _n
-
-*Number kids
-refline
-outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
-file write tablecontents_int _n 
-
 
 file close tablecontents_int
 
@@ -150,7 +143,7 @@ expand 2 if level == -1, gen(expanded)
 replace level = -99 if expanded==1
 drop expanded
 
-expand 2 if level == 1 & int_type=="age66" & age==0, gen(expanded)
+expand 2 if level == 1 & int_type=="age66" & int_level==0, gen(expanded)
 replace level = 1.5 if expanded==1
 drop expanded
 drop if level==1.5 & int_type=="age66" & hr!=1
@@ -158,12 +151,12 @@ drop if level==1.5 & int_type=="age66" & hr!=1
 for var hr lci uci pval : replace X=. if level<0
 
 
-sort varorder  level int_type age
+sort varorder  level int_type int_level
 list in 1/10
 
 gen varx = 0.07
-gen levelx = 0.071
-gen intx=0.073
+gen levelx = 0.073
+gen intx=0.08
 gen lowerlimit = 0.15
 
 gen Name = variable if (level==-99)
@@ -178,19 +171,23 @@ replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids
 
 *Inte labels
 gen intNAME=""
-replace intNAME="Age under 66 years" if int_type=="age66" & age==0
-replace intNAME="Age 66 years and above" if int_type=="age66" & age==1
-replace intNAME="Female" if int_type=="male" & age==0
-replace intNAME="Male" if int_type=="male" & age==1
-replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & age==0
-replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & age==1
-replace intNAME="Unlikely to be shielding" if int_type=="shield" & age==0
-replace intNAME="Probable shielding" if int_type=="shield" & age==1
+replace intNAME="Age under 66 years" if int_type=="age66" & int_level==0
+replace intNAME="Age 66 years and above" if int_type=="age66" & int_level==1
+replace intNAME="Female" if int_type=="male" & int_level==0
+replace intNAME="Male" if int_type=="male" & int_level==1
+replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & int_level==0
+replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & int_level==1
+replace intNAME="Unlikely to be shielding" if int_type=="shield" & int_level==0
+replace intNAME="Probable shielding" if int_type=="shield" & int_level==1
 replace intNAME="" if Name!=""
 replace intNAME="" if leveldesc!=""
 
 
 drop if hr==1 & lci==1 &leveldesc==""
+
+foreach var in hr lci uci {
+replace  `var'=. if leveldesc=="Children/young people aged 11-<18 years"
+}
 
 
 gen obsorder=_n

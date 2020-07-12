@@ -4,7 +4,7 @@ PROJECT:				Exposure children and COVID risk
 DATE: 					25th June 2020 
 AUTHOR:					Harriet Forbes adapted from A Wong, A Schultze, C Rentsch,
 						 K Baskharan, E Williamson 										
-DESCRIPTION OF FILE:	program 00, data management for project  
+DESCRIPTION OF FILE:	program 01, data management for project  
 						reformat variables 
 						categorise variables
 						label variables 

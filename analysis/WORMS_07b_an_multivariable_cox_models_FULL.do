@@ -75,7 +75,7 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.tot_people_hh				///
+			i.tot_people_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///

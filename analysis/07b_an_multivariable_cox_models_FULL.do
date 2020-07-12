@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07_an_multivariable_cox_models.do
+*	Do-file:		07b_an_multivariable_cox_models.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -38,7 +38,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariable_cox_models_`outcome'", text replace
+log using "$logdir\an_multivariableFULL_cox_models_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
@@ -75,7 +75,7 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.tot_people_hh				///
+			i.tot_people_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
@@ -123,7 +123,8 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_bmi_smoke, replace
 *estat concordance /*c-statistic*/
  }
- else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ else di "WARNING CC ETHN BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ 
 *Complete case ethnicity model
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
 if _rc==0{
@@ -131,7 +132,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCnoeth_bmi_smoke, replace
 *estat concordance /*c-statistic*/
  }
- else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
  }
 
 
@@ -148,7 +149,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_12mo, replace
 *estat concordance /*c-statistic*/
 }
-else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 }
 
