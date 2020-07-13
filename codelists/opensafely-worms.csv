@@ -1,0 +1,12 @@
+CTV3ID,CTV3PreferredTermDesc,CTV3Source
+XE0SZ,Enterobiasis,CTV3Map_Code_And_Term
+XE0SZ,Enterobiasis,CTV3Map_Code_Only
+19E9.,Worms in faeces (& [symptom]),CTV3_Children
+AC74.,(Threadworm enterobiasis) or (oxyuriasis) or (pinworm),High_Level_SNOMED
+X76fH,Worms in faeces symptom,CTV3Map_Code_And_Term
+X76fH,Worms in faeces symptom,CTV3Map_Code_Only
+XE0UK,(Threadworms &/or enterobiasis) or (pinworm),High_Level_SNOMED
+XE0rM,Worms in stool,CTV3Map_Code_And_Term
+XE0rM,Worms in stool,CTV3Map_Code_Only
+XE1Sr,Threadworm contact,CTV3Map_Code_Only
+XaBwf,Worms in the family,CTV3Map_Code_And_Term
