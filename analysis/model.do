@@ -22,7 +22,7 @@ global tempdir    "tempdata"
 
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
-/*
+
 /*  Checks  */
 do "02_an_data_checks.do"
 
@@ -115,7 +115,7 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 	
 	
 	
-*********************************************************************/
+*********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *       															*
 *********************************************************************	
