@@ -1,7 +1,7 @@
 *************************************************************************
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
-* shell table containing sensitivity analysis (complete case for BMI and smoking, 
-*and ethnicity) 
+* shell table containing minimally and fully-adjusted HRs for risk factors
+* of interest, across 2 outcomes 
 *
 *Requires: final analysis dataset (analysis_dataset.dta)
 *
@@ -24,6 +24,21 @@ local endwith "_tab"
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
+	
+    use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+	*put total N, PYFU and Rate in table
+	cou if `variable' == `i' & _d == 1
+	local event = r(N)
+    bysort `variable': egen total_follow_up = total(_t)
+	su total_follow_up if `variable' == `i'
+	local person_years = r(mean)
+	local rate = 1000*(`event'/`person_years')
+	
+	file write tablecontents (`event') _tab %10.0f (`person_years') _tab %3.2f (`rate') _tab
+	drop total_follow_up
+	
+	
+	*models
 	foreach modeltype of any minadj demogadj fulladj {
 	
 		local noestimatesflag 0 /*reset*/
@@ -34,16 +49,16 @@ local endwith "_tab"
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
-		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
+		if "`modeltype'"=="minadj" {
 			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_CCeth_bmi_smok
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_CCeth_bmi_smoke  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth  
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -65,7 +80,7 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				drop `variable'
+				*drop `variable'
 				}
 		}	
 		} /*min adj, full adj*/
@@ -84,12 +99,18 @@ end
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 
 cap file close tablecontents
-file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_SENSE_CCETH_BMI_SMOK.txt, t w replace 
+file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
 
 *Primary exposure
 refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
 file write tablecontents _n
 
+*Number kids
+refline
+outputHRsforvar, variable("gp_number_kids") min(1) max(4) outcome(`outcome')
+file write tablecontents _n 
+
 file close tablecontents
+
 

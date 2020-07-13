@@ -1,12 +1,12 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models.do
+*	Do-file:		WORMS_07_an_multivariable_cox_models.do
 *
 *	Project:		Exposure children and COVID risk
 *
 *	Programmed by:	Hforbes, based on files from Fizz & Krishnan
 *
-*	Data used:		analysis_dataset.dta
+*	Data used:		analysis_dataset_worms.dta
 *
 *	Data created:	None
 *
@@ -38,7 +38,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariableFULL_cox_models_`outcome'", text replace
+log using "$logdir\WORMS_an_multivariable_cox_models_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
@@ -86,8 +86,7 @@ timer list
 end
 *************************************************************************************
 
-foreach exposure_type in 	kids_cat3  ///
-		gp_number_kids {
+foreach exposure_type in kids_cat3  {
 
 *Age spline model (not adj ethnicity)
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
@@ -105,56 +104,6 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
-
-*Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
-if _rc==0{
-estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth, replace
-*estat concordance /*c-statistic*/
- }
- else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"
-
- 
-*Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.bmicat) smoking(i.smoke)
-if _rc==0{
-estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_bmi_smoke, replace
-*estat concordance /*c-statistic*/
- }
- else di "WARNING CC ETHN BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
- 
-*Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
-if _rc==0{
-estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCnoeth_bmi_smoke, replace
-*estat concordance /*c-statistic*/
- }
- else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
- }
-
-
-
-
-*SENSITIVITY ANALYSIS: 12 months FUP
-drop if has_12_m_follow_up == .
-
-foreach exposure_type in kids_cat3  {
-*Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
-if _rc==0{
-estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_12mo, replace
-*estat concordance /*c-statistic*/
 }
-else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
-
-}
-
-
-
-
 
 log close

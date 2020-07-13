@@ -2,17 +2,17 @@
 
 ********************************************************************************
 *
-*	Do-file:		04a_an_descriptive_tables.do
+*	Do-file:		WORMS_04a_an_descriptive_safetables.do
 *
 *	Project:		Exposure children and COVID risk
 *
 *	Programmed by:	HFORBES based on Elizabeth Williamson
 *
-*	Data used:		analysis_dataset.dta
+*	Data used:		analysis_dataset_worms.dta
 *
 *	Data created:	None
 *
-*	Other output:	Log file: output/04a_an_descriptive_tables.log
+*	Other output:	Log file: output/03_an_descriptive_safetables.log
 *
 ********************************************************************************
 *
@@ -25,9 +25,9 @@
 
 * Open a log file
 capture log close
-log using "$logdir\04a_an_descriptive_tables", replace t
+log using "$logdir\WORMS_04a_an_descriptive_safetables", replace t
 
-use $tempdir\analysis_dataset, clear
+use $tempdir\analysis_dataset_worms, clear
 
 
 **********************************
@@ -80,10 +80,7 @@ safetab stp
 
 
 * Outcomes
-safetab covid_death_itu
-safetab covid_tpp_prob_or_susp
-safetab covid_tpp_prob
-
+safetab worms
 
 
 
@@ -93,7 +90,7 @@ safetab covid_tpp_prob
 *  Number (%) with each exposure  *
 **********************************
 
-*** Repeat for each outcome
+*** Repeat for each expose
 
 	* Demographics
 	safetab agegroup 							kids_cat3, col
@@ -130,26 +127,10 @@ safetab covid_tpp_prob
 	safetab stp 								kids_cat3, col
 
 ********************************************
-*  Cumulative incidence of ONS COVID DEATH /ICNARC ITU ADM.*
+*  Cumulative incidence of worms.*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROB/SUSP CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROBABLE CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 

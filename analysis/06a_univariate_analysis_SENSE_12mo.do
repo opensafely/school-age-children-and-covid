@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		06_univariate_analysis.do
+*	Do-file:		06a_univariate_analysis_SENSE_12mo.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -12,11 +12,11 @@
 *
 *	Other output:	Log file: an_univariable_cox_models.log 
 *
-*	Comments: 		I had to create a folder called models within the output folder.
 ********************************************************************************
 *
 *	Purpose:		Fit age/sex adjusted Cox models, stratified by STP and 
-*with hh size as random effect
+*with hh size as random effect.  Restrict population to those with 12 months
+*follow-up
 *  
 ********************************************************************************
 
@@ -33,7 +33,7 @@ local lastvar = word("`0'", `arguments')
 
 * Open a log file
 capture log close
-log using "$logdir\an_univariable_cox_models_`outcome'", replace t
+log using "$logdir\an_univariable_cox_models_`outcome'_SENSE12mo", replace t
 
 * Open dataset and fit specified model(s)
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear

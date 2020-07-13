@@ -1,5 +1,13 @@
-*an_agesplinevisualisation
-*KB 1/5/2020
+*Do file: 09_an_agesplinevisualisation
+*************************************************************************
+*Purpose: Make figure of agespline effects
+*
+*Requires: final analysis dataset (analysis_dataset.dta)
+*
+*Coding: HFORBES, based on file from Krishnan Bhaskaran
+*
+*Date drafted: 30th June 2020
+*************************************************************************
 
 local outcome `1' 
 

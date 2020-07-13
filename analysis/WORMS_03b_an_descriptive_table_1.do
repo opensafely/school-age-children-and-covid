@@ -1,12 +1,11 @@
-*************************************************************************
 *Exposure children and COVID risk
   
-*03b_an_descriptive_table_1
-
+*WORMS_03b_an_descriptive_table_2
+*************************************************************************
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
 * shell "Table 1" (main cohort descriptives by exposure status)
 *
-*Requires: final analysis dataset (analysis_dataset.dta)
+*Requires: final analysis dataset (cr_analysis_dataset.dta)
 *
 *Coding: HFORBES, based on Krishnan Bhaskaran
 *
@@ -60,10 +59,10 @@ end
 
 *Set up output file
 cap file close tablecontent
-file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3.txt, write text replace
+file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3_worms.txt, write text replace
 
 
-use $tempdir\analysis_dataset, clear
+use $tempdir\analysis_dataset_worms, clear
 
 
 gen byte cons=1
@@ -130,5 +129,8 @@ tabulatevariable, variable(ra_sle_psoriasis) start(1) end(1) outcome(kids_cat3)
 tabulatevariable, variable(other_immuno) start(1) end(1) outcome(kids_cat3)
 *SHEILDING
 tabulatevariable, variable(shield) start(1) end(1) outcome(kids_cat3)
+
+*WORMS
+tabulatevariable, variable(worms) start(1) end(1) outcome(kids_cat3)
 
 file close tablecontent

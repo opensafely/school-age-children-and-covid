@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		04a_an_descriptive_tables.do
+*	Do-file:		WORMS_04a_an_descriptive_safetables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -12,7 +12,7 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file: output/04a_an_descriptive_tables.log
+*	Other output:	Log file: output/03_an_descriptive_safetables.log
 *
 ********************************************************************************
 *
@@ -25,9 +25,9 @@
 
 * Open a log file
 capture log close
-log using "$logdir\04a_an_descriptive_tables", replace t
+log using "$logdir\WORMS_04a_an_descriptive_safetables", replace t
 
-use $tempdir\analysis_dataset, clear
+use $tempdir\analysis_dataset_worms, clear
 
 
 **********************************
@@ -80,9 +80,7 @@ safetab stp
 
 
 * Outcomes
-safetab covid_death_itu
-safetab covid_tpp_prob_or_susp
-safetab covid_tpp_prob
+safetab worms
 
 
 
@@ -90,18 +88,20 @@ safetab covid_tpp_prob
 
 
 **********************************
-*  Number (%) with each exposure  *
+*  Number (%) with each outcome  *
 **********************************
+
+foreach outvar of varlist worms {
 
 *** Repeat for each outcome
 
 	* Demographics
-	safetab agegroup 							kids_cat3, col
-	safetab male 								kids_cat3, col
-	safetab bmicat 								kids_cat3, col m 
-	safetab smoke 								kids_cat3, col m
-	safetab obese4cat							kids_cat3, col m 
-	safetab shield   							kids_cat3, col m 
+	safetab agegroup 							`outvar', col
+	safetab male 								`outvar', col
+	safetab bmicat 								`outvar', col m 
+	safetab smoke 								`outvar', col m
+	safetab obese4cat							`outvar', col m 
+	safetab shield   							`outvar', col m 
 
 	* Comorbidities
 	foreach var in chronic_respiratory_disease ///
@@ -121,35 +121,21 @@ safetab covid_tpp_prob
 						hypertension  ///
 						ra_sle_psoriasis  ///
 						{
-	safetab `var' 		kids_cat3, col
+	safetab `var' 		`outvar', col
 }
 	
-	safetab imd  								kids_cat3, col m
-	safetab ethnicity 							kids_cat3, col m
-	*safetab urban 								kids_cat3, col
-	safetab stp 								kids_cat3, col
+	safetab imd  								`outvar', col m
+	safetab ethnicity 							`outvar', col m
+	*safetab urban 								`outvar', col
+	safetab stp 								`outvar', col
+}
+
 
 ********************************************
-*  Cumulative incidence of ONS COVID DEATH /ICNARC ITU ADM.*
+*  Cumulative incidence of WORMS
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROB/SUSP CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROBABLE CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 

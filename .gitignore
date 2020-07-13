@@ -17,10 +17,13 @@ output/*
 .dta
 analysis/tempdata/
 analysis/output/
-
-!*04_an_descriptive_table_1_covid_tpp_prob.txt
-!*04_an_descriptive_table_1_covid_death_itu.txt
-!*04_an_descriptive_table_1_covid_tpp_prob_or_susp.txt
+!*04b_an_descriptive_table_1_covid_tpp_prob_worms.txt
+!*03b_an_descriptive_table_1_kids_cat3_worms.txt
+!*an_tablecontents_HRtable_worms.txt
+!*03b_an_descriptive_table_1_kids_cat3.txt
+!*04b_an_descriptive_table_1_covid_tpp_prob.txt
+!*04b_an_descriptive_table_1_covid_death_itu.txt
+!*04b_an_descriptive_table_1_covid_tpp_prob_or_susp.txt
 !*an_tablecontents_HRtable_covid_tpp_prob.txt
 !*an_tablecontents_HRtable_covid_tpp_prob_12mo.txt
 !*an_tablecontents_HRtable_covid_tpp_prob_or_susp.txt

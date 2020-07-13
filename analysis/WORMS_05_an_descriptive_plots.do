@@ -2,7 +2,7 @@
   
 ********************************************************************************
 *
-*	Do-file:		05_an_descriptive_plots.do
+*	Do-file:		an_descriptive_plots.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -15,8 +15,7 @@
 *	Other output:	Kaplan-Meier plots (intended for publication)
 *							output/km_age_sex_covid_death_itu.svg 	
 *							output/km_age_sex_covid_tpp_prob_or_susp
-*							output/km_age_sex_covid_tpp_prob
-
+*
 ********************************************************************************
 *
 *	Purpose:		This do-file creates Kaplan-Meier plots by age and sex. 
@@ -28,7 +27,7 @@
 ********************************************************************************
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
@@ -83,8 +82,8 @@ failure by(agegroup) 								///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
-	t1(" ") l1title("Cumulative probability" "of COVID-19 death/ICU admi.", size(medsmall))
-graph export "output/km_age_sex_covid_death_itu.svg", as(svg) replace
+	t1(" ") l1title("Cumulative probability" "of worms", size(medsmall))
+graph export "output/km_age_sex_worms.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -94,7 +93,7 @@ erase male.gph
 *********************
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
 
 
 ****************************
@@ -150,15 +149,15 @@ failure by(agegroup) 								///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
-	t1(" ") l1title("Cumulative probability" "TPP Covid-19 case", size(medsmall))
-graph export "output/km_age_sex_covid_tpp_prob.svg", as(svg) replace
+	t1(" ") l1title("Cumulative probability" "TPP worms case", size(medsmall))
+graph export "output/km_age_sex_worms.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
 erase male.gph
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
 
 
 ****************************
@@ -214,8 +213,8 @@ failure by(agegroup) 								///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
-	t1(" ") l1title("Cumulative probability" "TPP Covid-19 case", size(medsmall))
-graph export "output/km_age_sex_covid_tpp_prob_or_susp.svg", as(svg) replace
+	t1(" ") l1title("Cumulative probability" "TPP Worms case", size(medsmall))
+graph export "output/km_age_sex_worms.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph

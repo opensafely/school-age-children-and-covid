@@ -15,7 +15,8 @@
 ********************************************************************************
 *
 *	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models, with an interaction by age and sex. 
+*					Cox models, with an interaction by age, sex, time period 
+*					and sheilding status. 
 *  
 ********************************************************************************
 *	
