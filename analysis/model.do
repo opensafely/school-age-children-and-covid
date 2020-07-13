@@ -123,11 +123,11 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 *clear all
 *macro drop all
 cd
-cd  ./output/
+/*cd  ./output/ doesn't work*/
 cd  `c(pwd)'
 cd  /output/
 cd  `c(pwd)'/output/
-cd  `c(pwd)'/analysis/
+cd  `c(pwd)'/analysis/*/
 
 
 *Import dataset into STATA
