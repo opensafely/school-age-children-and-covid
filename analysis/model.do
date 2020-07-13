@@ -125,7 +125,7 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 cd
 /*cd  ./output/ doesn't work*/
 cd  `c(pwd)'
-cd /output/
+cd output/
 
 
 *Import dataset into STATA
