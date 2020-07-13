@@ -10,7 +10,7 @@ opensafely/cancer-excluding-lung-and-haematological/2020-04-15
 opensafely/lung-cancer/2020-04-15
 opensafely/haematological-cancer/2020-04-15
 opensafely/permanent-immunosuppresion/2020-06-02
-opensafely/hiv/2020-04-24
+opensafely/hiv/2020-07-13
 opensafely/sickle-cell-disease/2020-04-14
 opensafely/solid-organ-transplantation/2020-04-10
 opensafely/asplenia/2020-06-02
