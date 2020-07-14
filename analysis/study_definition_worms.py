@@ -25,8 +25,6 @@ study = StudyDefinition(
 
     # STUDY POPULATION
     population=patients.satisfying(
-        """ (age >=18 AND age <= 110)
-        """,
     ),
 
     # OUTCOMES
