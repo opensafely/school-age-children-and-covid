@@ -24,7 +24,7 @@ study = StudyDefinition(
     },
 
     # STUDY POPULATION
-    population=patients.satisfying(
+    population=patients.all(
     ),
 
     # OUTCOMES
