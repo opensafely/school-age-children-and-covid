@@ -704,8 +704,6 @@ label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid pro
 label var date_covid_death_itu 			"Date of ONS COVID Death or ICNARC ITU admission"
 label var date_covid_tpp_prob_or_susp	"Date of covid TPP case (probable or suspected)"
 label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
-label var first_tested_for_covid 		"Date of first COVID test in SGSS"
-label var first_positive_test_date		"Date of first positive COVID test in SGSS"
 
 * Survival times
 label var  stime_covid_death_itu 			"Survival time (date); outcome covid death/ITU adm."
