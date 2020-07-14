@@ -24,10 +24,8 @@ study = StudyDefinition(
     },
 
     # STUDY POPULATION
-    population=patients.satisfying(
-        """ (age >=18 AND age <= 110)
-        """,
-    ),
+    population=patients.all(
+    	),
 
     # OUTCOMES
     icu_date_admitted=patients.admitted_to_icu(

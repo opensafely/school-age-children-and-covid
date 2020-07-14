@@ -24,10 +24,8 @@ study = StudyDefinition(
     },
 
     # STUDY POPULATION
-    population=patients.satisfying(
-        """ (age >=18 AND age <= 110)
-        """,
-    ),
+    population=patients.all(
+        ),
 
     # OUTCOMES
     worms=patients.with_these_clinical_events(
