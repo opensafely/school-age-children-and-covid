@@ -1,8 +1,8 @@
----------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
       name:  <unnamed>
-       log:  E:\alex\school-age-children-and-covid\analysis\log\01_cr_create_analysis_dataset.log
+       log:  E:\caroline\school-age-children-and-covid\analysis\log\01_cr_create_analysis_dataset.log
   log type:  text
- opened on:   8 Jul 2020, 23:25:13
+ opened on:  14 Jul 2020, 22:46:04
 
 . 
 . 
@@ -12,15 +12,15 @@
 . 
 . * Sex
 . gen male = 1 if sex == "M"
-(13,884,364 missing values generated)
+(16,825,664 missing values generated)
 
 . replace male = 0 if sex == "F"
-(13,883,042 real changes made)
+(16,823,811 real changes made)
 
 . 
 . * Ethnicity 
 . replace ethnicity = .u if ethnicity == .
-(8,996,669 real changes made, 8,996,669 to missing)
+(11,465,349 real changes made, 11,465,349 to missing)
 
 . 
 . label define ethnicity  1 "White"                                       ///
@@ -38,10 +38,10 @@
 . rename stp stp_old
 
 . bysort stp_old: gen stp = 1 if _n==1
-(27,468,637 missing values generated)
+(33,338,636 missing values generated)
 
 . replace stp = sum(stp)
-(27,468,668 real changes made)
+(33,338,667 real changes made)
 
 . drop stp_old
 
@@ -55,19 +55,19 @@
 . 
 . * add one to create groups 1 - 5 
 . replace imd = imd + 1
-(27,468,669 real changes made)
+(33,338,668 real changes made)
 
 . 
 . * - 1 is missing, should be excluded from population 
 . replace imd = .u if imd_o == -1
-(360,252 real changes made, 360,252 to missing)
+(492,146 real changes made, 492,146 to missing)
 
 . drop imd_o
 
 . 
 . * Reverse the order (so high is more deprived)
 . recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
-(imd: 21591079 changes made)
+(imd: 26105416 changes made)
 
 . 
 . label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
@@ -85,7 +85,7 @@
 >                60/69.9999 = 5 ///
 >                    70/79.9999 = 6 ///
 >                    80/max = 7, gen(agegroup) 
-(27468669 differences between age and agegroup)
+(27823338 differences between age and agegroup)
 
 . 
 . label define agegroup   1 "18-<30" ///
@@ -103,7 +103,7 @@
 . * Create binary age (for age stratification)
 . recode age min/65.999999999 = 0 ///
 >            66/max = 1, gen(age66)
-(27468669 differences between age and age66)
+(33101763 differences between age and age66)
 
 . 
 . * Check there are no missing ages
@@ -128,7 +128,7 @@
 DROP MISSING GENDER:
 
 . recode male .=9
-(male: 1322 changes made)
+(male: 1853 changes made)
 
 . recode male .u=9
 (male: 0 changes made)
@@ -136,7 +136,7 @@ DROP MISSING GENDER:
 . bysort household_id: egen male_drop=max(male)
 
 . drop if male_drop==9
-(10,848,094 observations deleted)
+(12,241,972 observations deleted)
 
 . 
 . noi di "DROP AGE MISSING:"
@@ -151,7 +151,7 @@ DROP AGE MISSING:
 . bysort household_id: egen age_drop=max(age)
 
 . drop if age_drop==9
-(0 observations deleted)
+(12,992 observations deleted)
 
 . 
 . noi di "DROP IMD MISSING"
@@ -161,12 +161,12 @@ DROP IMD MISSING
 (imd: 0 changes made)
 
 . recode imd .u=9
-(imd: 197868 changes made)
+(imd: 270764 changes made)
 
 . bysort household_id: egen imd_drop=max(imd)
 
 . drop if imd_drop==9
-(280,361 observations deleted)
+(384,353 observations deleted)
 
 . 
 . **************************** HOUSEHOLD VARS*******************************************
@@ -174,19 +174,19 @@ DROP IMD MISSING
 . *No kids/kids under 12/up to 18
 . *Identify kids under 12, or kids under 18
 . gen nokids=1 if age<12
-(16,340,214 missing values generated)
+(17,723,981 missing values generated)
 
 . recode nokids .=2 if age<18 
-(nokids: 0 changes made)
+(nokids: 1382240 changes made)
 
 . bysort household_id: egen min_kids=min(nokids) 
-(16340214 missing values generated)
+(11476673 missing values generated)
 
 . gen kids_cat3=min_kids
-(16,340,214 missing values generated)
+(11,476,673 missing values generated)
 
 . recode kids_cat3 .=0 
-(kids_cat3: 16340214 changes made)
+(kids_cat3: 11476673 changes made)
 
 . lab define kids_cat3  0 "No kids" 1 "Kids under 12" 2 "Kids under 18"
 
@@ -195,36 +195,61 @@ DROP IMD MISSING
 . drop min_kids
 
 . 
-. 
+. *Dose-response exposure
 . recode nokids 2=.
-(nokids: 0 changes made)
+(nokids: 1382240 changes made)
 
-. recode nokids 1=. if age<1 
-(nokids: 0 changes made)
-
-. *Number kids aged 1-12
 . bysort household_id: egen number_kids=count(nokids)
 
 . gen gp_number_kids=number_kids
 
-. recode gp_number_kids 4/max=4
-(gp_number_kids: 0 changes made)
+. recode gp_number_kids 3/max=3
+(gp_number_kids: 354077 changes made)
 
+. recode gp_number_kids 1=2 2=3 3=4
+(gp_number_kids: 7179896 changes made)
+
+. replace gp_number_kids=0 if kids_cat3==0 
+(0 real changes made)
+
+. replace gp_number_kids=1 if kids_cat3==2 
+(2,042,782 real changes made)
+
+. 
 . lab var gp_number_kids "Number kids under 12 years in hh"
 
 . drop nokids
 
-. 
-. *Number of additional people in household
-. bysort household_id: gen additional_people=_N-1
+. lab define   gp_number_kids 0 none  1 "only >12 years" ///
+> 2 "1 child <12" ///
+> 3 "2 children <12" ///
+> 4 "3+ children <12"
 
-. recode additional_people 4/max=4
-(additional_people: 672709 changes made)
+. lab val gp_number_kids gp_number_kids
+
+. 
+. tab kids_cat3 gp_number_kids, miss
+
+              |            Number kids under 12 years in hh
+    kids_cat3 |      none  only >12   1 child <  2 childre  3+ childr |     Total
+--------------+-------------------------------------------------------+----------
+      No kids |11,476,673          0          0          0          0 |11,476,673 
+Kids under 12 |         0          0  3,338,920  2,650,836  1,190,140 | 7,179,896 
+Kids under 18 |         0  2,042,782          0          0          0 | 2,042,782 
+--------------+-------------------------------------------------------+----------
+        Total |11,476,673  2,042,782  3,338,920  2,650,836  1,190,140 |20,699,351 
+
+.  
+. *Total number people in household (to check hh size)
+. bysort household_id: gen tot_people_hh=_N
+
+. recode tot_people_hh 5/max=5
+(tot_people_hh: 2216013 changes made)
 
 . 
 . /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 . drop if age<18
-(0 observations deleted)
+(4,357,610 observations deleted)
 
 . 
 . 
@@ -251,8 +276,7 @@ DROP IMD MISSING
 . 
 . /* CONVERT STRINGS TO DATE====================================================*/
 . /* Comorb dates dates are given with month only, so adding day 
-> 15 to enable  them to be processed as dates                                                                                    
->    */
+> 15 to enable  them to be processed as dates                                                                                       */
 . 
 . foreach var of varlist  chronic_respiratory_disease ///
 >                                                 chronic_cardiac_disease  ///
@@ -294,85 +318,85 @@ DROP IMD MISSING
 .         format `var'_date %td
  16. }
 variable chronic_respiratory_disease was str7 now str10
-(16,340,214 real changes made)
-(15,674,923 real changes made)
-(15,674,923 missing values generated)
+(16,341,741 real changes made)
+(15,673,073 real changes made)
+(15,673,073 missing values generated)
 variable chronic_cardiac_disease was str7 now str10
-(16,340,214 real changes made)
-(15,234,400 real changes made)
-(15,234,400 missing values generated)
+(16,341,741 real changes made)
+(15,234,355 real changes made)
+(15,234,355 missing values generated)
 variable diabetes was str7 now str10
-(16,340,214 real changes made)
-(14,700,851 real changes made)
-(14,700,851 missing values generated)
+(16,341,741 real changes made)
+(14,700,398 real changes made)
+(14,700,398 missing values generated)
 variable cancer_haem was str7 now str10
-(16,340,214 real changes made)
-(16,244,834 real changes made)
-(16,244,834 missing values generated)
+(16,341,741 real changes made)
+(16,246,193 real changes made)
+(16,246,193 missing values generated)
 variable cancer_nonhaem was str7 now str10
-(16,340,214 real changes made)
-(15,531,343 real changes made)
-(15,531,343 missing values generated)
+(16,341,741 real changes made)
+(15,531,442 real changes made)
+(15,531,442 missing values generated)
 variable permanent_immunodeficiency was str7 now str10
-(16,340,214 real changes made)
-(16,066,848 real changes made)
-(16,066,848 missing values generated)
+(16,341,741 real changes made)
+(16,297,933 real changes made)
+(16,297,933 missing values generated)
 variable temporary_immunodeficiency was str7 now str10
-(16,340,214 real changes made)
-(16,336,001 real changes made)
-(16,336,001 missing values generated)
+(16,341,741 real changes made)
+(16,337,268 real changes made)
+(16,337,268 missing values generated)
 variable organ_trans was str7 now str10
-(16,340,214 real changes made)
-(16,321,602 real changes made)
-(16,321,602 missing values generated)
+(16,341,741 real changes made)
+(16,323,101 real changes made)
+(16,323,101 missing values generated)
 variable asplenia was str7 now str10
-(16,340,214 real changes made)
-(16,317,085 real changes made)
-(16,317,085 missing values generated)
+(16,341,741 real changes made)
+(16,318,584 real changes made)
+(16,318,584 missing values generated)
 variable chronic_liver_disease was str7 now str10
-(16,340,214 real changes made)
-(16,241,411 real changes made)
-(16,241,411 missing values generated)
+(16,341,741 real changes made)
+(16,242,750 real changes made)
+(16,242,750 missing values generated)
 variable other_neuro was str7 now str10
-(16,340,214 real changes made)
-(16,176,655 real changes made)
-(16,176,655 missing values generated)
+(16,341,741 real changes made)
+(16,177,983 real changes made)
+(16,177,983 missing values generated)
 variable stroke_dementia was str7 now str10
-(16,340,214 real changes made)
-(15,952,885 real changes made)
-(15,952,885 missing values generated)
+(16,341,741 real changes made)
+(15,953,589 real changes made)
+(15,953,589 missing values generated)
 variable esrf was str7 now str10
-(16,340,214 real changes made)
-(16,317,030 real changes made)
-(16,317,030 missing values generated)
+(16,341,741 real changes made)
+(16,318,496 real changes made)
+(16,318,496 missing values generated)
 variable hypertension was str7 now str10
-(16,340,214 real changes made)
-(12,944,137 real changes made)
-(12,944,137 missing values generated)
+(16,341,741 real changes made)
+(12,943,711 real changes made)
+(12,943,711 missing values generated)
 variable ra_sle_psoriasis was str7 now str10
-(16,340,214 real changes made)
-(15,524,367 real changes made)
-(15,524,367 missing values generated)
+(16,341,741 real changes made)
+(15,525,437 real changes made)
+(15,525,437 missing values generated)
 variable bmi_date_measured was str7 now str10
-(16,340,214 real changes made)
-(3,194,184 real changes made)
-(3,194,184 missing values generated)
+(16,341,741 real changes made)
+(3,191,502 real changes made)
+(3,191,502 missing values generated)
 variable bp_sys_date_measured was str7 now str10
-(16,340,214 real changes made)
-(1,771,947 real changes made)
-(1,771,947 missing values generated)
+(16,341,741 real changes made)
+(1,772,943 real changes made)
+(1,772,943 missing values generated)
 variable bp_dias_date_measured was str7 now str10
-(16,340,214 real changes made)
-(1,773,805 real changes made)
-(1,773,805 missing values generated)
+(16,341,741 real changes made)
+(1,774,802 real changes made)
+(1,774,802 missing values generated)
 variable creatinine_date was str7 now str10
-(16,340,214 real changes made)
-(4,314,536 real changes made)
-(4,314,536 missing values generated)
+(16,341,741 real changes made)
+(4,315,526 real changes made)
+(4,315,526 missing values generated)
 variable smoking_status_date was str7 now str10
-(16,340,214 real changes made)
-(734,233 real changes made)
-(734,233 missing values generated)
+(16,341,741 real changes made)
+(735,286 real changes made)
+(735,286 missing values generated)
 
 . 
 . * Note - outcome dates are handled separtely below 
@@ -428,22 +452,22 @@ variable smoking_status_date was str7 now str10
 . 
 . * Recode strange values 
 . replace bmi = . if bmi == 0 
-(3,244,085 real changes made, 3,244,085 to missing)
+(3,241,359 real changes made, 3,241,359 to missing)
 
 . replace bmi = . if !inrange(bmi, 15, 50)
-(125,504 real changes made, 125,504 to missing)
+(125,684 real changes made, 125,684 to missing)
 
 . 
 . * Restrict to within 10 years of index and aged > 16 
 . gen bmi_time = (date("$indexdate", "DMY") - bmi_measured_date)/365.25
-(3,194,184 missing values generated)
+(3,191,502 missing values generated)
 
 . gen bmi_age = age - bmi_time
-(3,194,184 missing values generated)
+(3,191,502 missing values generated)
 
 . 
 . replace bmi = . if bmi_age < 16 
-(44,372 real changes made, 44,372 to missing)
+(44,253 real changes made, 44,253 to missing)
 
 . replace bmi = . if bmi_time > 10 & bmi_time != . 
 (0 real changes made)
@@ -454,35 +478,35 @@ variable smoking_status_date was str7 now str10
 (0 real changes made)
 
 . replace bmi_measured_date = . if bmi == . 
-(219,777 real changes made, 219,777 to missing)
+(219,794 real changes made, 219,794 to missing)
 
 . replace bmi_measured = . if bmi == . 
-(3,413,961 real changes made, 3,413,961 to missing)
+(3,411,296 real changes made, 3,411,296 to missing)
 
 . 
 . gen     bmicat = .
-(16,340,214 missing values generated)
+(16,341,741 missing values generated)
 
 . recode  bmicat . = 1 if bmi < 18.5
-(bmicat: 311061 changes made)
+(bmicat: 311345 changes made)
 
 . recode  bmicat . = 2 if bmi < 25
-(bmicat: 4664362 changes made)
+(bmicat: 4666558 changes made)
 
 . recode  bmicat . = 3 if bmi < 30
-(bmicat: 4421181 changes made)
+(bmicat: 4421988 changes made)
 
 . recode  bmicat . = 4 if bmi < 35
-(bmicat: 2230497 changes made)
+(bmicat: 2230965 changes made)
 
 . recode  bmicat . = 5 if bmi < 40
-(bmicat: 863724 changes made)
+(bmicat: 863932 changes made)
 
 . recode  bmicat . = 6 if bmi < .
-(bmicat: 435428 changes made)
+(bmicat: 435657 changes made)
 
 . replace bmicat = .u if bmi >= .
-(3,413,961 real changes made, 3,413,961 to missing)
+(3,411,296 real changes made, 3,411,296 to missing)
 
 . 
 . label define bmicat 1 "Underweight (<18.5)"     ///
@@ -499,7 +523,7 @@ variable smoking_status_date was str7 now str10
 . 
 . * Create less  granular categorisation
 . recode bmicat 1/3 .u = 1 4 = 2 5 = 3 6 = 4, gen(obese4cat)
-(16029153 differences between bmicat and obese4cat)
+(16030396 differences between bmicat and obese4cat)
 
 . 
 . label define obese4cat  1 "No record of obesity"        ///
@@ -521,16 +545,16 @@ variable smoking_status_date was str7 now str10
 
 . 
 . gen     smoke = 1  if smoking_status == "N"
-(8,864,872 missing values generated)
+(8,866,476 missing values generated)
 
 . replace smoke = 2  if smoking_status == "E"
-(5,276,264 real changes made)
+(5,277,058 real changes made)
 
 . replace smoke = 3  if smoking_status == "S"
-(2,854,375 real changes made)
+(2,854,132 real changes made)
 
 . replace smoke = .u if smoking_status == "M"
-(734,233 real changes made, 734,233 to missing)
+(735,286 real changes made, 735,286 to missing)
 
 . replace smoke = .u if smoking_status == "" 
 (0 real changes made)
@@ -544,7 +568,7 @@ variable smoking_status_date was str7 now str10
 . * Create non-missing 3-category variable for current smoking
 . * Assumes missing smoking is never smoking 
 . recode smoke .u = 1, gen(smoke_nomiss)
-(734233 differences between smoke and smoke_nomiss)
+(735286 differences between smoke and smoke_nomiss)
 
 . order smoke_nomiss, after(smoke)
 
@@ -559,16 +583,16 @@ variable smoking_status_date was str7 now str10
 . 
 . * Haematological malignancies
 . gen     cancer_haem_cat = 4 if inrange(cancer_haem_date, d(1/1/1900), d(1/2/2015))
-(16,281,929 missing values generated)
+(16,283,452 missing values generated)
 
 . replace cancer_haem_cat = 3 if inrange(cancer_haem_date, d(1/2/2015), d(1/2/2019))
-(25,589 real changes made)
+(25,587 real changes made)
 
 . replace cancer_haem_cat = 2 if inrange(cancer_haem_date, d(1/2/2019), d(1/2/2020))
-(8,276 real changes made)
+(8,277 real changes made)
 
 . recode  cancer_haem_cat . = 1
-(cancer_haem_cat: 16248064 changes made)
+(cancer_haem_cat: 16249588 changes made)
 
 . label values cancer_haem_cat cancer
 
@@ -576,16 +600,16 @@ variable smoking_status_date was str7 now str10
 . 
 . * All other cancers
 . gen     cancer_exhaem_cat = 4 if inrange(cancer_nonhaem_date,  d(1/1/1900), d(1/2/2015)) 
-(15,843,668 missing values generated)
+(15,845,085 missing values generated)
 
 . replace cancer_exhaem_cat = 3 if inrange(cancer_nonhaem_date,  d(1/2/2015), d(1/2/2019))
-(212,153 real changes made)
+(212,199 real changes made)
 
 . replace cancer_exhaem_cat = 2 if inrange(cancer_nonhaem_date,  d(1/2/2019), d(1/2/2020)) 
-(72,861 real changes made)
+(72,893 real changes made)
 
 . recode  cancer_exhaem_cat . = 1
-(cancer_exhaem_cat: 15558654 changes made)
+(cancer_exhaem_cat: 15559993 changes made)
 
 . label values cancer_exhaem_cat cancer
 
@@ -597,7 +621,7 @@ variable smoking_status_date was str7 now str10
 . * Permanent immunodeficiency ever, OR 
 . * Temporary immunodeficiency  last year
 . gen temp1  = 1 if perm_immunodef_date!=.
-(16,066,848 missing values generated)
+(16,297,933 missing values generated)
 
 . gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
 
@@ -613,19 +637,19 @@ variable smoking_status_date was str7 now str10
 . 
 . * Categorise
 . gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
-(10,881,617 missing values generated)
+(10,882,192 missing values generated)
 
 . replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
-(2,801,469 real changes made)
+(2,801,557 real changes made)
 
 . replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
-(7,359,615 real changes made)
+(7,360,042 real changes made)
 
 . replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
-(3,408,259 real changes made)
+(3,408,573 real changes made)
 
 . replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
-(1,778,612 real changes made, 1,778,612 to missing)
+(1,779,613 real changes made, 1,779,613 to missing)
 
 . 
 . label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"    ///
@@ -635,7 +659,7 @@ variable smoking_status_date was str7 now str10
 
 . 
 . recode bpcat .u=1, gen(bpcat_nomiss)
-(1778612 differences between bpcat and bpcat_nomiss)
+(1779613 differences between bpcat and bpcat_nomiss)
 
 . label values bpcat_nomiss bpcat
 
@@ -649,7 +673,7 @@ variable smoking_status_date was str7 now str10
 . gen htdiag_or_highbp = bphigh
 
 . recode htdiag_or_highbp 0 = 1 if hypertension==1 
-(htdiag_or_highbp: 2026774 changes made)
+(htdiag_or_highbp: 2027782 changes made)
 
 . 
 . 
@@ -659,67 +683,67 @@ variable smoking_status_date was str7 now str10
 . 
 . * Set implausible creatinine values to missing (Note: zero changed to missing)
 . replace creatinine = . if !inrange(creatinine, 20, 3000) 
-(4,349,692 real changes made, 4,349,692 to missing)
+(4,350,693 real changes made, 4,350,693 to missing)
 
 .         
 . * Divide by 88.4 (to convert umol/l to mg/dl)
 . gen SCr_adj = creatinine/88.4
-(4,349,692 missing values generated)
+(4,350,693 missing values generated)
 
 . 
 . gen min=.
-(16,340,214 missing values generated)
+(16,341,741 missing values generated)
 
 . replace min = SCr_adj/0.7 if male==0
-(6,560,118 real changes made)
+(6,560,406 real changes made)
 
 . replace min = SCr_adj/0.9 if male==1
-(5,430,404 real changes made)
+(5,430,642 real changes made)
 
 . replace min = min^-0.329  if male==0
-(6,560,118 real changes made)
+(6,560,406 real changes made)
 
 . replace min = min^-0.411  if male==1
-(5,430,404 real changes made)
+(5,430,642 real changes made)
 
 . replace min = 1 if min<1
-(7,867,079 real changes made)
+(7,867,694 real changes made)
 
 . 
 . gen max=.
-(16,340,214 missing values generated)
+(16,341,741 missing values generated)
 
 . replace max=SCr_adj/0.7 if male==0
-(6,560,118 real changes made)
+(6,560,406 real changes made)
 
 . replace max=SCr_adj/0.9 if male==1
-(5,430,404 real changes made)
+(5,430,642 real changes made)
 
 . replace max=max^-1.209
-(11,990,522 real changes made)
+(11,991,048 real changes made)
 
 . replace max=1 if max>1
-(8,473,135 real changes made)
+(8,474,047 real changes made)
 
 . 
 . gen egfr=min*max*141
-(4,349,692 missing values generated)
+(4,350,693 missing values generated)
 
 . replace egfr=egfr*(0.993^age)
-(11,990,522 real changes made)
+(11,991,048 real changes made)
 
 . replace egfr=egfr*1.018 if male==0
-(6,560,118 real changes made)
+(6,560,406 real changes made)
 
 . label var egfr "egfr calculated using CKD-EPI formula with no eth"
 
 . 
 . * Categorise into ckd stages
 . egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
-(4349692 missing values generated)
+(4350693 missing values generated)
 
 . recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
-(11990522 differences between egfr_cat and ckd)
+(11991048 differences between egfr_cat and ckd)
 
 . * 0 = "No CKD"  2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
 . label define ckd 0 "No CKD" 1 "CKD"
@@ -733,10 +757,10 @@ variable smoking_status_date was str7 now str10
 . *replace chronic_kidney_disease = 0 if creatinine==. 
 .         
 . recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
-(11300389 differences between ckd and reduced_kidney_function_cat)
+(11300900 differences between ckd and reduced_kidney_function_cat)
 
 . replace reduced_kidney_function_cat = 1 if creatinine==. 
-(4,349,692 real changes made)
+(4,350,693 real changes made)
 
 . label define reduced_kidney_function_catlab ///
 >         1 "None" 2 "Stage 3a/3b egfr 30-60      " 3 "Stage 4/5 egfr<30"
@@ -803,7 +827,7 @@ variable smoking_status_date was str7 now str10
 . rename asthma asthmacat
 
 . recode asthmacat 0=1 1=2 2=3
-(asthmacat: 16340214 changes made)
+(asthmacat: 16341741 changes made)
 
 . label define asthmacat 1 "No" 2 "Yes, no OCS" 3 "Yes with OCS"
 
@@ -818,10 +842,10 @@ variable smoking_status_date was str7 now str10
 . gen shield=1 if organ_trans==1 | asthmacat==2 | asthmacat==3 | ///
 > chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
 > asplenia==1 | other_immuno==1
-(12,348,836 missing values generated)
+(12,524,102 missing values generated)
 
 . recode shield .=0
-(shield: 12348836 changes made)
+(shield: 12524102 changes made)
 
 . 
 . 
@@ -854,12 +878,11 @@ variable smoking_status_date was str7 now str10
 . 
 . /* CONVERT STRINGS TO DATE====================================================*/
 . /* TPP case outcome dates are given with month only, so adding day 
-> 15 to enable  them to be processed as dates                                                                                    
->    */
+> 15 to enable  them to be processed as dates                                                                                       */
 . 
 . foreach var of varlist  covid_tpp_probable ///
 >                                                 covid_tpp_suspected ///
->                                                 {
+>                                          {
   2.                                                         
 .                 capture confirm string variable `var'
   3.                 if _rc!=0 {
@@ -879,13 +902,13 @@ variable smoking_status_date was str7 now str10
 .         format `var'_date %td
  16. }
 variable covid_tpp_probable was str7 now str10
-(16,340,214 real changes made)
-(16,294,252 real changes made)
-(16,294,252 missing values generated)
+(16,341,741 real changes made)
+(16,294,285 real changes made)
+(16,294,285 missing values generated)
 variable covid_tpp_suspected was str7 now str10
-(16,340,214 real changes made)
-(15,713,108 real changes made)
-(15,713,108 missing values generated)
+(16,341,741 real changes made)
+(15,697,823 real changes made)
+(15,697,823 missing values generated)
 
 . 
 . 
@@ -902,29 +925,29 @@ variable covid_tpp_suspected was str7 now str10
   6.         format `var' %td 
   7.         
 . }
-(16,262,322 missing values generated)
-(16,338,442 missing values generated)
+(16,263,719 missing values generated)
+(16,339,968 missing values generated)
 
 . 
 . * Date of Covid death in ONS
 . gen died_date_onscovid = died_date_ons if died_ons_covid_flag_any == 1
-(16,325,209 missing values generated)
+(16,326,715 missing values generated)
 
 . 
 . * Date of non-COVID death in ONS 
 . * If missing date of death resulting died_date will also be missing
 . gen died_date_onsnoncovid = died_date_ons if died_ons_covid_flag_any != 1 
-(16,277,327 missing values generated)
+(16,278,745 missing values generated)
 
 . 
 . 
 . *Date Covid death in ONS or ITU admission in ICNARC
 . gen date_covid_death_itu = min(died_date_onsnoncovid, icu_date_admitted)
-(16,275,566 missing values generated)
+(16,276,983 missing values generated)
 
 . *Date probable or suspected covid in TPP
 . gen date_covid_tpp_prob_or_susp = min(covid_tpp_probable, covid_tpp_suspected)
-(15,684,287 missing values generated)
+(15,667,942 missing values generated)
 
 . *Date probable covid in TPP
 . rename covid_tpp_probable date_covid_tpp_prob
@@ -970,10 +993,10 @@ variable covid_tpp_suspected was str7 now str10
 (0 real changes made)
 
 . replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
-(3,596 real changes made)
+(20,921 real changes made)
 
 . replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
-(251 real changes made)
+(1,493 real changes made)
 
 . 
 . * Format date variables
@@ -1032,7 +1055,7 @@ variable covid_tpp_suspected was str7 now str10
 
 . label var age3                                          "Age spline 3"
 
-. lab var additional_people                       "Number of additional people in household"
+. lab var tot_people_hh                           "Number of people in household"
 
 . 
 . 
@@ -1063,8 +1086,7 @@ variable covid_tpp_suspected was str7 now str10
 
 . label var other_neuro                   "Neurological disease"                  
 
-. label var stroke_dementia                           "Stroke or dementia"                                                       
->  
+. label var stroke_dementia                           "Stroke or dementia"                                                        
 
 . label var ra_sle_psoriasis                              "Autoimmune disease"
 
@@ -1091,8 +1113,7 @@ variable covid_tpp_suspected was str7 now str10
 
 . label var other_neuro_date              "Neurological disease  Date"
 
-. label var stroke_dementia_date                      "Stroke or dementia date"                                                  
->  
+. label var stroke_dementia_date                      "Stroke or dementia date"                                                   
 
 . label var ra_sle_psoriasis_date                         "Autoimmune disease  Date"
 
@@ -1135,10 +1156,6 @@ variable covid_tpp_suspected was str7 now str10
 
 . label var date_covid_tpp_prob                   "Date of covid TPP case (probable)"
 
-. label var first_tested_for_covid                "Date of first COVID test in SGSS"
-
-. label var first_positive_test_date              "Date of first positive COVID test in SGSS"
-
 . 
 . * Survival times
 . label var  stime_covid_death_itu                        "Survival time (date); outcome covid death/ITU adm."
@@ -1161,14 +1178,12 @@ variable covid_tpp_suspected was str7 now str10
 . 
 . 
 . 
-. 
 . /* TIDY DATA==================================================================*/
 . *  Drop variables that are not needed (those not labelled)
 . ds, not(varlabel)
-died_dat~pns  ethnicity_~e  bp_sys_dat~d  creatinine    smoki~s_date  esrf          imd_drop      min           died_~ncovid
-died_ons_c~y  bmi_measured  bp_dias       crea~te_date  cancer_haem   asthmacat     bmi_time      max
-died_ons_c~g  bp_sys        bp_dias_da~e  crea~ne_date  cancer_non~m  male_drop     bmi_age       icu_date_a~d
-covid_tpp_~e  bp_sys_dat~e  bp_dias_da~d  smoki~e_date  esrf_date     age_drop      SCr_adj       died_~scovid
+died_dat~pns  covid_tpp_~e  bp_sys        bp_dias       creatinine    smoki~e_date  cancer_non~m  asthmacat     imd_drop      SCr_adj       icu_date_a~d
+died_ons_c~y  ethnicity_~e  bp_sys_dat~e  bp_dias_da~e  crea~te_date  smoki~s_date  esrf_date     male_drop     bmi_time      min           died_~scovid
+died_ons_c~g  bmi_measured  bp_sys_dat~d  bp_dias_da~d  crea~ne_date  cancer_haem   esrf          age_drop      bmi_age       max           died_~ncovid
 
 . drop `r(varlist)'
 
@@ -1184,7 +1199,7 @@ covid_tpp_~e  bp_sys_dat~e  bp_dias_da~d  smoki~e_date  esrf_date     age_drop  
 DROP AGE >110:
 
 . drop if age > 110 & age != .
-(0 observations deleted)
+(14 observations deleted)
 
 . 
 . noi di "DROP THOSE WITHOUT 3 MO FUP"
@@ -1198,14 +1213,14 @@ DROP THOSE WITHOUT 3 MO FUP
 DROP IF DIED BEFORE INDEX
 
 . drop if died_date_ons <= date("$indexdate", "DMY")
-(487 observations deleted)
+(486 observations deleted)
 
 . 
 . noi di "DROP IF COVID IN TPP BEFORE INDEX"
 DROP IF COVID IN TPP BEFORE INDEX
 
 . drop if date_covid_tpp_prob_or_susp <= date("$indexdate", "DMY")
-(397 observations deleted)
+(406 observations deleted)
 
 .         
 . noi di "DROP IF DIED/ADMITTED COVID BEFORE INDEX"
@@ -1241,13 +1256,13 @@ obs. time interval:  (stime_covid_death_itu[_n-1], stime_covid_death_itu]
             origin:  time enter_date
 
 ------------------------------------------------------------------------------
-   16339329  total observations
+   16340834  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-   16339329  observations remaining, representing
-   16339329  subjects
-     64,143  failures in single-failure-per-subject data
- 2.2164e+09  total analysis time at risk and under observation
+   16340834  observations remaining, representing
+   16340834  subjects
+     64,252  failures in single-failure-per-subject data
+ 2.2166e+09  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       136
@@ -1273,13 +1288,13 @@ obs. time interval:  (stime_covid_tpp_prob_or_susp[_n-1], stime_covid_tpp_prob_o
             origin:  time enter_date
 
 ------------------------------------------------------------------------------
-   16339329  total observations
+   16340834  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-   16339329  observations remaining, representing
-   16339329  subjects
-    651,933  failures in single-failure-per-subject data
- 2.1814e+09  total analysis time at risk and under observation
+   16340834  observations remaining, representing
+   16340834  subjects
+    652,469  failures in single-failure-per-subject data
+ 2.1816e+09  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       136
@@ -1306,13 +1321,13 @@ obs. time interval:  (stime_covid_tpp_prob[_n-1], stime_covid_tpp_prob]
             origin:  time enter_date
 
 ------------------------------------------------------------------------------
-   16339329  total observations
+   16340834  total observations
           0  exclusions
 ------------------------------------------------------------------------------
-   16339329  observations remaining, representing
-   16339329  subjects
-     45,411  failures in single-failure-per-subject data
- 2.2147e+09  total analysis time at risk and under observation
+   16340834  observations remaining, representing
+   16340834  subjects
+     45,657  failures in single-failure-per-subject data
+ 2.2149e+09  total analysis time at risk and under observation
                                                 at risk from t =         0
                                      earliest observed entry t =         0
                                           last observed exit t =       136
@@ -1327,7 +1342,7 @@ file tempdata\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta saved
 . * Close log file 
 . log close
       name:  <unnamed>
-       log:  E:\alex\school-age-children-and-covid\analysis\log\01_cr_create_analysis_dataset.log
+       log:  E:\caroline\school-age-children-and-covid\analysis\log\01_cr_create_analysis_dataset.log
   log type:  text
- closed on:   9 Jul 2020, 00:07:40
----------------------------------------------------------------------------------------------------------------------------------
+ closed on:  14 Jul 2020, 23:35:51
+--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
