@@ -201,7 +201,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						creatinine_date  ///
 						smoking_status_date ///
 						dereg_date ///
-
 						{
 							
 		capture confirm string variable `var'
