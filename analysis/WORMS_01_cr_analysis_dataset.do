@@ -200,6 +200,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						bp_dias_date_measured   ///
 						creatinine_date  ///
 						smoking_status_date ///
+						dereg_date ///
 						{
 							
 		capture confirm string variable `var'
@@ -227,6 +228,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 rename permanent_immunodeficiency_date 	perm_immunodef_date
 rename temporary_immunodeficiency_date 	temp_immunodef_date
 rename bmi_date_measured_date  			bmi_measured_date
+rename dereg_date_date 						dereg_date
 
 /* CREATE BINARY VARIABLES====================================================*/
 *  Make indicator variables for all conditions where relevant 
@@ -568,7 +570,7 @@ gen worms = (worms_date < .)
 * For looping later, name must be stime_binary_outcome_name
 
 * Survival time = last followup date (first: end study, death, or that outcome)
-gen stime_worms = min(tpp_infec_censor_date, died_date_ons, worms_date)
+gen stime_worms = min(tpp_infec_censor_date, died_date_ons, worms_date, dereg_date)
 
 * If outcome was after censoring occurred, set to zero
 replace worms 	= 0 if (worms_date	> tpp_infec_censor_date) 
@@ -653,6 +655,7 @@ label var   died_date_ons				"Date death ONS"
 label var  has_3_m_follow_up			"Has 3 months follow-up"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
 label var enter_date					"Date of study entry"
+lab var  dereg_date						"Date deregistration from practice"
 
 
 *Control outcome

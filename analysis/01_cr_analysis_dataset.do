@@ -202,6 +202,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						bp_dias_date_measured   ///
 						creatinine_date  ///
 						smoking_status_date ///
+						dereg_date ///
 						{
 							
 		capture confirm string variable `var'
@@ -224,11 +225,11 @@ foreach var of varlist 	chronic_respiratory_disease ///
 
 * Note - outcome dates are handled separtely below 
 
-
 * Some names too long for loops below, shorten
 rename permanent_immunodeficiency_date 	perm_immunodef_date
 rename temporary_immunodeficiency_date 	temp_immunodef_date
 rename bmi_date_measured_date  			bmi_measured_date
+rename dereg_date_date 						dereg_date
 
 /* CREATE BINARY VARIABLES====================================================*/
 *  Make indicator variables for all conditions where relevant 
@@ -607,9 +608,9 @@ gen covid_tpp_prob = (date_covid_tpp_prob < .)
 
 * Survival time = last followup date (first: end study, death, or that outcome)
 *gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
-gen stime_covid_death_itu = min(onscoviddeathcensor_date, died_date_ons, date_covid_death_itu)
-gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp)
-gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob)
+gen stime_covid_death_itu = min(onscoviddeathcensor_date, died_date_ons, date_covid_death_itu, dereg_date)
+gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp, dereg_date)
+gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
 
 
 * If outcome was after censoring occurred, set to zero
@@ -714,7 +715,7 @@ label var  stime_covid_tpp_prob				"Survival tme (date); outcome "
 label var   died_date_ons				"Date death ONS"
 label var  has_3_m_follow_up			"Has 3 months follow-up"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
-
+lab var  dereg_date						"Date deregistration from practice"
  
 
 
