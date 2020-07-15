@@ -73,12 +73,12 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 ************************************************************
 /*foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}*/	
+}
 
 
 foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "09_an_agesplinevisualisation.do" `outcome'
-}
+}*/	
 
 *INTERACTIONS
 *Create models
