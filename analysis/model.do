@@ -54,15 +54,15 @@ do "05_an_descriptive_plots.do"
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 
 foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
-	do "06_univariate_analysis.do" `outcome' ///
+winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
-	do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
+winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
 		kids_cat3 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-	do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-	do "07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 ************************************************************
@@ -71,22 +71,22 @@ foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
+/*foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}	
+}
 
 
 foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "09_an_agesplinevisualisation.do" `outcome'
-}
+}*/	
 
 *INTERACTIONS
 *Create models
 foreach outcome of any covid_tpp_prob covid_death_itu {
-do "10_an_interaction_cox_models" `outcome'	
+winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
 }
 
-*Tabulate results
+/*Tabulate results
 foreach outcome of any covid_tpp_prob covid_death_itu {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
@@ -111,7 +111,7 @@ foreach outcome of any covid_tpp_prob covid_death_itu {
 *CC BMI SMOK (not includ. ethnicity)
 foreach outcome of any covid_tpp_prob covid_death_itu {
 	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
-	}
+	}*/
 	
 	
 	
@@ -165,14 +165,14 @@ do "WORMS_05_an_descriptive_plots.do"
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 
 foreach outcome of any worms {
-	do "WORMS_06_univariate_analysis.do" `outcome' ///
+winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
 		
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 ************************************************************
@@ -181,6 +181,6 @@ foreach outcome of any worms {
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-foreach outcome of any worms  {
+/*foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}	
+}*/	

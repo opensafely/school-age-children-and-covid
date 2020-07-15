@@ -24,6 +24,12 @@
 *
 ********************************************************************************
 
+
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
 local outcome `1' 
 
 

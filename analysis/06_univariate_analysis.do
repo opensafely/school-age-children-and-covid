@@ -19,6 +19,12 @@
 *  
 ********************************************************************************
 
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
+
 *PARSE DO-FILE ARGUMENTS (first should be outcome, rest should be variables)
 local arguments = wordcount("`0'") 
 local outcome `1'
