@@ -85,7 +85,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) start(1) end(5) outcome(`outcome')
 file write tablecontent _n 
 
-tabulatevariable, variable(tot_people_hh) start(1) end(3) outcome(`outcome')
+tabulatevariable, variable(tot_people_hh) start(1) end(5) outcome(`outcome')
 file write tablecontent _n 
 
 tabulatevariable, variable(bpcat) start(1) end(4) missing outcome(`outcome')
@@ -95,9 +95,8 @@ file write tablecontent _n
 **COMORBIDITIES
 *RESPIRATORY
 tabulatevariable, variable(chronic_respiratory_disease) start(1) end(1) outcome(`outcome')
-file write tablecontent _n  
 *ASTHMA
-tabulatevariable, variable(asthma) start(1) end(2) outcome(`outcome') /*ever asthma*/
+tabulatevariable, variable(asthma) start(1) end(1) outcome(`outcome') /*ever asthma*/
 *CARDIAC
 tabulatevariable, variable(chronic_cardiac_disease) start(1) end(1) outcome(`outcome')
 *DIABETES
