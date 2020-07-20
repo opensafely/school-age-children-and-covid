@@ -35,9 +35,10 @@ do "02_an_data_checks.do"
 do "03a_an_descriptive_tables.do"
 do "03b_an_descriptive_table_1.do" 
 
-
+* covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
 do "04a_an_descriptive_tables.do"
-foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
+
+foreach outcome of any non_covid_death {
 do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
@@ -52,8 +53,8 @@ do "05_an_descriptive_plots.do"
 *   because of the ways the resulting log files are named
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-
-foreach outcome of any covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
+*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+foreach outcome of any non_covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -71,16 +72,20 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-/*foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
+
+sleep 
+
+*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+foreach outcome of any non_covid_death  {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
 }
 
-
+/*
 foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
 	do "09_an_agesplinevisualisation.do" `outcome'
-}*/	
+}
 
-*INTERACTIONS
+/*INTERACTIONS
 *Create models
 foreach outcome of any covid_tpp_prob covid_death_itu {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
