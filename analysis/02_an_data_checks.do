@@ -112,7 +112,7 @@ foreach comorb in $varlist {
 
 * Outcome dates
 summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
-summ  date_covid_death_itu  date_covid_tpp_prob, format
+summ  date_covid_death_itu  date_covid_tpp_prob died_date_onsnoncovid, format
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
@@ -237,7 +237,7 @@ foreach var of varlist  asthma						///
 
 safetab covid_death_itu covid_tpp_prob_or_susp  , row col
 safetab covid_death_itu covid_tpp_prob  , row col
-
+safetab died_date_onsnoncovid covid_death_itu  , row col
 
 * Close log file 
 log close

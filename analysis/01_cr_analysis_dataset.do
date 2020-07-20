@@ -600,6 +600,7 @@ format died_date_onsnoncovid %td
 gen covid_death_itu = (date_covid_death_itu < .)
 gen covid_tpp_prob_or_susp = (date_covid_tpp_prob_or_susp < .)
 gen covid_tpp_prob = (date_covid_tpp_prob < .)
+gen non_covid_death = (died_date_onsnoncovid < .)
 
 
 
@@ -611,12 +612,14 @@ gen covid_tpp_prob = (date_covid_tpp_prob < .)
 gen stime_covid_death_itu = min(onscoviddeathcensor_date, died_date_ons, date_covid_death_itu, dereg_date)
 gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp, dereg_date)
 gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
+gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid, dereg_date)
 
 
 * If outcome was after censoring occurred, set to zero
 replace covid_death_itu 	= 0 if (date_covid_death_itu	> onscoviddeathcensor_date) 
 replace covid_tpp_prob_or_susp = 0 if (date_covid_tpp_prob_or_susp > onscoviddeathcensor_date)
 replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
+replace non_covid_death = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date)
 
 * Format date variables
 format  stime* %td 
@@ -702,14 +705,17 @@ label var tpp_infec_censor_date 		"Date of admin censoring for covid TPP cases"
 label var covid_death_itu				"Failure/censoring indicator for outcome: covid death/ITU adm."
 label var covid_tpp_prob_or_susp		"Failure/censoring indicator for outcome: covid prob/susp. case"
 label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid prob case"
+label var  non_covid_death				"Failure/censoring indicator for outcome: non-covid death"
 label var date_covid_death_itu 			"Date of ONS COVID Death or ICNARC ITU admission"
 label var date_covid_tpp_prob_or_susp	"Date of covid TPP case (probable or suspected)"
 label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
+label var died_date_onsnoncovid	 		"Date of ONS non-COVID Death"
 
 * Survival times
 label var  stime_covid_death_itu 			"Survival time (date); outcome covid death/ITU adm."
 label var  stime_covid_tpp_prob_or_susp		"Survival tme (date); outcome "
 label var  stime_covid_tpp_prob				"Survival tme (date); outcome "
+label var  stime_non_covid_death				"Survival tme (date); outcome non_covid_death	"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
@@ -766,6 +772,14 @@ save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", replace
 
 use $tempdir\analysis_dataset, clear
 * Save a version set on ONS covid death outcome
+stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+
+
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace	
+
+use $tempdir\analysis_dataset, clear
+* Save a version set on ONS covid death outcome
 stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 	
@@ -775,11 +789,14 @@ save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", rep
 
 use $tempdir\analysis_dataset, clear
 * Save a version set on ONS covid death outcome
-stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
+stset stime_non_covid_death, fail(non_covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 
 
-save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace
+save "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death.dta", replace
+	
+
+
 	
 	
 * Close log file 
