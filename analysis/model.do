@@ -73,7 +73,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-sleep 
+/*sleep 
 
 *covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
 foreach outcome of any non_covid_death  {
