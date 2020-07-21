@@ -583,7 +583,7 @@ gen died_date_onsnoncovid = died_date_ons if died_ons_covid_flag_any != 1
 
 
 *Date Covid death in ONS or ITU admission in ICNARC
-gen date_covid_death_itu = min(died_date_onsnoncovid, icu_date_admitted)
+gen date_covid_death_itu = min(died_date_onscovid, icu_date_admitted)
 *Date probable or suspected covid in TPP
 gen date_covid_tpp_prob_or_susp = min(covid_tpp_probable, covid_tpp_suspected)
 *Date probable covid in TPP

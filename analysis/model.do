@@ -66,6 +66,16 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_m
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
+
+
+/*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+foreach outcome of any non_covid_death  {
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
+}
+
+
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
@@ -73,7 +83,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-/*sleep 
+*sleep 
 
 *covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
 foreach outcome of any non_covid_death  {
