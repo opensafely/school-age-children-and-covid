@@ -38,7 +38,8 @@ do "03b_an_descriptive_table_1.do"
 * covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
 do "04a_an_descriptive_tables.do"
 
-foreach outcome of any non_covid_death {
+*covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
+foreach outcome of any covid_death_itu   {
 do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
@@ -53,8 +54,8 @@ do "05_an_descriptive_plots.do"
 *   because of the ways the resulting log files are named
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
-foreach outcome of any non_covid_death  {
+*covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
+foreach outcome of any covid_death_itu   {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -66,6 +67,16 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_m
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
+
+
+/*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+foreach outcome of any non_covid_death  {
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
+}
+
+
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
@@ -73,7 +84,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-/*sleep 
+*sleep 
 
 *covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
 foreach outcome of any non_covid_death  {

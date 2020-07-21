@@ -133,25 +133,6 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEM
 else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 
-
-
-*Which variable is flipping the ORs
-
-*Add obesity
-capture stcox 	`exposure' age1 age2 age3 i.male i.obese4cat, strata(stp) vce(cluster household_size)
-
-*Add smoking
-capture stcox 	`exposure' age1 age2 age3 i.male  i.smoke_nomiss ///
-			, strata(stp) vce(cluster household_size)
-
-*Add imd
-capture stcox 	`exposure' age1 age2 age3 i.male ///
-			i.imd, strata(stp) vce(cluster household_size)
-			
-*Add total in hh
-capture stcox 	`exposure' age1 age2 age3 i.male ///
-			i.tot_people_hh, strata(stp) vce(cluster household_size)
-
 }			
 
 log close
