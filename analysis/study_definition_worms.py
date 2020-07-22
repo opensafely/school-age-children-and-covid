@@ -144,6 +144,28 @@ study = StudyDefinition(
         },
     ),
 
+    care_home_type=patients.care_home_status_as_of(
+        "2020-02-01",
+        categorised_as={
+            "PC": """
+              IsPotentialCareHome
+              AND LocationDoesNotRequireNursing='Y'
+              AND LocationRequiresNursing='N'
+            """,
+            "PN": """
+              IsPotentialCareHome
+              AND LocationDoesNotRequireNursing='N'
+              AND LocationRequiresNursing='Y'
+            """,
+            "PS": "IsPotentialCareHome",
+            "U": "DEFAULT",
+        },
+        return_expectations={
+            "rate": "universal",
+            "category": {"ratios": {"PC": 0.01, "PN": 0.01, "PS": 0.01, "U": 0.97,},},
+        },
+    ),
+
 
     # CONTINUOUS MEASURED COVARIATES
     bmi=patients.most_recent_bmi(
