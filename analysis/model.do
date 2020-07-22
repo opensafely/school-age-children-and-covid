@@ -20,6 +20,9 @@ global tempdir    "tempdata"
 
 ********************************************************************************
 
+/*Tab all variables in initial extract*/
+sum, d
+
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
 
