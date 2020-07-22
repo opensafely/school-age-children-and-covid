@@ -103,7 +103,7 @@ mkspline age = age, cubic nknots(4)
 
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
 tab care_home_type household_size
-drop if care_home_type==
+drop if care_home_type!="U"
 
 count
 noi di "DROP if HH ID==0"
@@ -617,7 +617,7 @@ gen covid_death = (died_date_onscovid < .)
 gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp, dereg_date)
 gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
 gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid, dereg_date)
-gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, date_covid_death, dereg_date)
+gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, dereg_date)
 
 
 * If outcome was after censoring occurred, set to zero

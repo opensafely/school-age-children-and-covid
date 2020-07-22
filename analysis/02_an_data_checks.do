@@ -111,8 +111,8 @@ foreach comorb in $varlist {
 }
 
 * Outcome dates
-summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
-summ  date_covid_death_itu  date_covid_tpp_prob died_date_onsnoncovid, format
+summ  date_covid_tpp_prob date_covid_tpp_prob_or_susp, format
+summ  died_date_onsnoncovid  died_date_onscovid, format
 
 *censor dates
 summ dereg_date
@@ -240,9 +240,9 @@ foreach var of varlist  asthma						///
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
-safetab covid_death_itu covid_tpp_prob_or_susp  , row col
-safetab covid_death_itu covid_tpp_prob  , row col
-safetab died_date_onsnoncovid covid_death_itu  , row col
+safetab covid_death covid_tpp_prob_or_susp  , row col
+safetab covid_death covid_tpp_prob  , row col
+safetab non_covid_death covid_death  , row col
 
 * Close log file 
 log close

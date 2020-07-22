@@ -100,8 +100,10 @@ mkspline age = age, cubic nknots(4)
 
 
 
-
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+tab care_home_type household_size
+drop if care_home_type!="U"
+
 count
 noi di "DROP if HH ID==0"
 count if household_id==0
