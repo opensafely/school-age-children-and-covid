@@ -62,7 +62,7 @@ datacheck inlist(number_kids, 0,1,2,3,4,5,6,7,8,9), nol
 
 * Age
 datacheck age<., nol
-datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6), nol
+datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6,7), nol
 datacheck inlist(age66, 0, 1), nol
 
 * Sex

@@ -41,7 +41,7 @@ study = StudyDefinition(
     ),
 
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,

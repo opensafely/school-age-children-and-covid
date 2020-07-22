@@ -85,7 +85,11 @@ foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models" `outcome'	
 }
 
-
+*AGE STRATIFIED ANLYSIS
+*run log to show models
+foreach outcome of any  covid_death {
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "16_age_stratified_analysis.do" `outcome'
+}
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *       															*
@@ -145,6 +149,8 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_06_univariate_a
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
+
+
 
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 

@@ -35,18 +35,18 @@ study = StudyDefinition(
     # OUTCOMES
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,

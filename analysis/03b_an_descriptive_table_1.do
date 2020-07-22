@@ -72,7 +72,7 @@ file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3.txt, 
 
 
 use $tempdir\analysis_dataset, clear
-drop if age>60
+drop if age>66
 
 gen byte cons=1
 tabulatevariable, variable(cons) start(1) end(1) outcome(kids_cat3)
