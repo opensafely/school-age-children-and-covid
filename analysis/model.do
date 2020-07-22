@@ -46,32 +46,29 @@ do "04b_an_descriptive_table_2.do" `outcome'
 do "05_an_descriptive_plots.do"
 
 
-*Univariate models can be run in parallel Stata instances for speed
-*Command is "do an_univariable_cox_models <OUTCOME> <VARIABLE(s) TO RUN>
-*The following breaks down into 4 batches, 
-*  which can be done in separate Stata instances
-*Can be broken down further but recommend keeping in alphabetical order
-*   because of the ways the resulting log files are named
+*When running in parallel locally use "C:\Program Files (x86)\Stata15\stata-64.exe"
+*When running on server use "c:\program files\stata16\statamp-64.exe"
+
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
-winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
 		kids_cat3 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 
 
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
+foreach outcome of any  covid_death covid_tpp_prob  {
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
 }
 
 
@@ -85,7 +82,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *INTERACTIONS
 *Create models
 foreach outcome of any  covid_death covid_tpp_prob    {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models" `outcome'	
 }
 
 
@@ -139,14 +136,14 @@ do "WORMS_05_an_descriptive_plots.do"
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 
 foreach outcome of any worms {
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_06_univariate_analysis.do" `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
 		
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 ************************************************************

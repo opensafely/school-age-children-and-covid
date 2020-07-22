@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models.do
+*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense3.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -15,7 +15,8 @@
 ********************************************************************************
 *
 *	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models. 
+*					Cox models for a sense analysis including only those with complete 
+*					ethnicity data
 *  
 ********************************************************************************
 *	
