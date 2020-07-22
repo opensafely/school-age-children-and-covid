@@ -114,6 +114,11 @@ foreach comorb in $varlist {
 summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
 summ  date_covid_death_itu  date_covid_tpp_prob died_date_onsnoncovid, format
 
+*censor dates
+summ dereg_date
+summ has_3_m
+summ has_12_m
+
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables

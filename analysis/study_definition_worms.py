@@ -24,14 +24,8 @@ study = StudyDefinition(
     },
 
     # STUDY POPULATION
-    population=patients.satisfying(
-        """
-        household_size <=10
-        """
-    ),
-
     dereg_date=patients.date_deregistered_from_all_supported_practices(
-        on_or_before="2018-02-01", date_format="YYYY-MM",
+        on_or_before="2020-08-01", date_format="YYYY-MM",
     ),
 
     # OUTCOMES

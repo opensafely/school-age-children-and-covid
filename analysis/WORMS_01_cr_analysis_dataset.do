@@ -102,6 +102,16 @@ mkspline age = age, cubic nknots(4)
 
 
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+count
+noi di "DROP if HH ID==0"
+count if household_id==0
+drop if household_id==0
+count
+
+noi di "DROP HH>=10 persons:"
+sum household_size, d
+drop if household_size>=10
+count
 
 noi di "DROP MISSING GENDER:"
 recode male .=9

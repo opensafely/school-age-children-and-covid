@@ -35,11 +35,11 @@ do "02_an_data_checks.do"
 do "03a_an_descriptive_tables.do"
 do "03b_an_descriptive_table_1.do" 
 
-* covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+* covid_death  covid_tpp_prob  covid_tpp_prob_or_susp
 do "04a_an_descriptive_tables.do"
 
 *covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
-foreach outcome of any covid_death_itu   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
@@ -54,8 +54,7 @@ do "05_an_descriptive_plots.do"
 *   because of the ways the resulting log files are named
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-*covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
-foreach outcome of any covid_death_itu   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -69,8 +68,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 
 
 
-/*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
-foreach outcome of any non_covid_death  {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
@@ -86,46 +84,45 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 
 *sleep 
 
-*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
-foreach outcome of any non_covid_death  {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
 }
 
-/*
-foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
+
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
 
-/*INTERACTIONS
+*INTERACTIONS
 *Create models
-foreach outcome of any covid_tpp_prob covid_death_itu {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
 }
 
-/*Tabulate results
-foreach outcome of any covid_tpp_prob covid_death_itu {
+*Tabulate results
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
 
 ***SENSE ANALYSIS
 *CC ETH
-foreach outcome of any covid_tpp_prob covid_death_itu {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
 	}
 
 *CC ETH BMI SMOK
-foreach outcome of any covid_tpp_prob covid_death_itu {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
 	}
 
 *DROP IF <12M FUP
-foreach outcome of any covid_tpp_prob covid_death_itu {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
 	}
 
 *CC BMI SMOK (not includ. ethnicity)
-foreach outcome of any covid_tpp_prob covid_death_itu {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
 	}*/
 	
