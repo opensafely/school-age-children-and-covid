@@ -84,7 +84,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 
 *INTERACTIONS
 *Create models
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
 }
 
@@ -166,7 +166,7 @@ foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_pr
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
 }
 
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death  covid_tpp_prob    {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
