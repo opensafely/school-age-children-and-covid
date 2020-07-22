@@ -80,7 +80,7 @@ safetab stp
 
 
 * Outcomes
-foreach var in itu_admission covid_deathnon_covid_deathcovid_death_itu ///
+foreach var in itu_admission covid_death non_covid_deathcovid_death_itu ///
 covid_tpp_prob_or_susp covid_tpp_prob {
 safetab `var'
 safetab `var' kids_cat3, col row
