@@ -123,6 +123,7 @@ bysort household_id: egen male_drop=max(male)
 drop if male_drop==9
 count
 
+
 noi di "DROP AGE MISSING:"
 recode age .=9
 recode age .u=9
@@ -626,6 +627,7 @@ replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
 replace non_covid_death = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date)
 replace covid_death = 0 if (died_date_onscovid > onscoviddeathcensor_date)
 
+
 * Format date variables
 format  stime* %td 
 
@@ -798,11 +800,6 @@ stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 	
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", replace
-
-
-
-
-
 
 	
 	

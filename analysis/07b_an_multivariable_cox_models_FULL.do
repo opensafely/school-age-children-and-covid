@@ -92,8 +92,7 @@ timer list
 end
 *************************************************************************************
 
-foreach exposure_type in 	kids_cat3  ///
-		gp_number_kids {
+foreach exposure_type in 	kids_cat3  {
 
 *Age spline model (not adj ethnicity)
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
@@ -110,7 +109,6 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 	timer list
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
-
 
 }
 
@@ -130,6 +128,17 @@ else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 }	
 
+ 
+ 
+ foreach exposure_type in	gp_number_kids {
+*Age spline model (not adj ethnicity)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth, replace
+}
+else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+}
 
 log close
 

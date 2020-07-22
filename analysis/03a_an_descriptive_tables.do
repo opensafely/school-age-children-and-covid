@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		04a_an_descriptive_tables.do
+*	Do-file:		03a_an_descriptive_tables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -25,7 +25,7 @@
 
 * Open a log file
 capture log close
-log using "$logdir\04a_an_descriptive_tables", replace t
+log using "$logdir\03a_an_descriptive_tables", replace t
 
 use $tempdir\analysis_dataset, clear
 
@@ -80,12 +80,11 @@ safetab stp
 
 
 * Outcomes
-safetab covid_death
-safetab covid_tpp_prob_or_susp
-safetab covid_tpp_prob
-safetab non_covid_death
-
-
+foreach var in covid_death non_covid_death  ///
+covid_tpp_prob_or_susp covid_tpp_prob {
+safetab `var'
+safetab `var' kids_cat3, col row
+}
 
 
 
