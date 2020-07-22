@@ -82,26 +82,10 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-*sleep 
-
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}
-
-
-foreach outcome of any  covid_death   {
-	do "09_an_agesplinevisualisation.do" `outcome'
-}
-
 *INTERACTIONS
 *Create models
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
-}
-
-*Tabulate results
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
 
@@ -194,6 +178,27 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariabl
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-/*foreach outcome of any worms  {
+forvalues i = 1/24 {
+    di `i'
+    sleep 10000
+}
+*pauses Stata for 4 minutes
+
+*Tabulate results
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
+}
+
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
+}
+
+
+foreach outcome of any  covid_death   {
+	do "09_an_agesplinevisualisation.do" `outcome'
+}
+
+
+foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}*/	
+}*
