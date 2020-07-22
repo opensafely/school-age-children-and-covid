@@ -28,7 +28,7 @@
 ********************************************************************************
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
