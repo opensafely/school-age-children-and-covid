@@ -89,29 +89,6 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 }
 
 
-***SENSE ANALYSIS
-*CC ETH
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
-	}
-
-*CC ETH BMI SMOK
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
-	}
-
-*DROP IF <12M FUP
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
-	}
-
-*CC BMI SMOK (not includ. ethnicity)
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
-	}*/
-	
-	
-	
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *       															*
@@ -186,19 +163,38 @@ forvalues i = 1/24 {
 
 *Tabulate results
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
-}
-
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
 }
 
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
+}
 
 foreach outcome of any  covid_death   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
 
+***SENSE ANALYSIS
+*CC ETH
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
+	}
+
+*CC ETH BMI SMOK
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
+	}
+
+*DROP IF <12M FUP
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
+	}
+
+*CC BMI SMOK (not includ. ethnicity)
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
+	}
 
 foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}*
+}
