@@ -89,7 +89,7 @@ foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_pr
 }
 
 
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
 
