@@ -102,6 +102,9 @@ mkspline age = age, cubic nknots(4)
 
 
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+tab care_home_type household_size
+drop if care_home_type==
+
 count
 noi di "DROP if HH ID==0"
 count if household_id==0
@@ -657,7 +660,7 @@ label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
 lab var tot_people_hh				"Number of people in household"
-
+lab var care_home_type				"Care home type"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
