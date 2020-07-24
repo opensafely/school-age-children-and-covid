@@ -662,7 +662,6 @@ lab var shield "Probable shielding"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
-label var  has_12_m_follow_up			"Has 12 months follow-up"
 label var enter_date					"Date of study entry"
 lab var  dereg_date						"Date deregistration from practice"
 
