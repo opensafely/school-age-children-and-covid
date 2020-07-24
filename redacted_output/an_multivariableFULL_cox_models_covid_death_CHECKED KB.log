@@ -1,0 +1,428 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\school-age-children-and-covid\analysis\log\an_multivariableFULL_cox_models_covid_death.log
+  log type:  text
+ opened on:  24 Jul 2020, 13:43:21
+
+. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+
+. 
+. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2. 
+.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6.         capture stcox   `exposure' `age'                ///
+>                         i.male                                                  ///
+>                         `bmi'                                                   ///
+>                         `smoking'                                               ///
+>                         `ethnicity'                                             ///
+>                         i.imd                                                   ///
+>                         i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabetes                                              ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.cancer_haem_cat                               ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.organ_trans                                   ///
+>                         i.tot_adults_hh                                 ///
+>                         i.asplenia                                              ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  ///
+>                         `if'                                                    ///
+>                         , strata(stp) vce(cluster household_id)
+  7. timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. foreach exposure_type in        kids_cat3  {
+  2. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+  3. if _rc==0{
+  4. estimates
+  5. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth, replace
+  6. *estat concordance /*c-statistic*/
+.         /*  Proportional Hazards test  */
+.         * Based on Schoenfeld residuals
+.         timer clear 
+  7.         timer on 1
+  8.         if e(N_fail)>0 estat phtest, d
+  9.         timer off 1
+ 10.         timer list
+ 11. }
+ 12. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 13. 
+. }
+   1:    141.72 /        1 =     141.7170
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   12,492,080             Number of obs    =     376,101
+No. of failures      =        1,380
+Time at risk         =   1698315732
+                                                Wald chi2(37)    =     4352.85
+Log pseudolikelihood =   -16097.917             Prob > chi2      =      0.0000
+
+                                      (Std. Err. adjusted for 368,774 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   .8330252   .0834989    -1.82   0.068     .6844432    1.013862
+               Kids under 18  |   .9836872   .1101776    -0.15   0.883     .7898023    1.225168
+                              |
+                         age1 |   1.188771   .0590403     3.48   0.000     1.078507    1.310307
+                         age2 |   .8587415   .1144845    -1.14   0.253     .6612766    1.115172
+                         age3 |   1.179892   .4503366     0.43   0.665     .5584177    2.493019
+                       1.male |   1.899101   .1154593    10.55   0.000     1.685767    2.139431
+                              |
+                    obese4cat |
+           Obese I (30-34.9)  |   1.203376   .0907487     2.45   0.014     1.038032    1.395056
+          Obese II (35-39.9)  |   1.832689   .1710721     6.49   0.000     1.526278    2.200615
+             Obese III (40+)  |   1.998464   .2266137     6.11   0.000     1.600203    2.495844
+                              |
+                 smoke_nomiss |
+                      Former  |   .9962694     .06363    -0.06   0.953     .8790468    1.129124
+                     Current  |   .6415103    .057101    -4.99   0.000     .5388128    .7637819
+                              |
+                          imd |
+                           2  |   1.191559   .1274936     1.64   0.101     .9661381    1.469575
+                           3  |   1.328221   .1390921     2.71   0.007     1.081762     1.63083
+                           4  |   1.883284   .1866512     6.39   0.000     1.550793    2.287062
+             5 most deprived  |   1.914933   .2027821     6.14   0.000     1.556021    2.356631
+                              |
+           1.htdiag_or_highbp |   1.245891   .0807303     3.39   0.001     1.097298    1.414606
+1.chronic_respiratory_disease |   2.582724   .2414158    10.15   0.000     2.150371    3.102006
+                     1.asthma |   1.145027   .0857535     1.81   0.071      .988707    1.326063
+    1.chronic_cardiac_disease |   1.604481   .1378094     5.50   0.000      1.35589    1.898648
+                   1.diabetes |   2.406937   .1680305    12.58   0.000     2.099141    2.759865
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   4.203025   .8381501     7.20   0.000     2.843274    6.213053
+               2-5 years ago  |   2.569658   .4033656     6.01   0.000     1.889123    3.495349
+                    5+ years  |   1.509072   .2372161     2.62   0.009     1.108937    2.053587
+                              |
+              cancer_haem_cat |
+                   Last year  |   5.864755   2.594942     4.00   0.000     2.463905    13.95969
+               2-5 years ago  |   7.342466   1.953825     7.49   0.000     4.358508    12.36933
+                    5+ years  |    2.28864   .6591035     2.87   0.004     1.301489    4.024522
+                              |
+      1.chronic_liver_disease |    3.50814   .5568367     7.91   0.000     2.570208    4.788347
+            1.stroke_dementia |   1.708671   .2377247     3.85   0.000     1.300865     2.24432
+                1.other_neuro |   5.001294   .7073189    11.38   0.000     3.790525    6.598807
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   2.411439    .259287     8.19   0.000     1.953223     2.97715
+           Stage 4/5 egfr<30  |   9.938645   1.731963    13.18   0.000     7.063047    13.98499
+                              |
+                1.organ_trans |    1.86105   .4470518     2.59   0.010     1.162216    2.980089
+                              |
+                tot_adults_hh |
+                           2  |   .8145005   .0625986    -2.67   0.008     .7006032    .9469141
+                           3  |   1.123182   .0834091     1.56   0.118     .9710434    1.299157
+                              |
+                   1.asplenia |   1.372276   .6480046     0.67   0.503     .5438692    3.462491
+           1.ra_sle_psoriasis |   1.323115   .1360056     2.72   0.006     1.081685    1.618431
+               1.other_immuno |   2.650664   .6264716     4.12   0.000     1.667928    4.212423
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth.ster not found)
+file ./output/an_multivariate_cox_models_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.00093         0.00        1         0.9672
+      2.kids_cat3 |     -0.01029         0.18        1         0.6708
+      age1        |      0.05290         3.89        1         0.0485
+      age2        |     -0.04242         2.75        1         0.0972
+      age3        |      0.03599         2.07        1         0.1504
+      0b.male     |            .            .        1             .
+      1.male      |     -0.01904         0.63        1         0.4282
+      1b.obese4cat|            .            .        1             .
+      2.obese4cat |     -0.05424         5.34        1         0.0209
+      3.obese4cat |     -0.05693         6.50        1         0.0108
+      4.obese4cat |     -0.09281        18.24        1         0.0000
+      1b.smoke_n~s|            .            .        1             .
+      2.smoke_no~s|     -0.02514         1.04        1         0.3083
+      3.smoke_no~s|      0.06256         6.69        1         0.0097
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.04909         3.75        1         0.0527
+      3.imd       |      0.05241         4.55        1         0.0329
+      4.imd       |      0.07062         8.21        1         0.0042
+      5.imd       |      0.07043         8.72        1         0.0031
+      0b.htdiag_~p|            .            .        1             .
+      1.htdiag_o~p|     -0.00563         0.06        1         0.8090
+      0b.chronic..|            .            .        1             .
+      1.~y_disease|     -0.01690         0.57        1         0.4501
+      0b.asthma   |            .            .        1             .
+      1.asthma    |      0.01396         0.35        1         0.5530
+      0b.chronic..|            .            .        1             .
+      1.~c_disease|      0.01114         0.27        1         0.6062
+      0b.diabetes |            .            .        1             .
+      1.diabetes  |     -0.05754         7.20        1         0.0073
+      1b.c~exhae~t|            .            .        1             .
+      2.cancer_e~t|      0.03941         3.13        1         0.0769
+      3.cancer_e~t|      0.04482         3.97        1         0.0462
+      4.cancer_e~t|      0.02883         1.41        1         0.2349
+      1b.cancer_..|            .            .        1             .
+      2.cancer_h~t|      0.03382         1.99        1         0.1579
+      3.cancer_h~t|     -0.03005         2.01        1         0.1565
+      4.cancer_h~t|      0.04311         3.32        1         0.0685
+      0b.chronic..|            .            .        1             .
+      1.~r_disease|      0.07270        15.43        1         0.0001
+      0b.stroke_~a|            .            .        1             .
+      1.stroke_d~a|      0.00475         0.06        1         0.8064
+      0b.other_n~o|            .            .        1             .
+      1.other_ne~o|      0.00404         0.04        1         0.8469
+      1b.reduced~t|            .            .        1             .
+      2.reduced_~t|     -0.01230         0.30        1         0.5840
+      3.reduced_~t|     -0.00153         0.01        1         0.9343
+      0b.organ_t~s|            .            .        1             .
+      1.organ_tr~s|     -0.01084         0.32        1         0.5744
+      1b.tot_adu~h|            .            .        1             .
+      2.tot_adul~h|      0.00350         0.02        1         0.8847
+      3.tot_adul~h|      0.01279         0.27        1         0.6024
+      0b.asplenia |            .            .        1             .
+      1.asplenia  |     -0.05223         4.59        1         0.0321
+      0b.ra_sle_~s|            .            .        1             .
+      1.ra_sle_p~s|      0.01709         0.51        1         0.4764
+      0b.other_i~o|            .            .        1             .
+      1.other_im~o|     -0.04028         3.69        1         0.0548
+      ------------+---------------------------------------------------
+      global test |                     93.57       37         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:    176.50 /        1 =     176.5040
+
+. 
+. *SENSITIVITY ANALYSIS: 12 months FUP
+. drop if has_12_m_follow_up == .
+(0 observations deleted)
+
+. foreach exposure_type in kids_cat3   {
+  2. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+  3. if _rc==0{
+  4. estimates
+  5. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth12mo, replace
+  6. *estat concordance /*c-statistic*/
+. }
+  7. else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
+  8. 
+. 
+. }       
+   1:    130.99 /        1 =     130.9860
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   12,492,080             Number of obs    =     376,101
+No. of failures      =        1,380
+Time at risk         =   1698315732
+                                                Wald chi2(37)    =     4352.85
+Log pseudolikelihood =   -16097.917             Prob > chi2      =      0.0000
+
+                                      (Std. Err. adjusted for 368,774 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   .8330252   .0834989    -1.82   0.068     .6844432    1.013862
+               Kids under 18  |   .9836872   .1101776    -0.15   0.883     .7898023    1.225168
+                              |
+                         age1 |   1.188771   .0590403     3.48   0.000     1.078507    1.310307
+                         age2 |   .8587415   .1144845    -1.14   0.253     .6612766    1.115172
+                         age3 |   1.179892   .4503366     0.43   0.665     .5584177    2.493019
+                       1.male |   1.899101   .1154593    10.55   0.000     1.685767    2.139431
+                              |
+                    obese4cat |
+           Obese I (30-34.9)  |   1.203376   .0907487     2.45   0.014     1.038032    1.395056
+          Obese II (35-39.9)  |   1.832689   .1710721     6.49   0.000     1.526278    2.200615
+             Obese III (40+)  |   1.998464   .2266137     6.11   0.000     1.600203    2.495844
+                              |
+                 smoke_nomiss |
+                      Former  |   .9962694     .06363    -0.06   0.953     .8790468    1.129124
+                     Current  |   .6415103    .057101    -4.99   0.000     .5388128    .7637819
+                              |
+                          imd |
+                           2  |   1.191559   .1274936     1.64   0.101     .9661381    1.469575
+                           3  |   1.328221   .1390921     2.71   0.007     1.081762     1.63083
+                           4  |   1.883284   .1866512     6.39   0.000     1.550793    2.287062
+             5 most deprived  |   1.914933   .2027821     6.14   0.000     1.556021    2.356631
+                              |
+           1.htdiag_or_highbp |   1.245891   .0807303     3.39   0.001     1.097298    1.414606
+1.chronic_respiratory_disease |   2.582724   .2414158    10.15   0.000     2.150371    3.102006
+                     1.asthma |   1.145027   .0857535     1.81   0.071      .988707    1.326063
+    1.chronic_cardiac_disease |   1.604481   .1378094     5.50   0.000      1.35589    1.898648
+                   1.diabetes |   2.406937   .1680305    12.58   0.000     2.099141    2.759865
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   4.203025   .8381501     7.20   0.000     2.843274    6.213053
+               2-5 years ago  |   2.569658   .4033656     6.01   0.000     1.889123    3.495349
+                    5+ years  |   1.509072   .2372161     2.62   0.009     1.108937    2.053587
+                              |
+              cancer_haem_cat |
+                   Last year  |   5.864755   2.594942     4.00   0.000     2.463905    13.95969
+               2-5 years ago  |   7.342466   1.953825     7.49   0.000     4.358508    12.36933
+                    5+ years  |    2.28864   .6591035     2.87   0.004     1.301489    4.024522
+                              |
+      1.chronic_liver_disease |    3.50814   .5568367     7.91   0.000     2.570208    4.788347
+            1.stroke_dementia |   1.708671   .2377247     3.85   0.000     1.300865     2.24432
+                1.other_neuro |   5.001294   .7073189    11.38   0.000     3.790525    6.598807
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   2.411439    .259287     8.19   0.000     1.953223     2.97715
+           Stage 4/5 egfr<30  |   9.938645   1.731963    13.18   0.000     7.063047    13.98499
+                              |
+                1.organ_trans |    1.86105   .4470518     2.59   0.010     1.162216    2.980089
+                              |
+                tot_adults_hh |
+                           2  |   .8145005   .0625986    -2.67   0.008     .7006032    .9469141
+                           3  |   1.123182   .0834091     1.56   0.118     .9710434    1.299157
+                              |
+                   1.asplenia |   1.372276   .6480046     0.67   0.503     .5438692    3.462491
+           1.ra_sle_psoriasis |   1.323115   .1360056     2.72   0.006     1.081685    1.618431
+               1.other_immuno |   2.650664   .6264716     4.12   0.000     1.667928    4.212423
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth12mo.ster not found)
+file ./output/an_multivariate_cox_models_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth12mo.ster saved
+
+. 
+.  
+.  
+.  foreach exposure_type in       gp_number_kids {
+  2. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+  3. if _rc==0{
+  4. estimates
+  5. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth, replace
+  6. }
+  7. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+  8. }
+   1:    122.54 /        1 =     122.5410
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   12,492,080             Number of obs    =     376,101
+No. of failures      =        1,380
+Time at risk         =   1698315732
+                                                Wald chi2(39)    =     4354.20
+Log pseudolikelihood =   -16097.616             Prob > chi2      =      0.0000
+
+                                      (Std. Err. adjusted for 368,774 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+               gp_number_kids |
+              only >12 years  |   .9835848   .1101756    -0.15   0.883     .7897054    1.225063
+                 1 child <12  |   .8647295   .1016954    -1.24   0.217     .6867138    1.088892
+              2 children <12  |   .8153012   .1355858    -1.23   0.219     .5885212    1.129469
+             3+ children <12  |    .694454    .209594    -1.21   0.227     .3843627    1.254717
+                              |
+                         age1 |   1.189784   .0591509     3.50   0.000      1.07932    1.311554
+                         age2 |   .8559904   .1143924    -1.16   0.245     .6587436    1.112299
+                         age3 |   1.193034   .4568057     0.46   0.645     .5632913    2.526812
+                       1.male |   1.898641   .1154815    10.54   0.000     1.685272    2.139024
+                              |
+                    obese4cat |
+           Obese I (30-34.9)  |   1.203617   .0907853     2.46   0.014     1.038209    1.395379
+          Obese II (35-39.9)  |   1.834122   .1711011     6.50   0.000     1.527641    2.202089
+             Obese III (40+)  |   1.997264   .2264996     6.10   0.000     1.599209    2.494399
+                              |
+                 smoke_nomiss |
+                      Former  |   .9958513   .0636039    -0.07   0.948     .8786769    1.128651
+                     Current  |   .6409143   .0570627    -5.00   0.000      .538288    .7631066
+                              |
+                          imd |
+                           2  |   1.191779   .1275239     1.64   0.101     .9663058    1.469863
+                           3  |   1.328851   .1391713     2.71   0.007     1.082255    1.631636
+                           4  |    1.88345     .18668     6.39   0.000      1.55091    2.287293
+             5 most deprived  |   1.917145   .2029567     6.15   0.000     1.557914     2.35921
+                              |
+           1.htdiag_or_highbp |   1.245515   .0806953     3.39   0.001     1.096985    1.414156
+1.chronic_respiratory_disease |   2.585043   .2415435    10.16   0.000     2.152447    3.104581
+                     1.asthma |   1.145257   .0857359     1.81   0.070     .9889639     1.32625
+    1.chronic_cardiac_disease |   1.606159   .1379544     5.52   0.000     1.357307    1.900636
+                   1.diabetes |   2.406945   .1680551    12.58   0.000     2.099107    2.759929
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   4.201721   .8380602     7.20   0.000     2.842167    6.211619
+               2-5 years ago  |   2.568097   .4031482     6.01   0.000     1.887935    3.493299
+                    5+ years  |   1.507582   .2370501     2.61   0.009     1.107744    2.051742
+                              |
+              cancer_haem_cat |
+                   Last year  |   5.863743   2.594696     4.00   0.000     2.463314    13.95822
+               2-5 years ago  |   7.343915   1.955023     7.49   0.000     4.358423    12.37445
+                    5+ years  |    2.28895   .6593887     2.87   0.004     1.301447    4.025742
+                              |
+      1.chronic_liver_disease |   3.506473   .5568889     7.90   0.000     2.568531    4.786919
+            1.stroke_dementia |   1.706063   .2376186     3.84   0.000     1.298496    2.241556
+                1.other_neuro |   4.998033   .7069092    11.38   0.000     3.787977    6.594637
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   2.413474   .2595983     8.19   0.000     1.954725    2.979886
+           Stage 4/5 egfr<30  |    9.97915   1.741746    13.18   0.000     7.088038     14.0495
+                              |
+                1.organ_trans |   1.855978   .4463216     2.57   0.010     1.158451      2.9735
+                              |
+                tot_adults_hh |
+                           2  |   .8147027   .0626252    -2.67   0.008     .7007585    .9471744
+                           3  |     1.1241   .0834548     1.58   0.115     .9718755    1.300168
+                              |
+                   1.asplenia |   1.369773   .6469764     0.67   0.505     .5427579    3.456936
+           1.ra_sle_psoriasis |   1.322551   .1359245     2.72   0.007     1.081261    1.617686
+               1.other_immuno |   2.644974   .6256171     4.11   0.000     1.663743    4.204909
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth.ster not found)
+file ./output/an_multivariate_cox_models_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth.ster saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\school-age-children-and-covid\analysis\log\an_multivariableFULL_cox_models_covid_death.log
+  log type:  text
+ closed on:  24 Jul 2020, 13:53:10
+----------------------------------------------------------------------------------------------------------------------------------
