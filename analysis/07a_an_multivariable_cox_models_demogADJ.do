@@ -69,9 +69,9 @@ timer on 1
 			`smoking'					///
 			`ethnicity'						///
 			i.imd 							///
-			i.tot_people_hh				///
+			i.tot_adults_hh				///
 			`if'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
 end
@@ -137,21 +137,21 @@ else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 stcox kids_cat3 age1 age2 age3  i.male	///
 			i.obese4cat					///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 	
 
 stcox kids_cat3 age1 age2 age3  i.male	///
 			i.smoke_nomiss			///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 			
 			
 stcox kids_cat3 age1 age2 age3  i.male	///
 			i.imd 							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 
 stcox kids_cat3 age1 age2 age3  i.male	///
-			i.tot_people_hh				///
-			, strata(stp) vce(cluster household_size)
+			i.tot_adults_hh				///
+			, strata(stp) vce(cluster household_id)
 			
 			
 	

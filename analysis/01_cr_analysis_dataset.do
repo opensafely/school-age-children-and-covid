@@ -169,16 +169,13 @@ lab val gp_number_kids gp_number_kids
 
 tab kids_cat3 gp_number_kids, miss
  
-*Total number people in household (to check hh size)
-bysort household_id: gen tot_people_hh=_N
-recode tot_people_hh 5/max=5
-
- 
 
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 drop if age<18
 
-
+*Total number adults in household (to check hh size)
+bysort household_id: gen tot_adults_hh=_N
+recode tot_adults_hh 3/max=3
 
 
 /* SET FU DATES===============================================================*/ 
@@ -617,8 +614,8 @@ gen covid_death = (died_date_onscovid < .)
 *gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
 gen stime_covid_tpp_prob_or_susp = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob_or_susp, dereg_date)
 gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
-gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid, dereg_date)
-gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, dereg_date)
+gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid)
+gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid)
 
 
 * If outcome was after censoring occurred, set to zero
@@ -661,8 +658,8 @@ label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
-lab var tot_people_hh				"Number of people in household"
 lab var care_home_type				"Care home type"
+lab var tot_adults_hh 				"Total number adults in hh"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"
@@ -744,7 +741,10 @@ drop `r(varlist)'
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
 
-
+*************TEMP DROP TO INVESTIGATE ASSOCIATIONS MORE EASILY******************
+noi di "DROP AGE >65:"
+drop if age > 65 & age != .
+count
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
@@ -774,6 +774,14 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on NON ONS covid death outcome
 stset stime_non_covid_death, fail(non_covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
+	
+*WEIGHTING - TO REDUCE TIME 
+set seed 30459820
+keep if _d==1|uniform()<.03
+gen pw = 1
+replace pw = (1/0.03) if _d==0
+stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death.dta", replace
 	
 
@@ -782,7 +790,15 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on covid death  outcome
 stset stime_covid_death, fail(covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-
+	
+	
+*WEIGHTING - TO REDUCE TIME 
+set seed 30459820
+keep if _d==1|uniform()<.03
+gen pw = 1
+replace pw = (1/0.03) if _d==0
+stset stime_covid_death [pweight = pw],  fail(covid_death) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", replace
 
 
@@ -790,7 +806,13 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on probable covid
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-
+*WEIGHTING - TO REDUCE TIME 
+set seed 30459820
+keep if _d==1|uniform()<.03
+gen pw = 1
+replace pw = (1/0.03) if _d==0
+stset stime_covid_tpp_prob [pweight = pw],  fail(covid_tpp_prob) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace	
 
@@ -799,9 +821,15 @@ use $tempdir\analysis_dataset, clear
 stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 	
+*WEIGHTING - TO REDUCE TIME 
+set seed 30459820
+keep if _d==1|uniform()<.03
+gen pw = 1
+replace pw = (1/0.03) if _d==0
+stset stime_covid_tpp_prob_or_susp [pweight = pw],  fail(covid_tpp_prob_or_susp) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", replace
 
-	
 	
 * Close log file 
 log close

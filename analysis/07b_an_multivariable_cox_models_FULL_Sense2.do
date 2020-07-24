@@ -45,7 +45,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariableFULL_cox_models_`outcome'_Sense2", text replace
+log using "$logdir\an_multivariableFULL_cox_models_`outcome'Sense2", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
@@ -82,12 +82,12 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.tot_people_hh					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
 			`if'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
 end

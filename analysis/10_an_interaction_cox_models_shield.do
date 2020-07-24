@@ -15,8 +15,7 @@
 ********************************************************************************
 *
 *	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models, with an interaction by age, sex, time period 
-*					and sheilding status. 
+*					Cox models, with an interaction by shielding status.
 *  
 ********************************************************************************
 *	
@@ -45,22 +44,11 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLY
 
 
 cap log close
-log using "$logdir\an_interaction_cox_models_`outcome'", text replace
+log using "$logdir\an_interaction_cox_models_`outcome'_shield", text replace
 
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 stset
-
-*Split data by time of study period: days to April 3rd (31 d March, 3d April)
-stsplit cat_time, at(0,34, 200)
-recode cat_time 34=1 200=2 
-recode `outcome' .=0 
-tab cat_time
- 
-/*Overlapping time periods
-gen cat_time0=1 if cat==0
-gen cat_time1=1 if cat==0 | cat==0.25
-*/
 	
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -88,17 +76,17 @@ timer on 1
 			i.reduced_kidney_function_cat	///
 			i.organ_trans			    	///
 			i.asplenia 						///
-			i.tot_people_hh				///
+			i.tot_adults_hh				///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno			///
 			`interaction'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 	timer off 1
 timer list
 end
 *************************************************************************************
 
-foreach int_type in age66 male cat_time shield {
+foreach int_type in shield {
 
 *Age interaction for 3-level exposure vars
 foreach exposure_type in kids_cat3  {

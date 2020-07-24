@@ -115,16 +115,16 @@ summ  date_covid_tpp_prob date_covid_tpp_prob_or_susp, format
 summ  died_date_onsnoncovid  died_date_onscovid, format
 
 *censor dates
-summ dereg_date
+summ dereg_date, format
 summ has_3_m
 summ has_12_m
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-safetab kids_cat3 tot_people_hh
-safetab number_kids tot_people_hh
-safetab household_size tot_people_hh
+safetab kids_cat3 tot_adults_hh
+safetab number_kids tot_adults_hh
+safetab household_size tot_adults_hh
 
 * BMI
 bysort bmicat: summ bmi

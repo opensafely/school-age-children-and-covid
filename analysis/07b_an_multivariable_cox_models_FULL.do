@@ -81,12 +81,12 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.tot_people_hh					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
 			`if'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
 end

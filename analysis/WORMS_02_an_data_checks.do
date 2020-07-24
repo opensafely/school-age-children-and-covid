@@ -62,7 +62,7 @@ datacheck inlist(number_kids, 0,1,2,3,4,5,6,7,8,9), nol
 
 * Age
 datacheck age<., nol
-datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6), nol
+datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6,7), nol
 datacheck inlist(age66, 0, 1), nol
 
 * Sex
@@ -117,9 +117,9 @@ summ  worms, format
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-safetab kids_cat3 tot_people_hh
-safetab number_kids tot_people_hh
-safetab household_size tot_people_hh
+safetab kids_cat3 tot_adults_hh
+safetab number_kids tot_adults_hh
+safetab household_size tot_adults_hh
 
 * BMI
 bysort bmicat: summ bmi

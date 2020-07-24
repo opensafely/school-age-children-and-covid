@@ -709,13 +709,13 @@ use $tempdir\analysis_dataset_worms, clear
 * Save a version set on CPNS survival outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_worms [pweight = pw],  fail(worms) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", replace
 
 
