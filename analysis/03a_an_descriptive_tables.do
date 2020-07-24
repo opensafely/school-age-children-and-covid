@@ -80,11 +80,12 @@ safetab stp
 
 
 * Outcomes
-foreach var in itu_admission covid_death non_covid_death covid_death_itu ///
+foreach var in covid_death non_covid_death  ///
 covid_tpp_prob_or_susp covid_tpp_prob {
 safetab `var'
 safetab `var' kids_cat3, col row
 }
+
 
 
 
@@ -127,30 +128,6 @@ safetab `var' kids_cat3, col row
 	safetab ethnicity 							kids_cat3, col m
 	*safetab urban 								kids_cat3, col
 	safetab stp 								kids_cat3, col
-
-********************************************
-*  Cumulative incidence of ONS COVID DEATH /ICNARC ITU ADM.*
-********************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROB/SUSP CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-***************************************
-*  Cumulative incidence of TPP COVID PROBABLE CASES *
-***************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
 
 * Close the log file
 log close

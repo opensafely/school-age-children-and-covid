@@ -152,7 +152,7 @@ for var hr lci uci pval : replace X=. if level<0
 
 
 sort varorder  level int_type int_level
-list in 1/10
+list 
 
 gen varx = 0.07
 gen levelx = 0.073

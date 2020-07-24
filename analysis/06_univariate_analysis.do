@@ -55,7 +55,7 @@ foreach var of any `varlist' {
 
 	*Fit and save model
 	cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
-	capture stcox `model' , strata(stp) vce(cluster household_size)
+	capture stcox `model' , strata(stp) vce(cluster household_id)
 	if _rc==0 {
 		estimates
 		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace

@@ -100,8 +100,20 @@ mkspline age = age, cubic nknots(4)
 
 
 
-
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+tab care_home_type household_size
+drop if care_home_type!="U"
+
+count
+noi di "DROP if HH ID==0"
+count if household_id==0
+drop if household_id==0
+count
+
+noi di "DROP HH>=10 persons:"
+sum household_size, d
+drop if household_size>=10
+count
 
 noi di "DROP MISSING GENDER:"
 recode male .=9
@@ -153,14 +165,12 @@ lab val gp_number_kids gp_number_kids
 
 tab kids_cat3 gp_number_kids, miss
  
-*Total number people in household (to check hh size)
-bysort household_id: gen tot_people_hh=_N
-recode tot_people_hh 5/max=5
-
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 drop if age<18
 
-
+*Total number adults in household (to check hh size)
+bysort household_id: gen tot_adults_hh=_N
+recode tot_adults_hh 3/max=3
 
 
 /* SET FU DATES===============================================================*/ 
@@ -608,7 +618,7 @@ label var stp 						"Sustainability and Transformation Partnership"
 label var age1 						"Age spline 1"
 label var age2 						"Age spline 2"
 label var age3 						"Age spline 3"
-lab var tot_people_hh				"Number of people in household"
+lab var tot_adults_hh 				"Total number adults in hh"
 
 
 * Comorbidities of interest 
@@ -652,8 +662,6 @@ lab var shield "Probable shielding"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
-label var  has_3_m_follow_up			"Has 3 months follow-up"
-label var  has_12_m_follow_up			"Has 12 months follow-up"
 label var enter_date					"Date of study entry"
 lab var  dereg_date						"Date deregistration from practice"
 
@@ -678,9 +686,6 @@ drop `r(varlist)'
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
-noi di "DROP THOSE WITHOUT 3 MO FUP"
-drop if has_3_m_follow_up == .
-
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
 	
@@ -699,7 +704,13 @@ use $tempdir\analysis_dataset_worms, clear
 * Save a version set on CPNS survival outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-
+*WEIGHTING - TO REDUCE TIME 
+set seed 30459820
+keep if _d==1|uniform()<.03
+gen pw = 1
+replace pw = (1/0.03) if _d==0
+stset stime_worms [pweight = pw],  fail(worms) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", replace
 
 

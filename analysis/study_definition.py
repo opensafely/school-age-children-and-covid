@@ -23,45 +23,38 @@ study = StudyDefinition(
         "incidence": 0.2,
     },
 
-    # STUDY POPULATION
-    population=patients.satisfying(
-        """
-    	household_size <=10
-    	"""
+   # STUDY POPULATION
+    population=patients.registered_with_one_practice_between(
+        "2019-11-01", "2020-02-01"
     ),
 
     dereg_date=patients.date_deregistered_from_all_supported_practices(
-        on_or_before="2018-02-01", date_format="YYYY-MM",
+        on_or_before="2020-08-01", date_format="YYYY-MM",
+    ),
+
+    # FOLLOW UP
+    has_12_m_follow_up=patients.registered_with_one_practice_between(
+        "2019-02-01", "2020-01-31", ### 12 months prior to 1st Feb 2020
+        return_expectations={
+            "incidence" : 0.95,
+        }
     ),
 
     # OUTCOMES
-    icu_date_admitted=patients.admitted_to_icu(
-        on_or_before="2020-06-01",
-        include_day=True,
-        returning="date_admitted",
-        find_first_match_in_period=True,
-    ),
-
-    died_date_cpns=patients.with_death_recorded_in_cpns(
-        on_or_before="2020-06-01",
-        returning="date_of_death",
-        include_month=True,
-        include_day=True,
-    ),
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ),
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-06-01",
+        on_or_before="2020-08-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
@@ -144,19 +137,7 @@ study = StudyDefinition(
         },
     ),
 
-    # FOLLOW UP
-    has_12_m_follow_up=patients.registered_with_one_practice_between(
-        "2019-02-01", "2020-01-31", ### 6 months prior to 1st Feb 2020
-        return_expectations={
-            "incidence" : 0.95,
-        }
-    ),
-    has_3_m_follow_up=patients.registered_with_one_practice_between(
-        "2019-11-01", "2020-01-31", ### 3 months prior to 1st Feb 2020
-        return_expectations={
-            "incidence" : 0.95,
-        }
-    ),
+
 
     # HOUSEHOLD INFORMATION
     household_id=patients.household_as_of(
@@ -174,6 +155,28 @@ study = StudyDefinition(
         return_expectations={
             "int": {"distribution": "normal", "mean": 3, "stddev": 1},
             "incidence": 1,
+        },
+    ),
+
+        care_home_type=patients.care_home_status_as_of(
+        "2020-02-01",
+        categorised_as={
+            "PC": """
+              IsPotentialCareHome
+              AND LocationDoesNotRequireNursing='Y'
+              AND LocationRequiresNursing='N'
+            """,
+            "PN": """
+              IsPotentialCareHome
+              AND LocationDoesNotRequireNursing='N'
+              AND LocationRequiresNursing='Y'
+            """,
+            "PS": "IsPotentialCareHome",
+            "U": "DEFAULT",
+        },
+        return_expectations={
+            "rate": "universal",
+            "category": {"ratios": {"PC": 0.01, "PN": 0.01, "PS": 0.01, "U": 0.97,},},
         },
     ),
 

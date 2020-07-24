@@ -20,6 +20,9 @@ global tempdir    "tempdata"
 
 ********************************************************************************
 
+/*Tab all variables in initial extract*/
+sum, d
+
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
 
@@ -35,27 +38,23 @@ do "02_an_data_checks.do"
 do "03a_an_descriptive_tables.do"
 do "03b_an_descriptive_table_1.do" 
 
-* covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
+* covid_death  covid_tpp_prob  covid_tpp_prob_or_susp
 do "04a_an_descriptive_tables.do"
 
 *covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
-foreach outcome of any covid_death_itu   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
 do "05_an_descriptive_plots.do"
 
 
-*Univariate models can be run in parallel Stata instances for speed
-*Command is "do an_univariable_cox_models <OUTCOME> <VARIABLE(s) TO RUN>
-*The following breaks down into 4 batches, 
-*  which can be done in separate Stata instances
-*Can be broken down further but recommend keeping in alphabetical order
-*   because of the ways the resulting log files are named
+*When running in parallel locally use "C:\Program Files (x86)\Stata15\stata-64.exe"
+*When running on server use "c:\program files\stata16\statamp-64.exe"
+
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-*covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
-foreach outcome of any covid_death_itu   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -69,8 +68,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 
 
 
-/*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
-foreach outcome of any non_covid_death  {
+foreach outcome of any  covid_death covid_tpp_prob  {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
@@ -84,53 +82,29 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-*sleep 
-
-*covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp
-foreach outcome of any non_covid_death  {
-	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}
-
-/*
-foreach outcome of any covid_tpp_prob covid_tpp_prob_or_susp covid_death_itu  {
-	do "09_an_agesplinevisualisation.do" `outcome'
-}
-
-/*INTERACTIONS
+*INTERACTIONS
+*foreach outcome of any  covid_death covid_tpp_prob    {
+*winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
+*}
 *Create models
-foreach outcome of any covid_tpp_prob covid_death_itu {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models" `outcome'	
+foreach outcome of any  covid_death covid_tpp_prob    {
+winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
+}
+*Create models
+foreach outcome of any  covid_death covid_tpp_prob    {
+winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
+}
+*Create models
+foreach outcome of any  covid_death covid_tpp_prob    {
+winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
+}
+*AGE STRATIFIED ANLYSIS
+*run log to show models
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob {
+winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.do" `outcome'
 }
 
-/*Tabulate results
-foreach outcome of any covid_tpp_prob covid_death_itu {
-	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
-}
 
-
-***SENSE ANALYSIS
-*CC ETH
-foreach outcome of any covid_tpp_prob covid_death_itu {
-	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
-	}
-
-*CC ETH BMI SMOK
-foreach outcome of any covid_tpp_prob covid_death_itu {
-	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
-	}
-
-*DROP IF <12M FUP
-foreach outcome of any covid_tpp_prob covid_death_itu {
-	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
-	}
-
-*CC BMI SMOK (not includ. ethnicity)
-foreach outcome of any covid_tpp_prob covid_death_itu {
-	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
-	}*/
-	
-	
-	
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *       															*
@@ -191,12 +165,55 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariabl
 winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
+
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-/*foreach outcome of any worms  {
+forvalues i = 1/24 {
+    di `i'
+    sleep 10000
+}
+*pauses Stata for 4 minutes: 1/24 whilst testing locally
+*pauses Stata for 1 mins: 1/360 whilst testing on server, on 5% weighted data
+*pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
+
+*Tabulate results
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
+}
+
+foreach outcome of any  covid_death  covid_tpp_prob    {
+	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
+}
+
+foreach outcome of any  covid_death   {
+	do "09_an_agesplinevisualisation.do" `outcome'
+}
+
+***SENSE ANALYSIS
+*CC ETH
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
+	}
+
+*CC ETH BMI SMOK
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
+	}
+
+*DROP IF <12M FUP
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
+	}
+
+*CC BMI SMOK (not includ. ethnicity)
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
+	}
+
+foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable_HRforest.do" `outcome'
-}*/	
+}

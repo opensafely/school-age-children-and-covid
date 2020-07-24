@@ -13,7 +13,7 @@ local outcome `1'
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
-estimates use ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth
+cap estimates use ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth
 
 if _rc==0{
 

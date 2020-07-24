@@ -62,7 +62,7 @@ datacheck inlist(number_kids, 0,1,2,3,4,5,6,7,8,9), nol
 
 * Age
 datacheck age<., nol
-datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6), nol
+datacheck inlist(agegroup, 1, 2, 3, 4, 5, 6,7), nol
 datacheck inlist(age66, 0, 1), nol
 
 * Sex
@@ -111,15 +111,19 @@ foreach comorb in $varlist {
 }
 
 * Outcome dates
-summ  date_covid_death_itu  date_covid_tpp_prob_or_susp, format
-summ  date_covid_death_itu  date_covid_tpp_prob died_date_onsnoncovid, format
+summ  date_covid_tpp_prob date_covid_tpp_prob_or_susp, format
+summ  died_date_onsnoncovid  died_date_onscovid, format
+
+*censor dates
+summ dereg_date, format
+summ has_12_m
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
 
 *HH variables
-safetab kids_cat3 tot_people_hh
-safetab number_kids tot_people_hh
-safetab household_size tot_people_hh
+safetab kids_cat3 tot_adults_hh
+safetab number_kids tot_adults_hh
+safetab household_size tot_adults_hh
 
 * BMI
 bysort bmicat: summ bmi
@@ -235,9 +239,9 @@ foreach var of varlist  asthma						///
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
-safetab covid_death_itu covid_tpp_prob_or_susp  , row col
-safetab covid_death_itu covid_tpp_prob  , row col
-safetab died_date_onsnoncovid covid_death_itu  , row col
+safetab covid_death covid_tpp_prob_or_susp  , row col
+safetab covid_death covid_tpp_prob  , row col
+safetab non_covid_death covid_death  , row col
 
 * Close log file 
 log close

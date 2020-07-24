@@ -87,7 +87,7 @@ file write tablecontent _n
 tabulatevariable, variable(imd) start(1) end(5) outcome(kids_cat3)
 file write tablecontent _n 
 
-tabulatevariable, variable(tot_people_hh) start(1) end(3) outcome(kids_cat3)
+tabulatevariable, variable(tot_adults_hh) start(1) end(3) outcome(kids_cat3)
 file write tablecontent _n 
 
 tabulatevariable, variable(bpcat) start(1) end(4) missing outcome(kids_cat3)

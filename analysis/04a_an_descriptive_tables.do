@@ -80,7 +80,8 @@ safetab stp
 
 
 * Outcomes
-safetab covid_death_itu
+safetab non_covid_death
+safetab covid_death
 safetab covid_tpp_prob_or_susp
 safetab covid_tpp_prob
 
@@ -93,7 +94,7 @@ safetab covid_tpp_prob
 *  Number (%) with each outcome  *
 **********************************
 
-foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp {
+foreach outvar of varlist covid_tpp_prob covid_death non_covid_death covid_tpp_prob_or_susp {
 
 *** Repeat for each outcome
 
@@ -134,10 +135,10 @@ foreach outvar of varlist covid_tpp_prob covid_death_itu covid_tpp_prob_or_susp 
 
 
 ********************************************
-*  Cumulative incidence of ONS COVID DEATH /ICNARC ITU ADM.*
+*  Cumulative incidence of ONS COVID DEATH*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_itu.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 

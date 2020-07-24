@@ -81,12 +81,12 @@ timer on 1
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.organ_trans 					///
-			i.tot_people_hh					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
 			`if'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
 end
@@ -110,8 +110,24 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAI
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
+}
 
- }
+*SENSITIVITY ANALYSIS: 12 months FUP
+drop if has_12_m_follow_up == .
+foreach exposure_type in kids_cat3   {
+
+*Age spline model (not adj ethnicity)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+if _rc==0{
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth12mo, replace
+*estat concordance /*c-statistic*/
+}
+else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
+
+
+}	
+
  
  
  foreach exposure_type in	gp_number_kids {
@@ -122,11 +138,7 @@ estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth, replace
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
-
-
- }
-
-
+}
 
 log close
 

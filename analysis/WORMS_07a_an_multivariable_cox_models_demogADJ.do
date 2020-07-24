@@ -66,9 +66,9 @@ timer on 1
 			`smoking'					///
 			`ethnicity'						///
 			i.imd 							///
-			i.tot_people_hh				///
+			i.tot_adults_hh				///
 			`if'							///
-			, strata(stp) vce(cluster household_size)
+			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
 end
