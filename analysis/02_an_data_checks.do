@@ -116,7 +116,6 @@ summ  died_date_onsnoncovid  died_date_onscovid, format
 
 *censor dates
 summ dereg_date, format
-summ has_3_m
 summ has_12_m
 
 /* LOGICAL RELATIONSHIPS======================================================*/ 
