@@ -723,7 +723,6 @@ label var  stime_covid_death				"Survival time (date); outcome covid death"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
-label var  has_3_m_follow_up			"Has 3 months follow-up"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
 lab var  dereg_date						"Date deregistration from practice"
  
@@ -748,10 +747,6 @@ count
 
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
-count
-
-noi di "DROP THOSE WITHOUT 3 MO FUP"
-drop if has_3_m_follow_up == .
 count
 
 noi di "DROP IF DIED BEFORE INDEX"

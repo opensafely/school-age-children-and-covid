@@ -662,7 +662,6 @@ lab var shield "Probable shielding"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
-label var  has_3_m_follow_up			"Has 3 months follow-up"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
 label var enter_date					"Date of study entry"
 lab var  dereg_date						"Date deregistration from practice"
@@ -688,9 +687,6 @@ drop `r(varlist)'
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
-noi di "DROP THOSE WITHOUT 3 MO FUP"
-drop if has_3_m_follow_up == .
-
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
 	
@@ -709,13 +705,13 @@ use $tempdir\analysis_dataset_worms, clear
 * Save a version set on CPNS survival outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_worms [pweight = pw],  fail(worms) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", replace
 
 
