@@ -61,13 +61,9 @@ study = StudyDefinition(
     ),
 
    covid_tpp_probable=patients.with_these_clinical_events(
-        covid_identification_in_primary_care_case_codes,
-        return_first_date_in_period=True,
-        include_month=True,
-        return_expectations={"date": {"earliest": "2020-02-01"}},
-    ), 
-   covid_tpp_suspected=patients.with_these_clinical_events(
-        covid_identification_in_primary_care_suspected_case_codes,
+        combine_codelists(covid_identification_in_primary_care_case_codes_clinical,
+                          covid_identification_in_primary_care_case_codes_test,
+                          covid_identification_in_primary_care_case_codes_seq),
         return_first_date_in_period=True,
         include_month=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
