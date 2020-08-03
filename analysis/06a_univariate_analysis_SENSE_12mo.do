@@ -39,7 +39,7 @@ local lastvar = word("`0'", `arguments')
 
 * Open a log file
 capture log close
-log using "$logdir\an_univariable_cox_models_`outcome'_SENSE12mo", replace t
+log using "$logdir\06a_univariate_analysis_SENSE_12mo`outcome'", replace t
 
 * Open dataset and fit specified model(s)
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear

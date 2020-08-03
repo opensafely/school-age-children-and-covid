@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense3.do
+*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense1.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -45,7 +45,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariableFULL_cox_models_`outcome'Sense1", text replace
+log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense1_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 

@@ -1,5 +1,5 @@
 /*==============================================================================
-DO FILE NAME:			00_cr_analysis_dataset
+DO FILE NAME:			01_cr_analysis_dataset
 PROJECT:				Exposure children and COVID risk
 DATE: 					25th June 2020 
 AUTHOR:					Harriet Forbes adapted from A Wong, A Schultze, C Rentsch,
@@ -17,7 +17,69 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using $logdir\01_cr_create_analysis_dataset, replace t
+log using $logdir\01_cr_analysis_dataset, replace t
+
+
+/* CONVERT STRINGS TO DATE====================================================*/
+/* Comorb dates and TPP case outcome dates are given with month only, so adding day 
+15 to enable  them to be processed as dates 											  */
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						diabetes  ///
+						cancer_haem  ///
+						cancer_nonhaem  ///
+						permanent_immunodeficiency  ///
+						temporary_immunodeficiency  ///
+						organ_trans 			/// 
+						asplenia 			/// 
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke_dementia				///
+						esrf  ///
+						hypertension  ///
+						ra_sle_psoriasis  ///
+						bmi_date_measured   ///
+						bp_sys_date_measured   ///
+						bp_dias_date_measured   ///
+						creatinine_date  ///
+						smoking_status_date ///
+						dereg_date ///
+						covid_tpp_probable ///
+						covid_tpp_suspected ///
+						{
+							
+		capture confirm string variable `var'
+		if _rc!=0 {
+			assert `var'==.
+			rename `var' `var'_date
+		}
+	
+		else {
+				replace `var' = `var' + "-15"
+				rename `var' `var'_dstr
+				replace `var'_dstr = " " if `var'_dstr == "-15"
+				gen `var'_date = date(`var'_dstr, "YMD") 
+				order `var'_date, after(`var'_dstr)
+				drop `var'_dstr
+		}
+	
+	format `var'_date %td
+}
+
+* Recode to dates from the strings 
+foreach var of varlist 	died_date_ons 	{
+						
+	confirm string variable `var'
+	rename `var' `var'_dstr
+	gen `var' = date(`var'_dstr, "YMD")
+	drop `var'_dstr
+	format `var' %td 
+	
+}
+
+/*Tab all variables in initial extract*/
+sum, d f
 
 
 /* CREATE VARIABLES===========================================================*/
@@ -192,50 +254,6 @@ global indexdate 			    = "01/02/2020"
 
 
 
-/* CONVERT STRINGS TO DATE====================================================*/
-/* Comorb dates dates are given with month only, so adding day 
-15 to enable  them to be processed as dates 											  */
-
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						diabetes  ///
-						cancer_haem  ///
-						cancer_nonhaem  ///
-						permanent_immunodeficiency  ///
-						temporary_immunodeficiency  ///
-						organ_trans 			/// 
-						asplenia 			/// 
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke_dementia				///
-						esrf  ///
-						hypertension  ///
-						ra_sle_psoriasis  ///
-						bmi_date_measured   ///
-						bp_sys_date_measured   ///
-						bp_dias_date_measured   ///
-						creatinine_date  ///
-						smoking_status_date ///
-						dereg_date ///
-						{
-							
-		capture confirm string variable `var'
-		if _rc!=0 {
-			assert `var'==.
-			rename `var' `var'_date
-		}
-	
-		else {
-				replace `var' = `var' + "-15"
-				rename `var' `var'_dstr
-				replace `var'_dstr = " " if `var'_dstr == "-15"
-				gen `var'_date = date(`var'_dstr, "YMD") 
-				order `var'_date, after(`var'_dstr)
-				drop `var'_dstr
-		}
-	
-	format `var'_date %td
-}
 
 * Note - outcome dates are handled separtely below 
 
@@ -542,44 +560,6 @@ format 	enter_date					///
 		 	
 		
 			/****   Outcome definitions   ****/
-/* CONVERT STRINGS TO DATE====================================================*/
-/* TPP case outcome dates are given with month only, so adding day 
-15 to enable  them to be processed as dates 											  */
-
-foreach var of varlist 	covid_tpp_probable ///
-						covid_tpp_suspected ///
-					 {
-							
-		capture confirm string variable `var'
-		if _rc!=0 {
-			assert `var'==.
-			rename `var' `var'_date
-		}
-	
-		else {
-				replace `var' = `var' + "-15"
-				rename `var' `var'_dstr
-				replace `var'_dstr = " " if `var'_dstr == "-15"
-				gen `var'_date = date(`var'_dstr, "YMD") 
-				order `var'_date, after(`var'_dstr)
-				drop `var'_dstr
-		}
-	
-	format `var'_date %td
-}
-
-
-
-* Recode to dates from the strings 
-foreach var of varlist 	died_date_ons 	{
-						
-	confirm string variable `var'
-	rename `var' `var'_dstr
-	gen `var' = date(`var'_dstr, "YMD")
-	drop `var'_dstr
-	format `var' %td 
-	
-}
 
 * Date of Covid death in ONS
 gen died_date_onscovid = died_date_ons if died_ons_covid_flag_any == 1
@@ -769,31 +749,27 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on NON ONS covid death outcome
 stset stime_non_covid_death, fail(non_covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-	
-*WEIGHTING - TO REDUCE TIME 
+/*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
+	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death.dta", replace
 	
 
 use $tempdir\analysis_dataset, clear
-
 * Save a version set on covid death  outcome
 stset stime_covid_death, fail(covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-	
-	
-*WEIGHTING - TO REDUCE TIME 
+/*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_covid_death [pweight = pw],  fail(covid_death) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
+	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", replace
 
 
@@ -801,28 +777,27 @@ use $tempdir\analysis_dataset, clear
 * Save a version set on probable covid
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-*WEIGHTING - TO REDUCE TIME 
+/*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_covid_tpp_prob [pweight = pw],  fail(covid_tpp_prob) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
-
+	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", replace	
+
 
 use $tempdir\analysis_dataset, clear
 * Save a version set on probable/suspected covid
 stset stime_covid_tpp_prob_or_susp, fail(covid_tpp_prob_or_susp) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-	
-*WEIGHTING - TO REDUCE TIME 
+/*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_covid_tpp_prob_or_susp [pweight = pw],  fail(covid_tpp_prob_or_susp) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
+	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_or_susp.dta", replace
 
 	

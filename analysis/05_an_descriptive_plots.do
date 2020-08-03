@@ -30,6 +30,12 @@
 ********************************************************************************
 
 
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
+
 use "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", clear
 
 ****************************

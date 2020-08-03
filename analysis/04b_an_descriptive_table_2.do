@@ -2,7 +2,7 @@
 
 *Exposure children and COVID risk
   
-*04b_an_descriptive_table_2
+*DO file name:  04b_an_descriptive_table_2
 
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
 * shell "Table 2" (main cohort descriptives by outcome status). 
@@ -13,6 +13,13 @@
 *
 *Date drafted: 30th June 2020
 *************************************************************************
+
+
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
 
 local outcome `1' 
 

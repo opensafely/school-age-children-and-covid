@@ -1,5 +1,9 @@
 *Model do file
 
+*When running in parallel locally use "C:\Program Files (x86)\Stata15\stata-64.exe"
+*When running on server use "c:\program files\stata16\statamp-64.exe"
+
+
 *Import dataset into STATA
 import delimited `c(pwd)'/output/input.csv, clear
 
@@ -20,8 +24,6 @@ global tempdir    "tempdata"
 
 ********************************************************************************
 
-/*Tab all variables in initial extract*/
-sum, d
 
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
@@ -35,43 +37,39 @@ do "02_an_data_checks.do"
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
 
-do "03a_an_descriptive_tables.do"
-do "03b_an_descriptive_table_1.do" 
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "03a_an_descriptive_tables.do"
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "03b_an_descriptive_table_1.do" 
 
 * covid_death  covid_tpp_prob  covid_tpp_prob_or_susp
-do "04a_an_descriptive_tables.do"
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04a_an_descriptive_tables.do"
 
 *covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-do "04b_an_descriptive_table_2.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
-do "05_an_descriptive_plots.do"
-
-
-*When running in parallel locally use "C:\Program Files (x86)\Stata15\stata-64.exe"
-*When running on server use "c:\program files\stata16\statamp-64.exe"
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "05_an_descriptive_plots.do"
 
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
-winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
 		kids_cat3 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 
 
 foreach outcome of any  covid_death covid_tpp_prob  {
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
 }
 
 
@@ -84,24 +82,24 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 
 *INTERACTIONS
 *foreach outcome of any  covid_death covid_tpp_prob    {
-*winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
+*winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
 *}
 *Create models
 foreach outcome of any  covid_death covid_tpp_prob    {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
 }
 *Create models
 foreach outcome of any  covid_death covid_tpp_prob    {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
 }
 *Create models
 foreach outcome of any  covid_death covid_tpp_prob    {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
 *AGE STRATIFIED ANLYSIS
 *run log to show models
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob {
-winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "16_exploratory_analysis.do" `outcome'
 }
 
 
@@ -155,14 +153,14 @@ do "WORMS_05_an_descriptive_plots.do"
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 
 foreach outcome of any worms {
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_06_univariate_analysis.do" `outcome' ///
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
 		
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
 
@@ -182,7 +180,7 @@ forvalues i = 1/24 {
 
 *Tabulate results
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "08_an_tablecontent_HRtable_HRforest.do" `outcome'
+	do "08_an_tablecontent_HRtable.do" `outcome'
 }
 
 foreach outcome of any  covid_death  covid_tpp_prob    {
@@ -206,14 +204,14 @@ foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_pr
 
 *DROP IF <12M FUP
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "14_an_tablecontent_HRtable_HRforest_SENSE_12mo.do" `outcome'
+	do "14_an_tablecontent_HRtable_SENSE_12mo.do" `outcome'
 	}
 
 *CC BMI SMOK (not includ. ethnicity)
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
-	do "15_an_tablecontent_HRtable_HRforest_SENSE_CC_noeth_bmi_smok.do"  `outcome'
+	do "15_an_tablecontent_HRtable_SENSE_CC_noeth_bmi_smok.do"  `outcome'
 	}
 
 foreach outcome of any worms  {
-	do "WORMS_08_an_tablecontent_HRtable_HRforest.do" `outcome'
+	do "WORMS_08_an_tablecontent_HRtable.do" `outcome'
 }

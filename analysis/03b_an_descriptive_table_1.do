@@ -14,6 +14,12 @@
 *************************************************************************
 
 
+
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
+
 *******************************************************************************
 *Generic code to output one row of table
 cap prog drop generaterow

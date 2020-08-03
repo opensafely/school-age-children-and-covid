@@ -44,7 +44,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmica
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariableDEMOG_cox_models_`outcome'", text replace
+log using "$logdir\07a_an_multivariable_cox_models_`outcome'", text replace
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
