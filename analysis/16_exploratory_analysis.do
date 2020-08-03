@@ -34,13 +34,13 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\an_multivariableFULL_cox_models_`outcome'_exploratory", text replace
+log using "$logdir\16_exploratory_analysis_`outcome'", text replace
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
 
 *Run main MV model for different age bands
 forvalues x=1/5 { 
-cap stcox 	kids_cat3 age1 age2 age3 		///
+cap stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -66,7 +66,7 @@ cap stcox 	kids_cat3 age1 age2 age3 		///
 
 *Run main MV model for different hh sizes
 forvalues x=1/5 { 
-cap stcox 	kids_cat3 age1 age2 age3 		///
+cap stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -100,13 +100,13 @@ cap stcox 	kids_cat3 age1 age2 age3 		///
 
 *Run models for hh with 2 adults
 *Age and sex adj
-stcox 	kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			 if tot_adults_hh==2, strata(stp) vce(cluster household_id) 
 			 
 			 
 *Demog adj
-stcox 	kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -115,7 +115,7 @@ stcox 	kids_cat3 age1 age2 age3 		///
 
 
 *FULL
- stcox 	kids_cat3 age1 age2 age3 		///
+ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -150,7 +150,7 @@ stcox 	kids_cat3 age1 age2 age3 		///
 
 
 *Full MV model without clustering (to see if the clustering by hh id is affecting PH test)
- stcox 	kids_cat3 age1 age2 age3 		///
+ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -176,13 +176,13 @@ stcox 	kids_cat3 age1 age2 age3 		///
 
 *Plot hazards
 *Age and sex adj
-stcox 	kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 	, strata(stp) vce(cluster household_id) 
 estat phtest, d		
 			 
 			 
 *Demog adj
-stcox 	kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -191,7 +191,7 @@ estat phtest, d
 
 
 *FULL
- stcox 	kids_cat3 age1 age2 age3 		///
+ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -214,10 +214,6 @@ estat phtest, d
 			i.other_immuno, strata(stp) vce(cluster household_id) 
 
 estat phtest, d		
-stphplot, by(kids_cat3)
-graph export ./output/an_stphplot_kids_cat3.svg, as(svg) replace
-
-estat phtest, d			 			 
 
 *Fit time interactions
 
@@ -228,7 +224,7 @@ gen anyreduced_kidney_function = reduced_kidney_function_cat>=2
 gen anyobesity = obese4cat>=2
 gen highimd = imd>=3
 
-stcox 	kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///

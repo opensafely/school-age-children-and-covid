@@ -2,7 +2,7 @@
   
 ********************************************************************************
 *
-*	Do-file:		an_descriptive_plots.do
+*	Do-file:		WORMS_05_an_descriptive_plots.do
 *
 *	Project:		Exposure children and COVID risk
 *

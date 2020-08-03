@@ -1,5 +1,5 @@
 *************************************************************************
-*Do file: 08_an_tablecontent_HRtable_HRforest
+*Do file: 08_an_tablecontent_HRtable
 *
 *Purpose: Create content that is ready to paste into a pre-formatted Word 
 * shell table containing minimally and fully-adjusted HRs for risk factors
@@ -16,7 +16,7 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\08_an_tablecontent_HRtable_HRforest_`outcome'", text replace
+log using "$logdir\08_an_tablecontent_HRtable_`outcome'", text replace
 
 
 ***********************************************************************************************************************

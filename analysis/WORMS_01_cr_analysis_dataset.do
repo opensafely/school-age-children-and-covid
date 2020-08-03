@@ -17,8 +17,67 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using $logdir\WORMS_01_cr_create_analysis_dataset, replace t
+log using $logdir\WORMS_01_cr_analysis_dataset, replace t
 
+/* CONVERT STRINGS TO DATE====================================================*/
+/* Comorb dates dates are given with month only, so adding day 
+15 to enable  them to be processed as dates 											  */
+
+foreach var of varlist 	chronic_respiratory_disease ///
+						chronic_cardiac_disease  ///
+						diabetes  ///
+						cancer_haem  ///
+						cancer_nonhaem  ///
+						permanent_immunodeficiency  ///
+						temporary_immunodeficiency  ///
+						organ_trans 			/// 
+						asplenia 			/// 
+						chronic_liver_disease  ///
+						other_neuro  ///
+						stroke_dementia				///
+						esrf  ///
+						hypertension  ///
+						ra_sle_psoriasis  ///
+						bmi_date_measured   ///
+						bp_sys_date_measured   ///
+						bp_dias_date_measured   ///
+						creatinine_date  ///
+						smoking_status_date ///
+						dereg_date ///
+						worms ///
+						{
+							
+		capture confirm string variable `var'
+		if _rc!=0 {
+			assert `var'==.
+			rename `var' `var'_date
+		}
+	
+		else {
+				replace `var' = `var' + "-15"
+				rename `var' `var'_dstr
+				replace `var'_dstr = " " if `var'_dstr == "-15"
+				gen `var'_date = date(`var'_dstr, "YMD") 
+				order `var'_date, after(`var'_dstr)
+				drop `var'_dstr
+		}
+	
+	format `var'_date %td
+}
+
+* Recode to dates from the strings 
+foreach var of varlist 	died_date_ons				{
+						
+	confirm string variable `var'
+	rename `var' `var'_dstr
+	gen `var' = date(`var'_dstr, "YMD")
+	drop `var'_dstr
+	format `var' %td 
+	
+}
+
+/*Tab all variables in initial extract*/
+sum, d f
 
 /* CREATE VARIABLES===========================================================*/
 
@@ -186,52 +245,7 @@ global indexdate 			    = "01/02/2019"
 
 
 
-/* CONVERT STRINGS TO DATE====================================================*/
-/* Comorb dates dates are given with month only, so adding day 
-15 to enable  them to be processed as dates 											  */
 
-foreach var of varlist 	chronic_respiratory_disease ///
-						chronic_cardiac_disease  ///
-						diabetes  ///
-						cancer_haem  ///
-						cancer_nonhaem  ///
-						permanent_immunodeficiency  ///
-						temporary_immunodeficiency  ///
-						organ_trans 			/// 
-						asplenia 			/// 
-						chronic_liver_disease  ///
-						other_neuro  ///
-						stroke_dementia				///
-						esrf  ///
-						hypertension  ///
-						ra_sle_psoriasis  ///
-						bmi_date_measured   ///
-						bp_sys_date_measured   ///
-						bp_dias_date_measured   ///
-						creatinine_date  ///
-						smoking_status_date ///
-						dereg_date ///
-						{
-							
-		capture confirm string variable `var'
-		if _rc!=0 {
-			assert `var'==.
-			rename `var' `var'_date
-		}
-	
-		else {
-				replace `var' = `var' + "-15"
-				rename `var' `var'_dstr
-				replace `var'_dstr = " " if `var'_dstr == "-15"
-				gen `var'_date = date(`var'_dstr, "YMD") 
-				order `var'_date, after(`var'_dstr)
-				drop `var'_dstr
-		}
-	
-	format `var'_date %td
-}
-
-* Note - outcome dates are handled separtely below 
 
 
 * Some names too long for loops below, shorten
@@ -537,41 +551,6 @@ format 	enter_date					///
 		
 			/****   Outcome definitions   ****/
 
-/* CONVERT STRINGS TO DATE====================================================*/
-/* TPP case outcome dates are given with month only, so adding day 
-15 to enable  them to be processed as dates 											  */
-
-foreach var of varlist 	worms {
-							
-		capture confirm string variable `var'
-		if _rc!=0 {
-			assert `var'==.
-			rename `var' `var'_date
-		}
-	
-		else {
-				replace `var' = `var' + "-15"
-				rename `var' `var'_dstr
-				replace `var'_dstr = " " if `var'_dstr == "-15"
-				gen `var'_date = date(`var'_dstr, "YMD") 
-				order `var'_date, after(`var'_dstr)
-				drop `var'_dstr
-		}
-	
-	format `var'_date %td
-}
-
-
-* Recode to dates from the strings 
-foreach var of varlist 	died_date_ons				{
-						
-	confirm string variable `var'
-	rename `var' `var'_dstr
-	gen `var' = date(`var'_dstr, "YMD")
-	drop `var'_dstr
-	format `var' %td 
-	
-}
 
 * Binary indicator for outcomes
 gen worms = (worms_date < .)
@@ -680,9 +659,6 @@ drop `r(varlist)'
 	
 
 /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
-
-
-
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
@@ -704,13 +680,13 @@ use $tempdir\analysis_dataset_worms, clear
 * Save a version set on CPNS survival outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-*WEIGHTING - TO REDUCE TIME 
+/*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_worms [pweight = pw],  fail(worms) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
+	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", replace
 
 

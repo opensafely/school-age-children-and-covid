@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		10_an_interaction_cox_models.do
+*	Do-file:		10_an_interaction_cox_models_time.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -44,7 +44,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLY
 
 
 cap log close
-log using "$logdir\an_interaction_cox_models_`outcome'_time", text replace
+log using "$logdir\10_an_interaction_cox_models_time_`outcome'", text replace
 
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear

@@ -22,6 +22,10 @@
 ********************************************************************************
 
 
+* Set globals that will print in programs and direct output
+global outdir  	  "output" 
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 capture log close
@@ -48,7 +52,15 @@ safetab smoke, m
 safetab bpcat
 safetab bpcat, m
 safetab htdiag_or_highbp
-ta shield
+safetab htdiag_or_highbp, m
+safetab imd 
+safetab imd, m
+safetab ethnicity
+safetab ethnicity, m
+safetab stp
+safetab tot_adults_hh
+safetab household_size
+
 
 * Comorbidities
 foreach var in chronic_respiratory_disease ///
@@ -71,23 +83,29 @@ foreach var in chronic_respiratory_disease ///
 						
 safetab `var'
 }
+safetab shield
 
-safetab imd 
-safetab imd, m
-safetab ethnicity
-safetab ethnicity, m
-safetab stp
 
+*Exposure 
+foreach var in kids_cat3 gp_number_kids {
+safetab `var'
+}
 
 * Outcomes
 foreach var in covid_death non_covid_death  ///
-covid_tpp_prob_or_susp covid_tpp_prob {
+ covid_tpp_prob {
 safetab `var'
-safetab `var' kids_cat3, col row
 }
 
 
+* Outcomes by exposure
+foreach var in covid_death non_covid_death  ///
+ covid_tpp_prob {
+safetab `var'
+safetab `var' kids_cat3, col row
+safetab `var' gp_number_kids, col row
 
+}
 
 **********************************
 *  Number (%) with each exposure  *
@@ -102,7 +120,13 @@ safetab `var' kids_cat3, col row
 	safetab smoke 								kids_cat3, col m
 	safetab obese4cat							kids_cat3, col m 
 	safetab shield   							kids_cat3, col m 
-
+	safetab tot_adults_hh						kids_cat3, col m 
+	safetab household_size						kids_cat3, col m 
+	safetab imd  								kids_cat3, col m
+	safetab ethnicity 							kids_cat3, col m
+	safetab stp 								kids_cat3, col
+	
+	
 	* Comorbidities
 	foreach var in chronic_respiratory_disease ///
 						asthma  ///
@@ -124,10 +148,7 @@ safetab `var' kids_cat3, col row
 	safetab `var' 		kids_cat3, col
 }
 	
-	safetab imd  								kids_cat3, col m
-	safetab ethnicity 							kids_cat3, col m
-	*safetab urban 								kids_cat3, col
-	safetab stp 								kids_cat3, col
+
 
 * Close the log file
 log close

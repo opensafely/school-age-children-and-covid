@@ -37,7 +37,7 @@ local lastvar = word("`0'", `arguments')
 
 * Open a log file
 capture log close
-log using "$logdir\WORMS_an_univariable_cox_models_`outcome'", replace t
+log using "$logdir\WORMS_06_univariate_analysis_`outcome'", replace t
 
 * Open dataset and fit specified model(s)
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
