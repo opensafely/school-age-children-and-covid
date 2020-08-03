@@ -264,12 +264,13 @@ study = StudyDefinition(
         include_month=True,
     ),
 
+
     chronic_respiratory_disease=patients.with_these_clinical_events(
         chronic_respiratory_disease_codes,
-        returning="binary_flag",
-        return_expectations={"incidence": 0.2},
+        return_first_date_in_period=True,
+        include_month=True,
+        return_expectations={"date": {"latest": "2020-01-31"}},
     ),
-
     chronic_cardiac_disease=patients.with_these_clinical_events(
         chronic_cardiac_disease_codes,
         return_first_date_in_period=True,

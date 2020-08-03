@@ -14,7 +14,6 @@
 *
 *	Other output:	Kaplan-Meier plots (intended for publication)
 *							output/km_age_sex_covid_death_itu.svg 	
-*							output/km_age_sex_covid_tpp_prob_or_susp
 *							output/km_age_sex_covid_tpp_prob
 
 ********************************************************************************
@@ -91,8 +90,8 @@ failure by(agegroup) 								///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
-	t1(" ") l1title("Cumulative probability" "of COVID-19 death/ICU admi.", size(medsmall))
-graph export "output/km_age_sex_covid_death_itu.svg", as(svg) replace
+	t1(" ") l1title("Cumulative probability" "of COVID-19 death", size(medsmall))
+graph export "output/km_age_sex_covid_death.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -164,7 +163,7 @@ erase female.gph
 erase male.gph
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death.dta", clear
 
 
 ****************************
@@ -218,8 +217,8 @@ failure by(agegroup) 								///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
-	t1(" ") l1title("Cumulative probability" "TPP Covid-19 case", size(medsmall))
-graph export "output/km_age_sex_covid_tpp_prob_or_susp.svg", as(svg) replace
+	t1(" ") l1title("Cumulative probability" "Non covid death", size(medsmall))
+graph export "output/km_age_sex_non_covid_death.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph

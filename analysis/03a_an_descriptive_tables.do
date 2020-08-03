@@ -93,14 +93,14 @@ safetab `var'
 
 * Outcomes
 foreach var in covid_death non_covid_death  ///
-covid_tpp_prob_or_susp covid_tpp_prob {
+ covid_tpp_prob {
 safetab `var'
 }
 
 
 * Outcomes by exposure
 foreach var in covid_death non_covid_death  ///
-covid_tpp_prob_or_susp covid_tpp_prob {
+ covid_tpp_prob {
 safetab `var'
 safetab `var' kids_cat3, col row
 safetab `var' gp_number_kids, col row

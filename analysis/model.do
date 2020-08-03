@@ -40,11 +40,9 @@ do "02_an_data_checks.do"
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "03a_an_descriptive_tables.do"
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "03b_an_descriptive_table_1.do" 
 
-* covid_death  covid_tpp_prob  covid_tpp_prob_or_susp
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04a_an_descriptive_tables.do"
 
-*covid_tpp_prob  covid_tpp_prob_or_susp non_covid_death
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
@@ -52,7 +50,7 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "05_an_descriptive_plot
 
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -81,9 +79,10 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_c
 ************************************************************
 
 *INTERACTIONS
-*foreach outcome of any  covid_death covid_tpp_prob    {
-*winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
-*}
+foreach outcome of any  covid_death covid_tpp_prob    {
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
+}
+
 *Create models
 foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
@@ -139,8 +138,6 @@ do "WORMS_04a_an_descriptive_tables.do"
 foreach outcome of any worms {
 do "WORMS_04b_an_descriptive_table_2.do" `outcome'
 	}
-	
-do "WORMS_05_an_descriptive_plots.do"
 
 
 *Univariate models can be run in parallel Stata instances for speed
@@ -179,7 +176,7 @@ forvalues i = 1/24 {
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
 *Tabulate results
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 	do "08_an_tablecontent_HRtable.do" `outcome'
 }
 
@@ -193,22 +190,22 @@ foreach outcome of any  covid_death   {
 
 ***SENSE ANALYSIS
 *CC ETH
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
 	}
 
 *CC ETH BMI SMOK
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
 	}
 
 *DROP IF <12M FUP
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 	do "14_an_tablecontent_HRtable_SENSE_12mo.do" `outcome'
 	}
 
 *CC BMI SMOK (not includ. ethnicity)
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob  covid_tpp_prob_or_susp   {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 	do "15_an_tablecontent_HRtable_SENSE_CC_noeth_bmi_smok.do"  `outcome'
 	}
 
