@@ -57,12 +57,14 @@ end
 
 *******************************************************************************
 
+
+forvalues x=0/1 {
 *Set up output file
 cap file close tablecontent
-file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3_worms.txt, write text replace
+file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3_worms_ageband_`x'.txt, write text replace
 
 
-use $tempdir\analysis_dataset_worms, clear
+use $tempdir\analysis_dataset_worms_ageband_`x', clear
 
 
 gen byte cons=1
@@ -103,7 +105,7 @@ tabulatevariable, variable(asthma) start(1) end(2) outcome(kids_cat3) /*ever ast
 *CARDIAC
 tabulatevariable, variable(chronic_cardiac_disease) start(1) end(1) outcome(kids_cat3)
 *DIABETES
-tabulatevariable, variable(diabetes) start(1) end(1) outcome(kids_cat3) /*controlled, then uncontrolled, then missing a1c*/
+tabulatevariable, variable(diabcat) start(1) end(6) outcome(kids_cat3) 
 file write tablecontent _n
 *CANCER EX HAEM
 tabulatevariable, variable(cancer_haem_cat) start(2) end(4) outcome(kids_cat3) /*<1, 1-4.9, 5+ years ago*/
@@ -113,14 +115,16 @@ tabulatevariable, variable(cancer_exhaem_cat) start(2) end(4) outcome(kids_cat3)
 file write tablecontent _n
 *REDUCED KIDNEY FUNCTION
 tabulatevariable, variable(reduced_kidney_function_cat) start(2) end(3) outcome(kids_cat3)
+*ESRD
+tabulatevariable, variable(esrd) start(1) end(1) outcome(kids_cat3)
 *LIVER
 tabulatevariable, variable(chronic_liver_disease) start(1) end(1) outcome(kids_cat3)
 *STROKE/DEMENTIA
 tabulatevariable, variable(stroke_dementia) start(1) end(1) outcome(kids_cat3)
 *OTHER NEURO
 tabulatevariable, variable(other_neuro) start(1) end(1) outcome(kids_cat3)
-*ORGAN TRANSPLANT
-tabulatevariable, variable(organ_trans) start(1) end(1) outcome(kids_cat3)
+*OTHER ORGAN TRANSPLANT
+tabulatevariable, variable(other_transplant) start(1) end(1) outcome(kids_cat3)
 *SPLEEN
 tabulatevariable, variable(asplenia) start(1) end(1) outcome(kids_cat3)
 *RA_SLE_PSORIASIS
@@ -134,3 +138,4 @@ tabulatevariable, variable(shield) start(1) end(1) outcome(kids_cat3)
 tabulatevariable, variable(worms) start(1) end(1) outcome(kids_cat3)
 
 file close tablecontent
+}

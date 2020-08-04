@@ -2,7 +2,7 @@
 
 ********************************************************************************
 *
-*	Do-file:		WORMS_04a_an_descriptive_safetables.do
+*	Do-file:		WORMS_03a_an_descriptive_safetables.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -25,9 +25,11 @@
 
 * Open a log file
 capture log close
-log using "$logdir\WORMS_04a_an_descriptive_safetables", replace t
+log using "$logdir\WORMS_03a_an_descriptive_safetables", replace t
 
-use $tempdir\analysis_dataset_worms, clear
+forvalues x=0/1 {
+
+use $tempdir\analysis_dataset_worms_ageband_`x', clear
 
 
 **********************************
@@ -54,11 +56,11 @@ ta shield
 foreach var in chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
-						diabetes  ///
+						diabcat ///
 						cancer_exhaem_cat 						///
 						cancer_haem_cat 						///
 						other_immuno 	///
-						organ_trans 			/// 
+						other_transplant 			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
@@ -104,11 +106,11 @@ safetab worms
 	foreach var in chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
-						diabetes  ///
+						diabcat  ///
 						cancer_exhaem_cat 						///
 						cancer_haem_cat 						///
 						other_immuno 	///
-						organ_trans 			/// 
+						other_transplant			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
@@ -130,9 +132,12 @@ safetab worms
 *  Cumulative incidence of worms.*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 
+
+
+}
 * Close the log file
 log close

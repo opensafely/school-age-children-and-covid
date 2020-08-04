@@ -47,9 +47,6 @@ cap log close
 log using "$logdir\10_an_interaction_cox_models_shield_`outcome'", text replace
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
-stset
-	
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
 prog define basemodel
@@ -67,24 +64,32 @@ timer on 1
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans			    	///
+			i.esrd							///
+			i.other_transplant 					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
-			i.tot_adults_hh				///
 			i.ra_sle_psoriasis  			///
-			i.other_immuno			///
+			i.other_immuno					///
 			`interaction'							///
 			, strata(stp) vce(cluster household_id)
 	timer off 1
 timer list
 end
 *************************************************************************************
+
+* Open dataset and fit specified model(s)
+forvalues x=0/1 {
+
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+	
+
 
 foreach int_type in shield {
 
@@ -102,31 +107,13 @@ di _n "`exposure_type' <66" _n "****************"
 lincom 2.`exposure_type', eform
 di "`exposure_type' 66+" _n "****************"
 lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 }
 
-/*Age interactions with 4-level vars: NOT in protocol - do not run
-foreach exposure_type in gp_number_kids {
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bp("i.htdiag_or_highbp") ethnicity(0) interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type' 1.`int_type'#3.`exposure_type' 1.`int_type'#4.`exposure_type')
-if _rc==0{
-testparm 1.`int_type'#i.`exposure_type'
-di _n "`exposure_type' <66" _n "****************"
-lincom 2.`exposure_type', eform
-lincom 3.`exposure_type', eform
-lincom 4.`exposure_type', eform
-di "`exposure_type' 66+" _n "****************"
-lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
-lincom 3.`exposure_type' + 1.`int_type'#3.`exposure_type', eform
-lincom 4.`exposure_type' + 1.`int_type'#4.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
 }
-else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
-}
-*/
-
 }
 
 log close

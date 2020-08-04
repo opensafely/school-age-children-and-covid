@@ -39,8 +39,11 @@ local lastvar = word("`0'", `arguments')
 capture log close
 log using "$logdir\WORMS_06_univariate_analysis_`outcome'", replace t
 
+
+forvalues x=0/1 {
+
 * Open dataset and fit specified model(s)
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 
 foreach var of any `varlist' {
@@ -57,9 +60,11 @@ foreach var of any `varlist' {
 	capture stcox `model' , strata(stp) vce(cluster household_id)
 	if _rc==0 {
 		estimates
-		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster, replace
+		estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'_ageband_`x'.ster, replace
 		}
 	else di "WARNING - `var' vs `outcome' MODEL DID NOT SUCCESSFULLY FIT"
+
+}
 
 }
 

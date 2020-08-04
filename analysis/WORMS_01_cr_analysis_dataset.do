@@ -23,6 +23,14 @@ log using $logdir\WORMS_01_cr_analysis_dataset, replace t
 /* Comorb dates dates are given with month only, so adding day 
 15 to enable  them to be processed as dates 											  */
 
+
+*cr date for diabetes based on adjudicated type
+gen diabetes=type1_diabetes if diabetes_type=="T1DM"
+replace diabetes=type2_diabetes if diabetes_type=="T2DM"
+replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
+
+drop type1_diabetes type2_diabetes unknown_diabetes
+
 foreach var of varlist 	chronic_respiratory_disease ///
 						chronic_cardiac_disease  ///
 						diabetes  ///
@@ -30,7 +38,9 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						cancer_nonhaem  ///
 						permanent_immunodeficiency  ///
 						temporary_immunodeficiency  ///
-						organ_trans 			/// 
+						dialysis					///
+						kidney_transplant			///
+						other_transplant 			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
@@ -153,8 +163,8 @@ assert age < .
 assert agegroup < .
 assert age66 < .
 
-* Create restricted cubic splines for age
-mkspline age = age, cubic nknots(4)
+
+
 
 
 
@@ -259,12 +269,14 @@ rename dereg_date_date 						dereg_date
 
 foreach var of varlist 	chronic_respiratory_disease ///
 						chronic_cardiac_disease  ///
-						diabetes  ///
+						diabetes_date  ///
 						cancer_haem  ///
 						cancer_nonhaem  ///
 						perm_immunodef  ///
 						temp_immunodef  ///
-						organ_trans 			/// 
+						dialysis					///
+						kidney_transplant			///
+						other_transplant 			///  			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
@@ -466,7 +478,13 @@ label values reduced_kidney_function_cat reduced_kidney_function_catlab
 lab var  reduced "Reduced kidney function"
 
 
-/*/* Hb1AC */
+
+/*ESDR: dialysis or kidney transplant*/
+gen esrd=1 if dialysis==1 | kidney_transplant==1
+recode esrd .=0
+
+
+/* Hb1AC */
 
 /*  Diabetes severity  */
 
@@ -481,11 +499,27 @@ noi summ hba1c_percentage hba1c_mmol_per_mol
 gen 	hba1c_pct = hba1c_percentage 
 replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
 
-* Valid % range between 0-20  
+* Valid % range between 0-20  /195 mmol/mol
 replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
 replace hba1c_pct = round(hba1c_pct, 0.1)
 
+
 /* Categorise hba1c and diabetes  */
+/* Diabetes type */
+gen dm_type=1 if diabetes_type=="T1DM"
+replace dm_type=2 if diabetes_type=="T2DM"
+replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+replace dm_type=0 if diabetes_type=="NO_DM"
+
+safetab dm_type diabetes_type
+label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+label values dm_type dm_type
+
+*Open safely diabetes codes with exeter algorithm
+gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+label values  dm_type_exeter_os dm_type
 
 * Group hba1c
 gen 	hba1ccat = 0 if hba1c_pct <  6.5
@@ -495,23 +529,30 @@ replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
 replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
 label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
 label values hba1ccat hba1ccat
-tab hba1ccat
+safetab hba1ccat
+
+gen hba1c75=0 if hba1c_pct<7.5
+replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
+label define hba1c75 0"<7.5" 1">=7.5"
+safetab hba1c75, m
 
 * Create diabetes, split by control/not
-gen     diabcat = 1 if diabetes==0
-replace diabcat = 2 if diabetes==1 & inlist(hba1ccat, 0, 1)
-replace diabcat = 3 if diabetes==1 & inlist(hba1ccat, 2, 3, 4)
-replace diabcat = 4 if diabetes==1 & !inlist(hba1ccat, 0, 1, 2, 3, 4)
+gen     diabcat = 1 if dm_type==0
+replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
+replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
+replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
+replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
+
 
 label define diabcat 	1 "No diabetes" 			///
-						2 "Controlled diabetes"		///
-						3 "Uncontrolled diabetes" 	///
-						4 "Diabetes, no hba1c measure"
+						2 "T1DM, controlled"		///
+						3 "T1DM, uncontrolled" 		///
+						4 "T2DM, controlled"		///
+						5 "T2DM, uncontrolled"		///
+						6 "Diabetes, no HbA1c"
 label values diabcat diabcat
-
-* Delete unneeded variables
-drop hba1c_pct hba1c_percentage hba1c_mmol_per_mol
-*/
+safetab diabcat, m
 
 
 
@@ -527,8 +568,7 @@ label values asthmacat asthmacat
 gen asthma = (asthmacat==2|asthmacat==3)
 
 /*  Probable shielding  */
-*need to add renal replacement therapy*
-gen shield=1 if organ_trans==1 | asthmacat==2 | asthmacat==3 | ///
+gen shield=1 if esrd==1 | other_transplant==1 | asthmacat==2 | asthmacat==3 | ///
 chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
 asplenia==1 | other_immuno==1
 recode shield .=0
@@ -594,9 +634,6 @@ label var smoke_nomiss	 			"Smoking status (missing set to non)"
 label var imd 						"Index of Multiple Deprivation (IMD)"
 label var ethnicity					"Ethnicity"
 label var stp 						"Sustainability and Transformation Partnership"
-label var age1 						"Age spline 1"
-label var age2 						"Age spline 2"
-label var age3 						"Age spline 3"
 lab var tot_adults_hh 				"Total number adults in hh"
 
 
@@ -606,19 +643,21 @@ label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
 label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
 label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
-label var diabetes						"Diabetes"
-label var cancer_haem_cat						"Haematological cancer"
-label var cancer_exhaem_cat						"Non-haematological cancer"
-label var organ_trans 					"Solid organ transplant"
+label var diabcat						"Diabetes"
+label var cancer_haem_cat				"Haematological cancer"
+label var cancer_exhaem_cat				"Non-haematological cancer"
+label var kidney_transplant				"Kidney transplant"	
+label var other_transplant 	 			"Other solid organ transplant"
 label var asplenia 						"Asplenia"
 label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
-label var other_neuro 			"Neurological disease"			
+label var other_neuro 					"Neurological disease"			
 label var stroke_dementia 			    "Stroke or dementia"							
 label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							eGFR
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
+lab var esrd 							"End-stage renal disease"
 
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"
@@ -627,12 +666,13 @@ label var diabetes_date						"Diabetes Date"
 label var cancer_haem_date 					"Haem cancer Date"
 label var cancer_nonhaem_date 				"Non-haem cancer Date"
 label var chronic_liver_disease_date  		"Chronic liver disease Date"
-label var other_neuro_date 		"Neurological disease  Date"
+label var other_neuro_date 					"Neurological disease  Date"
 label var stroke_dementia_date			    "Stroke or dementia date"							
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
-label var organ_trans_date  					"Solid organ transplant date"
+label var kidney_transplant_date						"Kidney transplant"	
+label var other_transplant_date 					"Other solid organ transplant"
 label var asplenia_date  						"Asplenia date"
 lab var  bphigh "non-missing indicator of known high blood pressure"
 lab var bpcat "Blood pressure four levels, non-missing"
@@ -675,9 +715,26 @@ sort patient_id
 save $tempdir\analysis_dataset_worms, replace
 
 
-use $tempdir\analysis_dataset_worms, clear
 
-* Save a version set on CPNS survival outcome
+use  $tempdir\analysis_dataset_worms, clear
+keep if age66==0
+* Create restricted cubic splines for age
+mkspline age = age, cubic nknots(4)
+save $tempdir\analysis_dataset_worms_ageband_0, replace
+
+
+use  $tempdir\analysis_dataset_worms, clear
+keep if age66==1
+* Create restricted cubic splines for age
+mkspline age = age, cubic nknots(4)
+save $tempdir\analysis_dataset_worms_ageband_1, replace
+
+
+
+forvalues x=0/1 {
+
+use $tempdir\analysis_dataset_worms_ageband_`x', clear
+* Save a version set on NON ONS covid death outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 /*WEIGHTING - TO REDUCE TIME 
@@ -685,9 +742,11 @@ set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
-stset stime_worms [pweight = pw],  fail(worms) 				///
+stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)*/
-save "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", replace
+save "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
+	
+}
 
 
 * Close log file 

@@ -56,15 +56,21 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06_univariate_analysis
 		gp_number_kids
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
 		kids_cat3 
+}
+
+
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
+}
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
-}	
+}		
 
 
 
-foreach outcome of any  covid_death covid_tpp_prob  {
+foreach outcome of any  covid_death non_covid_death covid_tpp_prob  {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
@@ -79,28 +85,30 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_c
 ************************************************************
 
 *INTERACTIONS
+/*Age - now startifying on age
 foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
-}
-
-*Create models
+}*/
+*Sex
 foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
 }
-*Create models
+*Shield
 foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
 }
-*Create models
+*Time
 foreach outcome of any  covid_death covid_tpp_prob    {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
-*AGE STRATIFIED ANLYSIS
-*run log to show models
+
+
+
+
+*EXPLORATORY ANALYSIS: prop hazards investigation
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "16_exploratory_analysis.do" `outcome'
 }
-
 
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
@@ -113,12 +121,6 @@ import delimited `c(pwd)'/output/input_worms.csv, clear
 cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
 set more off 
 
-/* Set globals that will print in programs and direct output
-global outdir  	  "output" 
-global logdir     "log"
-global tempdir    "tempdata"*/
-
-	
 /*  Pre-analysis data manipulation  */
 do "WORMS_01_cr_analysis_dataset.do"
 
@@ -184,29 +186,13 @@ foreach outcome of any  covid_death  covid_tpp_prob    {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
-foreach outcome of any  covid_death   {
+foreach outcome of any  covid_death covid_tpp_prob  {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
 
 ***SENSE ANALYSIS
-*CC ETH
 foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
-	do "12_an_tablecontent_HRtable_SENSE_ADD_ETH_BMI_SMOK_CC.do" `outcome'
-	}
-
-*CC ETH BMI SMOK
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
-	do "13_an_tablecontent_HRtable_SENSE_ADD_ETHNICITY.do" `outcome'
-	}
-
-*DROP IF <12M FUP
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
-	do "14_an_tablecontent_HRtable_SENSE_12mo.do" `outcome'
-	}
-
-*CC BMI SMOK (not includ. ethnicity)
-foreach outcome of any  covid_death non_covid_death covid_tpp_prob     {
-	do "15_an_tablecontent_HRtable_SENSE_CC_noeth_bmi_smok.do"  `outcome'
+	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
 	}
 
 foreach outcome of any worms  {

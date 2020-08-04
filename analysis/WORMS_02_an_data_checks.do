@@ -87,14 +87,13 @@ datacheck inlist(smoke_nomiss, 1, 2, 3), nol
 
 foreach var of varlist  chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
-					diabetes 						///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke_dementia ///
 					ra_sle_psoriasis				///
 					perm_immunodef  ///
 					temp_immunodef  ///
-					organ_trans 			/// 
+					other_transplant 			/// 
 					asplenia 			/// 
 					hypertension			 	///
 					{
@@ -164,74 +163,6 @@ safetab ethnicity imd, 		row
 safetab shield imd, 		row 
 
 safetab shield ethnicity, 		row 
-
-
-
-* Relationships with age
-foreach var of varlist  asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke_dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					organ_trans 			/// 
-					asplenia 			/// 
-					cancer_exhaem_cat 						///
-					cancer_haem_cat 						///
-					reduced_kidney_function_cat ///
-					hypertension		///	 	
-										{
-
-		
- 	safetab agegroup `var', row 
- }
-
-
- * Relationships with sex
-foreach var of varlist asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke_dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					organ_trans 			/// 
-					asplenia 			/// 
-					cancer_exhaem_cat 						///
-					cancer_haem_cat 						///
-					reduced_kidney_function_cat ///
-					hypertension			 ///	
-										{
-						
- 	safetab male `var', row 
-}
-
- * Relationships with smoking
-foreach var of varlist  asthma						///
-					chronic_respiratory_disease 	///
-					chronic_cardiac_disease		///
-					diabetes 						///
-					chronic_liver_disease  		///
-					other_neuro 			///
-					stroke_dementia ///
-					ra_sle_psoriasis				///
-					other_immuno 				///
-					organ_trans 			/// 
-					asplenia 			/// 
-					cancer_exhaem_cat 						///
-					cancer_haem_cat 						///
-					reduced_kidney_function_cat ///
-					hypertension			 	///
-					{
-	
- 	safetab smoke `var', row 
-}
-
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
