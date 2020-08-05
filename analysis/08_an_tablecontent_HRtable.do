@@ -24,13 +24,15 @@ log using "$logdir\08_an_tablecontent_HRtable_`outcome'", text replace
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
+forvalues x=0/1 {
+file write tablecontents ("age") ("`x'") _n
 forvalues i=`min'/`max'{
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
-    use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
+	use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 	*put total N, PYFU and Rate in table
 	cou if `variable' == `i' & _d == 1
 	local event = r(N)
@@ -55,15 +57,15 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
 		if "`modeltype'"=="minadj" {
-			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
+			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x'  
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -92,13 +94,15 @@ local endwith "_tab"
 		
 } /*variable levels*/
 
+} /*agebands*/
+
 end
 ***********************************************************************************************************************
-*Generic code to write a full row of "ref category" to the output file
+/*Generic code to write a full row of "ref category" to the output file
 cap prog drop refline
 prog define refline
 file write tablecontents _tab _tab ("1.00 (ref)") _tab ("1.00 (ref)")  _n
-end
+end*/
 ***********************************************************************************************************************
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
@@ -107,12 +111,10 @@ cap file close tablecontents
 file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
 
 *Primary exposure
-refline
 outputHRsforvar, variable("kids_cat3") min(0) max(2) outcome(`outcome')
 file write tablecontents _n
 
 *Number kids
-refline
 outputHRsforvar, variable("gp_number_kids") min(0) max(4) outcome(`outcome')
 file write tablecontents _n 
 

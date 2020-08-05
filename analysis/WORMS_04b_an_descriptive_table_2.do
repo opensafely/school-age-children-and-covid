@@ -53,12 +53,15 @@ end
 
 *******************************************************************************
 
+
+forvalues x=0/1 {
+
 *Set up output file
 cap file close tablecontent
 file open tablecontent using ./output/04b_an_descriptive_table_2_`outcome'.txt, write text replace
 
 
-use $tempdir\analysis_dataset_worms, clear
+use $tempdir\analysis_dataset_worms_ageband_`x', clear
 
 
 gen byte cons=1
@@ -99,7 +102,7 @@ tabulatevariable, variable(asthma) start(1) end(2) outcome(`outcome') /*ever ast
 *CARDIAC
 tabulatevariable, variable(chronic_cardiac_disease) start(1) end(1) outcome(`outcome')
 *DIABETES
-tabulatevariable, variable(diabetes) start(1) end(1) outcome(`outcome') /*controlled, then uncontrolled, then missing a1c*/
+tabulatevariable, variable(diabcat) start(1) end(6) outcome(`outcome') 
 file write tablecontent _n
 *CANCER EX HAEM
 tabulatevariable, variable(cancer_haem_cat) start(2) end(4) outcome(`outcome') /*<1, 1-4.9, 5+ years ago*/
@@ -109,6 +112,8 @@ tabulatevariable, variable(cancer_exhaem_cat) start(2) end(4) outcome(`outcome')
 file write tablecontent _n
 *REDUCED KIDNEY FUNCTION
 tabulatevariable, variable(reduced_kidney_function_cat) start(2) end(3) outcome(`outcome')
+*ESRD
+tabulatevariable, variable(esrd) start(1) end(1) outcome(`outcome')
 *LIVER
 tabulatevariable, variable(chronic_liver_disease) start(1) end(1) outcome(`outcome')
 *STROKE/DEMENTIA
@@ -116,7 +121,7 @@ tabulatevariable, variable(stroke_dementia) start(1) end(1) outcome(`outcome')
 *OTHER NEURO
 tabulatevariable, variable(other_neuro) start(1) end(1) outcome(`outcome')
 *ORGAN TRANSPLANT
-tabulatevariable, variable(organ_trans) start(1) end(1) outcome(`outcome')
+tabulatevariable, variable(other_transplant) start(1) end(1) outcome(`outcome')
 *SPLEEN
 tabulatevariable, variable(asplenia) start(1) end(1) outcome(`outcome')
 *RA_SLE_PSORIASIS
@@ -128,3 +133,6 @@ tabulatevariable, variable(other_immuno) start(1) end(1) outcome(`outcome')
 tabulatevariable, variable(shield) start(1) end(1) outcome(`outcome')
 
 file close tablecontent
+
+
+}

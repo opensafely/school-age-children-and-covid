@@ -18,15 +18,17 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
+forvalues x=0/1 {
+file write tablecontents_int ("age") ("`x'") _n
 forvalues i=`min'/`max'{
-foreach int_type in age66 male cat_time shield {
+foreach int_type in male cat_time shield {
 
 forvalues int_level=0/1 {
 
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents_int ("`variable'") _tab ("`i'") _tab _tab ("`int_level'")
+	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab _tab ("`int_level'")
 	
 	foreach modeltype of any fulladj {
 	
@@ -39,7 +41,7 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth  
+				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'  
 				if _rc!=0 local noestimatesflag 1
 				}
 		***********************
@@ -67,7 +69,7 @@ local endwith "_tab"
 				local ub = r(ub)
 				cap gen `variable'=.
 				testparm i.`variable'
-				post HRestimates_int ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
+				post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
 				drop `variable'
 				}
 		}	
@@ -76,28 +78,19 @@ local endwith "_tab"
 		} /*full adj*/
 		
 } /*variable levels*/
-
-end
-***********************************************************************************************************************
-*Generic code to write a full row of "ref category" to the output file
-cap prog drop refline
-prog define refline
-file write tablecontents_int _tab _tab ("1.00 (ref)") _tab ("1.00 (ref)")  _n
-*post HRestimates_int ("`outcome'") ("`variable'") (`refcat') (1) (1) (1) (.)
+} /*agebands*/
 end
 ***********************************************************************************************************************
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
-
 cap file close tablecontents_int
 file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
 
 tempfile HRestimates_int
 cap postutil clear
-postfile HRestimates_int str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
+postfile HRestimates_int str10 x str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
 
 *Primary exposure
-refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
 file write tablecontents_int _n
 
@@ -105,7 +98,11 @@ file close tablecontents_int
 
 postclose HRestimates_int
 
+
+forvalues x=0/1 {
+
 use `HRestimates_int', clear
+keep if x=="`x'"
 drop if variable=="gp_number_kids"
 
 gen varorder = 1 
@@ -152,7 +149,6 @@ for var hr lci uci pval : replace X=. if level<0
 
 
 sort varorder  level int_type int_level
-list 
 
 gen varx = 0.07
 gen levelx = 0.073
@@ -166,8 +162,11 @@ replace Name = "Presence of children or young people in household" if Name=="kid
 gen obsno=_n
 *Levels
 gen leveldesc = ""
+
 replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
-replace leveldesc = "Children/young people aged 11-<18 years" if variable=="kids_cat3" & level==1.5
+replace obsno=9.5 if obsno==6
+replace leveldesc = "Children/young people aged 11-<18 years" if obsno==9.5
+sort obsno
 
 *Inte labels
 gen intNAME=""
@@ -197,6 +196,8 @@ sort obsorder
 
 gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
 
+list obsorder obsno Name level leveldesc int_type hr   lci uci 
+
 scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 	|| rcap lci uci graphorder if lci>=.15, hor mcol(black)	lcol(black)			///
 	|| scatter graphorder lowerlimit, m(i) mlab(displayhrci) mlabcol(black) mlabsize(tiny) ///
@@ -207,4 +208,5 @@ scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
 		legend(off)  ysize(8) 
 
-graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'.svg, as(svg) replace
+graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'_ageband_`x'.svg, as(svg) replace
+}

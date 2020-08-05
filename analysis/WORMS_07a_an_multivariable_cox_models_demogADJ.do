@@ -43,8 +43,6 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmica
 capture log close
 log using "$logdir\WORMS_07a_an_multivariable_cox_models_demogADJ_`outcome'", text replace
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
-
 
 ******************************
 *  Multivariable Cox models  *
@@ -73,17 +71,27 @@ timer off 1
 timer list
 end
 *************************************************************************************
+
+
+
+* Open dataset and fit specified model(s)
+forvalues x=0/1 {
+
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+
+
 foreach exposure_type in kids_cat3 {
 
 *Age spline model (not adj ethnicity)
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth, replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_ageband_`x', replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
+}
 }
 
 log close

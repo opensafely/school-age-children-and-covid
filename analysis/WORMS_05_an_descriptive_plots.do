@@ -25,9 +25,9 @@
 *	Stata routines needed:	grc1leg	
 *
 ********************************************************************************
+forvalues x=0/1 {
 
-
-use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
@@ -83,7 +83,7 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "of worms", size(medsmall))
-graph export "output/km_age_sex_worms.svg", as(svg) replace
+graph export "output/km_age_sex_worms_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -93,7 +93,7 @@ erase male.gph
 *********************
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 
 ****************************
@@ -150,14 +150,14 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "TPP worms case", size(medsmall))
-graph export "output/km_age_sex_worms.svg", as(svg) replace
+graph export "output/km_age_sex_worms_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
 erase male.gph
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 
 ****************************
@@ -214,9 +214,11 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "TPP Worms case", size(medsmall))
-graph export "output/km_age_sex_worms.svg", as(svg) replace
+graph export "output/km_age_sex_worms_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
 erase male.gph
+
+}
 

@@ -97,9 +97,40 @@ chronic_cardiac_disease_codes = codelist_from_csv(
     column="CTV3ID",
 )
 
-diabetes_codes = codelist_from_csv(
-    "codelists/opensafely-diabetes.csv", system="ctv3", column="CTV3ID",
+diabetes_t1_codes = codelist_from_csv(
+    "codelists/opensafely-type-1-diabetes.csv", system="ctv3", column="CTV3ID"
 )
+
+diabetes_t2_codes = codelist_from_csv(
+    "codelists/opensafely-type-2-diabetes.csv", system="ctv3", column="CTV3ID"
+)
+
+diabetes_unknown_codes = codelist_from_csv(
+    "codelists/opensafely-diabetes-unknown-type.csv", system="ctv3", column="CTV3ID"
+)
+
+diabetes_t1t2_codes_exeter = codelist_from_csv(
+        "codelists/opensafely-diabetes-exeter-group.csv", 
+        system="ctv3", 
+        column="CTV3ID",
+        category_column="Category",
+)
+
+oad_med_codes = codelist_from_csv(
+    "codelists/opensafely-antidiabetic-drugs.csv",
+    system="snomed",
+    column="id"
+)
+
+
+insulin_med_codes = codelist_from_csv(
+    "codelists/opensafely-insulin-medication.csv", 
+    system="snomed", 
+    column="id"
+)
+
+hba1c_new_codes = codelist(["XaPbt", "Xaeze", "Xaezd"], system="ctv3")
+hba1c_old_codes = codelist(["X772q", "XaERo", "XaERp"], system="ctv3")
 
 lung_cancer_codes = codelist_from_csv(
     "codelists/opensafely-lung-cancer.csv", system="ctv3", column="CTV3ID",
@@ -127,12 +158,6 @@ hiv_codes = codelist_from_csv(
 
 sickle_cell_codes = codelist_from_csv(
     "codelists/opensafely-sickle-cell-disease.csv", system="ctv3", column="CTV3ID",
-)
-
-organ_transplant_codes = codelist_from_csv(
-    "codelists/opensafely-solid-organ-transplantation.csv",
-    system="ctv3",
-    column="CTV3ID",
 )
 
 spleen_codes = codelist_from_csv(
@@ -166,6 +191,18 @@ creatinine_codes = codelist(["XE2q5"], system="ctv3")
 
 esrf_codes = codelist_from_csv(
     "codelists/opensafely-chronic-kidney-disease.csv", system="ctv3", column="CTV3ID",
+)
+
+kidney_transplant_codes = codelist_from_csv(
+    "codelists/opensafely-kidney-transplant.csv", system="ctv3", column="CTV3ID",
+)
+
+dialysis_codes = codelist_from_csv(
+    "codelists/opensafely-dialysis.csv", system="ctv3", column="CTV3ID",
+)
+
+other_transplant_codes = codelist_from_csv(
+    "codelists/opensafely-other-organ-transplant.csv", system="ctv3", column="CTV3ID",
 )
 
 hypertension_codes = codelist_from_csv(

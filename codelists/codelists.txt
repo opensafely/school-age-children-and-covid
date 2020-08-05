@@ -12,7 +12,6 @@ opensafely/haematological-cancer/2020-04-15
 opensafely/permanent-immunosuppression/2020-06-02
 opensafely/hiv/2020-07-13
 opensafely/sickle-cell-disease/2020-04-14
-opensafely/solid-organ-transplantation/2020-04-10
 opensafely/asplenia/2020-06-02
 opensafely/temporary-immunosuppression/2020-04-24
 opensafely/aplastic-anaemia/2020-04-24
@@ -31,3 +30,12 @@ opensafely/worms/2020-07-10
 opensafely/covid-identification-in-primary-care-probable-covid-clinical-code/2020-07-16
 opensafely/covid-identification-in-primary-care-probable-covid-positive-test/2020-07-16
 opensafely/covid-identification-in-primary-care-probable-covid-sequelae/2020-07-16
+opensafely/dialysis/2020-07-16
+opensafely/kidney-transplant/2020-07-15
+opensafely/other-organ-transplant/2020-07-15
+opensafely/antidiabetic-drugs/2020-07-16
+opensafely/diabetes-exeter-group/2020-07-06
+opensafely/type-1-diabetes/2020-06-29
+opensafely/diabetes-unknown-type/2020-06-29
+opensafely/type-2-diabetes/2020-06-29
+opensafely/insulin-medication/2020-04-26

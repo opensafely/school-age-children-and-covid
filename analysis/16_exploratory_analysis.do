@@ -35,38 +35,15 @@ local outcome `1'
 * Open a log file
 capture log close
 log using "$logdir\16_exploratory_analysis_`outcome'", text replace
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
 
+* Open dataset and fit specified model(s)
+forvalues x=0/1 {
 
-*Run main MV model for different age bands
-forvalues x=1/5 { 
-cap stcox 	i.kids_cat3 age1 age2 age3 		///
-			i.male 							///
-			i.obese4cat 					///
-			i.smoke_nomiss 					///
-			i.imd 							///
-			i.htdiag_or_highbp				///
-			i.chronic_respiratory_disease 	///
-			i.asthma						///
-			i.chronic_cardiac_disease 		///
-			i.diabetes						///
-			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
-			i.chronic_liver_disease 		///
-			i.stroke_dementia		 		///
-			i.other_neuro					///
-			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
-			i.tot_adults_hh					///
-			i.asplenia 						///
-			i.ra_sle_psoriasis  			///
-			i.other_immuno					///
-			 if agegroup==`x', strata(stp) vce(cluster household_id) 
-			}
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *Run main MV model for different hh sizes
 forvalues x=1/5 { 
-cap stcox 	i.kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -75,20 +52,22 @@ cap stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
+			i.esrd							///
+			i.other_transplant 					///
 			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
-			 if household_size==`x', strata(stp) vce(cluster household_id) 
-			}
+			 if household_size==`x', ///
+			 strata(stp) vce(cluster household_id) 
+}
 			
 
 ********************************************************************************
@@ -101,12 +80,12 @@ cap stcox 	i.kids_cat3 age1 age2 age3 		///
 *Run models for hh with 2 adults
 *Age and sex adj
 stcox 	i.kids_cat3 age1 age2 age3 		///
-			i.male 							///
+			i.male 						///
 			 if tot_adults_hh==2, strata(stp) vce(cluster household_id) 
 			 
 			 
 *Demog adj
-stcox 	i.kids_cat3 age1 age2 age3 		///
+stcox 	i.kids_cat3 age1 age2 age3 			///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
@@ -124,14 +103,15 @@ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
+			i.esrd							///
+			i.other_transplant 					///
 			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
@@ -159,14 +139,15 @@ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
+			i.esrd							///
+			i.other_transplant 					///
 			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
@@ -200,17 +181,19 @@ estat phtest, d
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
+			i.esrd							///
+			i.other_transplant 					///
 			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
+			i.other_immuno					///
 			i.other_immuno, strata(stp) vce(cluster household_id) 
 
 estat phtest, d		
@@ -229,70 +212,44 @@ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.obese4cat 					///
 			i.smoke_nomiss 					///
 			i.imd 							///
-			i.tot_adults_hh				    ///
 			i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans 					///
+			i.esrd							///
+			i.other_transplant 					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
-			i.other_immuno 					///
-	    60.timeperiod#1.kids_cat3  			///
-			90.timeperiod#1.kids_cat3  						///
-		60.timeperiod#2.kids_cat3  							///
-			90.timeperiod#2.kids_cat3  						///
-		60.timeperiod#1.tot_adults_hh						///
-			90.timeperiod#1.tot_adults_hh					///
-		60.timeperiod#1.male  								///
-			90.timeperiod#1.male  							///
+			i.other_immuno					///
 		60.timeperiod#1.anyobesity							///
 			90.timeperiod#1.anyobesity						///
 		60.timeperiod#3.smoke_nomiss						///
 			90.timeperiod#3.smoke_nomiss					///
 		60.timeperiod#1.highimd								///
 			90.timeperiod#1.highimd							///
-		60.timeperiod#1.htdiag_or_highbp					///
-			90.timeperiod#1.htdiag_or_highbp				///
-		60.timeperiod#1.chronic_respiratory_disease			///			
-			90.timeperiod#1.chronic_respiratory_disease		///				///
-		60.timeperiod#1.asthma								///
-			90.timeperiod#1.asthma							///
-		60.timeperiod#1.chronic_cardiac_disease				///
-			90.timeperiod#1.chronic_cardiac_disease			///
 		60.timeperiod#1.diabetes							///
-			90.timeperiod#1.diabetes						///
-		60.timeperiod#1.cancer_exhaem_cat					///
-			90.timeperiod#1.cancer_exhaem_cat				///
-		60.timeperiod#1.cancer_haem_cat						///
-			90.timeperiod#1.cancer_haem_cat					///
+			90.timeperiod#1.diabetes						///		
 		60.timeperiod#1.chronic_liver_disease				///
 			90.timeperiod#1.chronic_liver_disease			///
-		60.timeperiod#1.stroke_dementia						///
-			90.timeperiod#1.stroke_dementia					///
-		60.timeperiod#1.other_neuro							///
-			90.timeperiod#1.other_neuro						///
-		60.timeperiod#1.anyreduced_kidney_function			///
-			90.timeperiod#1.anyreduced_kidney_function		///
-		60.timeperiod#1.organ_trans							///
-			90.timeperiod#1.organ_trans						///
-		60.timeperiod#1.asplenia							///
+		60.timeperiod#1.cancer_exhaem_cat					///
+			90.timeperiod#1.cancer_exhaem_cat				///
 			90.timeperiod#1.asplenia						///
-		60.timeperiod#1.ra_sle_psoriasis					///
-			90.timeperiod#1.ra_sle_psoriasis				///
 		60.timeperiod#1.other_immuno						///
 			90.timeperiod#1.other_immuno					///
 , strata(stp) vce(cluster household_id) 
 
 estat phtest, d
 
+
+}
 log close
 
 

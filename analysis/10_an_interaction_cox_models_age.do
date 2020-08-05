@@ -68,18 +68,19 @@ timer on 1
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans			    	///
+			i.esrd							///
+			i.other_transplant 					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
-			i.tot_adults_hh				///
 			i.ra_sle_psoriasis  			///
-			i.other_immuno			///
+			i.other_immuno					///
 			`interaction'							///
 			, strata(stp) vce(cluster household_id)
 	timer off 1

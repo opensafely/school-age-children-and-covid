@@ -31,8 +31,9 @@ global tempdir    "tempdata"
 capture log close
 log using "$logdir\04a_an_descriptive_tables", replace t
 
-use $tempdir\analysis_dataset, clear
+forvalues x=0/1 {
 
+use $tempdir\analysis_dataset_ageband_`x', clear
 
 **********************************
 *  Distribution in whole cohort  *
@@ -58,17 +59,18 @@ ta shield
 foreach var in chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
-						diabetes  ///
+						diabcat  ///
 						cancer_exhaem_cat 						///
 						cancer_haem_cat 						///
 						other_immuno 	///
-						organ_trans 			/// 
+						other_transplant 			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
 						stroke_dementia				///
 						egfr_cat  ///
 						reduced_kidney_function ///
+						esrd 		///
 						hypertension  ///
 						ra_sle_psoriasis  ///
 						{
@@ -113,16 +115,17 @@ foreach outvar of varlist covid_tpp_prob covid_death non_covid_death {
 	foreach var in chronic_respiratory_disease ///
 						asthma  ///
 						chronic_cardiac_disease  ///
-						diabetes  ///
+						diabcat  ///
 						cancer_exhaem_cat 						///
 						cancer_haem_cat 						///
 						other_immuno 	///
-						organ_trans 			/// 
+						other_transplant 			/// 
 						asplenia 			/// 
 						chronic_liver_disease  ///
 						other_neuro  ///
 						stroke_dementia				///
 						egfr_cat  ///
+						esrd ///
 						reduced_kidney_function ///
 						hypertension  ///
 						ra_sle_psoriasis  ///
@@ -141,7 +144,7 @@ foreach outvar of varlist covid_tpp_prob covid_death non_covid_death {
 *  Cumulative incidence of ONS COVID DEATH*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 
@@ -150,7 +153,7 @@ sts list , at(0 80) by(agegroup male) fail
 *  Cumulative incidence of ONS NON COVID DEATH*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death_ageband_`x'.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 
@@ -158,9 +161,11 @@ sts list , at(0 80) by(agegroup male) fail
 *  Cumulative incidence of TPP COVID PROBABLE CASES *
 ***************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
+
+}
 
 * Close the log file
 log close

@@ -18,6 +18,10 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
+foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo  {
+file write tablecontents ("sense=") ("`sense'") _n
+forvalues x=0/1 {
+file write tablecontents ("age") ("`x'") _n
 forvalues i=`min'/`max'{
 local endwith "_tab"
 
@@ -35,15 +39,15 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 		
 		if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
-			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'
+			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_CCeth_bmi_smok
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_`sense'_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_CCeth_bmi_smoke  
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -71,6 +75,8 @@ local endwith "_tab"
 		} /*min adj, full adj*/
 		
 } /*variable levels*/
+} /*age levels*/
+} /*sense levels*/
 
 end
 ***********************************************************************************************************************
@@ -84,10 +90,9 @@ end
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 
 cap file close tablecontents
-file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_SENSE_CCETH_BMI_SMOK.txt, t w replace 
+file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_SENSE_ANALYSES.txt, t w replace 
 
 *Primary exposure
-refline
 outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
 file write tablecontents _n
 

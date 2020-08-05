@@ -46,21 +46,6 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLY
 cap log close
 log using "$logdir\10_an_interaction_cox_models_time_`outcome'", text replace
 
-
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'.dta", clear
-stset
-
-*Split data by time of study period: days to April 3rd (31 d March, 3d April)
-stsplit cat_time, at(0,34, 200)
-recode cat_time 34=1 200=2 
-recode `outcome' .=0 
-tab cat_time
- 
-/*Overlapping time periods
-gen cat_time0=1 if cat==0
-gen cat_time1=1 if cat==0 | cat==0.25
-*/
-	
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
 prog define basemodel
@@ -78,24 +63,44 @@ timer on 1
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabetes						///
+			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
-			i.organ_trans			    	///
+			i.esrd							///
+			i.other_transplant 					///
+			i.tot_adults_hh					///
 			i.asplenia 						///
-			i.tot_adults_hh				///
 			i.ra_sle_psoriasis  			///
-			i.other_immuno			///
+			i.other_immuno					///
 			`interaction'							///
 			, strata(stp) vce(cluster household_id)
 	timer off 1
 timer list
 end
 *************************************************************************************
+
+
+* Open dataset and fit specified model(s)
+forvalues x=0/1 {
+
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+
+*Split data by time of study period: days to April 3rd (31 d March, 3d April)
+stsplit cat_time, at(0,34, 200)
+recode cat_time 34=1 200=2 
+recode `outcome' .=0 
+tab cat_time
+ 
+/*Overlapping time periods
+gen cat_time0=1 if cat==0
+gen cat_time1=1 if cat==0 | cat==0.25
+*/
+	
+
 
 foreach int_type in cat_time  {
 
@@ -113,9 +118,11 @@ di _n "`exposure_type' <66" _n "****************"
 lincom 2.`exposure_type', eform
 di "`exposure_type' 66+" _n "****************"
 lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth, replace
+estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+
+}
 
 }
 

@@ -87,14 +87,13 @@ datacheck inlist(smoke_nomiss, 1, 2, 3), nol
 
 foreach var of varlist  chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
-					diabetes 						///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke_dementia ///
 					ra_sle_psoriasis				///
 					perm_immunodef  ///
 					temp_immunodef  ///
-					organ_trans 			/// 
+					other_transplant 			/// 
 					asplenia 			/// 
 					hypertension			 	///
 					{
@@ -141,7 +140,8 @@ safetab smoke smoke_nomiss, m
 
 * CKD
 safetab reduced egfr_cat, m
-
+* CKD
+safetab reduced esrd, m
 
 /* EXPECTED RELATIONSHIPS=====================================================*/ 
 
@@ -175,17 +175,18 @@ safetab shield ethnicity, 		row
 foreach var of varlist  asthma						///
 					chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
-					diabetes 						///
+					diabcat 						///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke_dementia ///
 					ra_sle_psoriasis				///
 					other_immuno 				///
-					organ_trans 			/// 
+					other_transplant 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
+					esrd 					///
 					hypertension		///	 	
 										{
 
@@ -198,17 +199,18 @@ foreach var of varlist  asthma						///
 foreach var of varlist asthma						///
 					chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
-					diabetes 						///
+					diabcat						///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke_dementia ///
 					ra_sle_psoriasis				///
 					other_immuno 				///
-					organ_trans 			/// 
+					other_transplant 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
+					esrd 					///
 					hypertension			 ///	
 										{
 						
@@ -219,17 +221,18 @@ foreach var of varlist asthma						///
 foreach var of varlist  asthma						///
 					chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
-					diabetes 						///
+					diabcat						///
 					chronic_liver_disease  		///
 					other_neuro 			///
 					stroke_dementia ///
 					ra_sle_psoriasis				///
 					other_immuno 				///
-					organ_trans 			/// 
+					other_transplant 			/// 
 					asplenia 			/// 
 					cancer_exhaem_cat 						///
 					cancer_haem_cat 						///
 					reduced_kidney_function_cat ///
+					esrd					///
 					hypertension			 	///
 					{
 	
