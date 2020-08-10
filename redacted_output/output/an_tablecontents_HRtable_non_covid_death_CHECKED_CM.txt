@@ -1,0 +1,22 @@
+age0
+kids_cat3	0	8094	1284046080	0.01	1.00 (   .-   .)	1.00 (   .-   .)	1.00 (   .-   .)
+kids_cat3	1	777	 525157248	0.00	0.57 (0.52-0.62)	0.64 (0.59-0.69)	0.66 (0.61-0.72)
+kids_cat3	2	515	 194972672	0.00	0.60 (0.55-0.66)	0.70 (0.64-0.77)	0.72 (0.65-0.79)
+age1
+kids_cat3	0	45030	 553126272	0.08	1.00 (   .-   .)	DID NOT FIT	DID NOT FIT
+kids_cat3	1	803	  12073902	0.07	1.16 (1.08-1.25)	DID NOT FIT	DID NOT FIT
+kids_cat3	2	445	   6072258	0.07	1.13 (1.03-1.24)	DID NOT FIT	DID NOT FIT
+
+age0
+gp_number_kids	0	8094	1284046080	0.01	1.00 (   .-   .)	1.00 (   .-   .)	DID NOT FIT
+gp_number_kids	1	515	 194972672	0.00	0.60 (0.55-0.66)	0.70 (0.64-0.77)	DID NOT FIT
+gp_number_kids	2	497	 289052352	0.00	0.61 (0.55-0.67)	0.68 (0.61-0.74)	DID NOT FIT
+gp_number_kids	3	217	 181729184	0.00	0.50 (0.43-0.57)	0.58 (0.51-0.67)	DID NOT FIT
+gp_number_kids	4	63	  54375720	0.00	0.53 (0.41-0.68)	0.57 (0.44-0.73)	DID NOT FIT
+age1
+gp_number_kids	0	45030	 553126272	0.08	1.00 (   .-   .)	DID NOT FIT	DID NOT FIT
+gp_number_kids	1	445	   6072258	0.07	1.13 (1.03-1.24)	DID NOT FIT	DID NOT FIT
+gp_number_kids	2	494	   7528900	0.07	1.15 (1.05-1.26)	DID NOT FIT	DID NOT FIT
+gp_number_kids	3	239	   3558330	0.07	1.19 (1.04-1.35)	DID NOT FIT	DID NOT FIT
+gp_number_kids	4	70	    986672	0.07	1.20 (0.95-1.52)	DID NOT FIT	DID NOT FIT
+
