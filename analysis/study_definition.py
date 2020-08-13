@@ -76,6 +76,12 @@ study = StudyDefinition(
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ), 
 
+   positive_covid_test_ever=patients.with_test_result_in_sgss(
+        pathogen="SARS-CoV-2",
+        test_result="positive",
+        return_expectations={"incidence": 0.1},
+    ),
+
     ## DEMOGRAPHIC COVARIATES
     # AGE
     age=patients.age_as_of(

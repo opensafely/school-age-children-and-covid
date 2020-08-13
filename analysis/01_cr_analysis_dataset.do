@@ -579,6 +579,7 @@ chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
 asplenia==1 | other_immuno==1
 recode shield .=0
 
+recode positive_covid_test_ever .=0
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
 
@@ -668,6 +669,7 @@ label var ethnicity					"Ethnicity"
 label var stp 						"Sustainability and Transformation Partnership"
 lab var care_home_type				"Care home type"
 lab var tot_adults_hh 				"Total number adults in hh"
+lab var positive_covid_test_ever	"Ever having had positive covid test"
 
 * Comorbidities of interest 
 label var asthma						"Asthma category"

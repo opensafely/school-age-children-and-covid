@@ -34,5 +34,12 @@ lab define mo_icu_adm 2 Feb 3 March 4 April 5 May 6 June 7 July 8 August
 lab val mo_icu_adm mo_icu_adm
 tab mo_icu_adm
 
+*By positive covid test
+tab covid_icu   positive_covid_test_ever, col chi
+
+*By death
+tab covid_icu  covid_death, col chi
+
+
 log close
 
