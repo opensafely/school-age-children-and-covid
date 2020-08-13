@@ -76,7 +76,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 }
 
 * Recode to dates from the strings 
-foreach var of varlist 	died_date_ons 	{
+foreach var of varlist covid_icu_date	died_date_ons 	{
 						
 	confirm string variable `var'
 	rename `var' `var'_dstr
@@ -616,6 +616,7 @@ format died_date_onsnoncovid %td
 gen covid_tpp_prob = (date_covid_tpp_prob < .)
 gen non_covid_death = (died_date_onsnoncovid < .)
 gen covid_death = (died_date_onscovid < .)
+gen covid_icu = (covid_icu_date < .)
 
 
 
@@ -719,6 +720,7 @@ label var tpp_infec_censor_date 		"Date of admin censoring for covid TPP cases"
 label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid prob case"
 label var  non_covid_death				"Failure/censoring indicator for outcome: non-covid death"
 label var  covid_death				    "Failure/censoring indicator for outcome: covid death"
+label var  covid_icu				    "Failure/censoring indicator for outcome: covid icu"
 
 label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
 label var died_date_onsnoncovid	 		"Date of ONS non-COVID Death"
@@ -733,7 +735,7 @@ label var  stime_covid_death				"Survival time (date); outcome covid death"
 label var   died_date_ons				"Date death ONS"
 label var  has_12_m_follow_up			"Has 12 months follow-up"
 lab var  dereg_date						"Date deregistration from practice"
- 
+lab var covid_icu_date					"Date admission to ICU for COVID" 
 
 
 
