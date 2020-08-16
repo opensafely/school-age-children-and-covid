@@ -47,7 +47,7 @@ forvalues x=0/1 {
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *SENSITIVITY ANALYSIS: 12 months FUP
-drop if has_12_m_follow_up == .
+keep if has_12_m_follow_up == 1
 foreach var of any `varlist' {
 
 	*General form of model

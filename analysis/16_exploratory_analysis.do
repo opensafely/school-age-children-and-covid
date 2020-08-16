@@ -206,6 +206,7 @@ stsplit timeperiod, at(60 90)
 gen anyreduced_kidney_function = reduced_kidney_function_cat>=2
 gen anyobesity = obese4cat>=2
 gen highimd = imd>=3
+gen anydiab= diabcat>=2
 
 stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.male 							///

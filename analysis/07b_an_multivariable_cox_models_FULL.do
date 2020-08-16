@@ -120,7 +120,7 @@ else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 }
 
 *SENSITIVITY ANALYSIS: 12 months FUP
-drop if has_12_m_follow_up == .
+keep if has_12_m_follow_up == 1
 foreach exposure_type in kids_cat3   {
 
 *Age spline model (not adj ethnicity)
