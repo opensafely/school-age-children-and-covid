@@ -242,8 +242,8 @@ foreach var of varlist  asthma						///
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
-safetab covid_death covid_tpp_prob  , row col
-safetab non_covid_death covid_death  , row col
+safetab covid_death_icu covid_tpp_prob  , row col
+safetab non_covid_death covid_death_icu  , row col
 
 * Close log file 
 log close

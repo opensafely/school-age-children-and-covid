@@ -18,7 +18,7 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
-foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo  {
+foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale  {
 file write tablecontents ("sense=") ("`sense'") _n
 forvalues x=0/1 {
 file write tablecontents ("age") ("`x'") _n

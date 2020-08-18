@@ -29,7 +29,7 @@ study = StudyDefinition(
     ),
 
     dereg_date=patients.date_deregistered_from_all_supported_practices(
-        on_or_before="2020-08-01", date_format="YYYY-MM",
+        on_or_after="2020-02-01", date_format="YYYY-MM",
     ),
 
     # FOLLOW UP
@@ -43,25 +43,25 @@ study = StudyDefinition(
     # OUTCOMES
     died_ons_covid_flag_any=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=False,
         return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.6},
     ),
     died_ons_covid_flag_underlying=patients.with_these_codes_on_death_certificate(
         covid_codelist,
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         match_only_underlying_cause=True,
         return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.6},
     ),
     died_date_ons=patients.died_from_any_cause(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         returning="date_of_death",
         include_month=True,
         include_day=True,
         return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.8},
     ),
     covid_icu_date=patients.admitted_to_icu(
-        on_or_before="2020-08-01",
+        on_or_after="2020-02-01",
         include_day=True,
         returning="date_admitted",
         find_first_match_in_period=True,
