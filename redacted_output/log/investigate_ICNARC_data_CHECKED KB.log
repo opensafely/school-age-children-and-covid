@@ -1,0 +1,190 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\analyses\school-age-children-and-covid\analysis\log\investigate_ICNARC_data.log
+  log type:  text
+ opened on:  18 Aug 2020, 01:56:11
+
+. 
+. use $tempdir\analysis_dataset, clear
+
+. 
+. sum covid_icu_date, d f
+
+               Date admission to ICU for COVID
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    13mar2020      28jan2020
+ 5%    20mar2020      01mar2020
+10%    24mar2020      02mar2020       Obs               2,678
+25%    30mar2020      02mar2020       Sum of Wgt.       2,678
+
+50%    07apr2020                      Mean          13apr2020
+                        Largest       Std. Dev.      23.41393
+75%    21apr2020      21jul2020
+90%    17may2020      23jul2020       Variance        548.212
+95%    05jun2020      26jul2020       Skewness       1.598631
+99%    01jul2020      30jul2020       Kurtosis       5.678356
+
+. 
+. *Overall numbers
+. tab covid_icu
+
+Failure/cen |
+     soring |
+  indicator |
+        for |
+   outcome: |
+  covid icu |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 15,132,792       99.98       99.98
+          1 |      2,678        0.02      100.00
+------------+-----------------------------------
+      Total | 15,135,470      100.00
+
+. 
+. *By sex
+. tab covid_icu male, col chi
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Failure/ce |
+   nsoring |
+ indicator |
+       for |
+  outcome: |         Male
+ covid icu |         0          1 |     Total
+-----------+----------------------+----------
+         0 | 7,756,009  7,376,783 |15,132,792 
+           |     99.99      99.97 |     99.98 
+-----------+----------------------+----------
+         1 |       810      1,868 |     2,678 
+           |      0.01       0.03 |      0.02 
+-----------+----------------------+----------
+     Total | 7,756,819  7,378,651 |15,135,470 
+           |    100.00     100.00 |    100.00 
+
+          Pearson chi2(1) = 472.9051   Pr = 0.000
+
+. 
+. *By age
+. tab covid_icu agegroup, col chi
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Failure/ce |
+   nsoring |
+ indicator |
+       for |
+  outcome: |                                 Grouped age
+ covid icu |    18-<30     30-<40     40-<50     50-<60     60-<70     70-<80        80+ |     Total
+-----------+-----------------------------------------------------------------------------+----------
+         0 | 2,590,161  2,703,061  2,458,592  2,597,874  2,103,138  1,722,184    957,782 |15,132,792 
+           |    100.00      99.99      99.99      99.97      99.96      99.97      99.99 |     99.98 
+-----------+-----------------------------------------------------------------------------+----------
+         1 |        41        149        349        756        794        501         88 |     2,678 
+           |      0.00       0.01       0.01       0.03       0.04       0.03       0.01 |      0.02 
+-----------+-----------------------------------------------------------------------------+----------
+     Total | 2,590,202  2,703,210  2,458,941  2,598,630  2,103,932  1,722,685    957,870 |15,135,470 
+           |    100.00     100.00     100.00     100.00     100.00     100.00     100.00 |    100.00 
+
+          Pearson chi2(6) =  1.5e+03   Pr = 0.000
+
+. 
+. *By month
+. gen mo_icu_adm=month(covid_icu_date)
+(15,132,792 missing values generated)
+
+. lab define mo_icu_adm 2 Feb 3 March 4 April 5 May 6 June 7 July 8 August
+
+. lab val mo_icu_adm mo_icu_adm
+
+. tab mo_icu_adm
+
+******
+*TABLE REDACTED - THERE IS A SMALL NUMBER ENTRY FOR THE VALUE MO_ICU-ADM=1 (NOT LABELLED)*
+*THE OTHER VALUES ARE APPROX 
+MAR ~800
+APR ~1400
+MAY ~300
+JUN ~100
+JULY ~30
+
+*NB THE TABLES IN THIS DOFILE ARE NOT SAFETAB
+******
+
+. 
+. *By positive covid test
+. tab covid_icu   positive_covid_test_ever, col chi
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Failure/ce |
+   nsoring |
+ indicator |
+       for |    Ever having had
+  outcome: |  positive covid test
+ covid icu |         0          1 |     Total
+-----------+----------------------+----------
+         0 |15,070,423     62,369 |15,132,792 
+           |    100.00      96.15 |     99.98 
+-----------+----------------------+----------
+         1 |       179      2,499 |     2,678 
+           |      0.00       3.85 |      0.02 
+-----------+----------------------+----------
+     Total |15,070,602     64,868 |15,135,470 
+           |    100.00     100.00 |    100.00 
+
+          Pearson chi2(1) =  5.4e+05   Pr = 0.000
+
+. 
+. *By death
+. tab covid_icu  covid_death, col chi
+
++-------------------+
+| Key               |
+|-------------------|
+|     frequency     |
+| column percentage |
++-------------------+
+
+Failure/ce |
+   nsoring |
+ indicator |   Failure/censoring
+       for |     indicator for
+  outcome: | outcome: covid death
+ covid icu |         0          1 |     Total
+-----------+----------------------+----------
+         0 |15,123,922      8,870 |15,132,792 
+           |     99.99      89.26 |     99.98 
+-----------+----------------------+----------
+         1 |     1,611      1,067 |     2,678 
+           |      0.01      10.74 |      0.02 
+-----------+----------------------+----------
+     Total |15,125,533      9,937 |15,135,470 
+           |    100.00     100.00 |    100.00 
+
+          Pearson chi2(1) =  6.5e+05   Pr = 0.000
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\analyses\school-age-children-and-covid\analysis\log\investigate_ICNARC_data.log
+  log type:  text
+ closed on:  18 Aug 2020, 01:56:34
+----------------------------------------------------------------------------------------------------------------------------------
