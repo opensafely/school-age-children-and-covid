@@ -742,7 +742,7 @@ set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
-stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
+stset stime_worms [pweight = pw],  fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
 	
