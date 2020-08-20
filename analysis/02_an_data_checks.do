@@ -110,9 +110,18 @@ foreach comorb in $varlist {
 }
 
 * Outcome dates
-summ  date_covid_tpp_prob, format
-summ  died_date_onsnoncovid  died_date_onscovid, format
+foreach outcome in covid_icu_death_date died_date_onsnoncovid date_covid_tpp_prob  {
+summ  `outcome', format d
+hist `outcome', saving(`outcome', replace)
+}
+* Combine histograms
+grc1leg covid_icu_death_date.gph died_date_onsnoncovid.gph date_covid_tpp_prob.gph
+graph export "output/histogram_outcomes.svg", as(svg) replace
 
+* Delete unneeded graphs
+erase covid_icu_death_date.gph
+erase died_date_onsnoncovid.gph
+erase  date_covid_tpp_prob.gph
 *censor dates
 summ dereg_date, format
 summ has_12_m
@@ -247,3 +256,5 @@ safetab non_covid_death covid_death_icu  , row col
 
 * Close log file 
 log close
+
+

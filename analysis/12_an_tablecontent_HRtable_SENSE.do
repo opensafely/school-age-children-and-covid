@@ -18,10 +18,10 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
-foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale  {
-file write tablecontents ("sense=") ("`sense'") _n
 forvalues x=0/1 {
 file write tablecontents ("age") ("`x'") _n
+foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale time_int {
+file write tablecontents ("sense=") ("`sense'") _n
 forvalues i=`min'/`max'{
 local endwith "_tab"
 
@@ -93,7 +93,7 @@ cap file close tablecontents
 file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'_SENSE_ANALYSES.txt, t w replace 
 
 *Primary exposure
-outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
+outputHRsforvar, variable("kids_cat3") min(0) max(2) outcome(`outcome')
 file write tablecontents _n
 
 file close tablecontents

@@ -217,7 +217,7 @@ stcox 	i.kids_cat3 age1 age2 age3 		///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
 			i.chronic_cardiac_disease 		///
-			i.diabcat						///
+			i.anydiab						///
 			i.cancer_exhaem_cat	 			///
 			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///

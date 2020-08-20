@@ -798,27 +798,27 @@ use $tempdir\analysis_dataset_ageband_`x', clear
 * Save a version set on NON ONS covid death outcome
 stset stime_non_covid_death, fail(non_covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death_ageband_`x'.dta", replace
 	
 
 use $tempdir\analysis_dataset_ageband_`x', clear
-* Save a version set on covid death  outcome
+* Save a version set on covid death/icu  outcome
 stset stime_covid_death_icu, fail(covid_death_icu) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_covid_death_icu [pweight = pw],  fail(covid_death_icu) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
 
 
@@ -826,16 +826,14 @@ use $tempdir\analysis_dataset_ageband_`x', clear
 * Save a version set on probable covid
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_covid_tpp_prob [pweight = pw],  fail(covid_tpp_prob) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", replace	
-
-
 }
 
 * Close log file 

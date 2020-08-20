@@ -21,6 +21,23 @@ capture mkdir tempdata
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
+global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+global comordidadjlist  i.htdiag_or_highbp				///
+			i.chronic_respiratory_disease 	///
+			i.asthma						///
+			i.chronic_cardiac_disease 		///
+			i.diabcat						///
+			i.cancer_exhaem_cat	 			///
+			i.cancer_haem_cat  				///
+			i.chronic_liver_disease 		///
+			i.stroke_dementia		 		///
+			i.other_neuro					///
+			i.reduced_kidney_function_cat	///
+			i.esrd							///
+			i.other_transplant 				///
+			i.asplenia 						///
+			i.ra_sle_psoriasis  			///
+			i.other_immuno					
 
 ********************************************************************************
 
@@ -42,7 +59,7 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "03b_an_descriptive_tab
 
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04a_an_descriptive_tables.do"
 
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "04b_an_descriptive_table_2.do" `outcome'
 	}
 	
@@ -50,7 +67,7 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "05_an_descriptive_plot
 
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -61,20 +78,21 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "06a_univariate_analysi
 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 }
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }		
 
 
 
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob  {
+foreach outcome of any  covid_death_icu non_covid_death   {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense4.do" `outcome'
+winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense5.do" `outcome'
 }
 
 
@@ -87,29 +105,29 @@ winexec "C:\Program Files (x86)\Stata15\stata-64.exe" do "07b_an_multivariable_c
 
 *INTERACTIONS
 /*Age - now startifying on age
-foreach outcome of any  covid_death_icu covid_tpp_prob    {
+foreach outcome of any  covid_death_icu     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
 }*/
 *Sex
-foreach outcome of any  covid_death_icu covid_tpp_prob    {
+foreach outcome of any  covid_death_icu     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
 }
 *Shield
-foreach outcome of any  covid_death_icu covid_tpp_prob    {
+foreach outcome of any  covid_death_icu     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
 }
 *Time
-foreach outcome of any  covid_death_icu covid_tpp_prob    {
+foreach outcome of any  covid_death_icu     {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
 
 
 
 
-*EXPLORATORY ANALYSIS: prop hazards investigation
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob {
+/*EXPLORATORY ANALYSIS: prop hazards investigation
+foreach outcome of any  covid_death_icu non_covid_death  {
 winexec "C:\Program Files (x86)\Stata15\stata-64.exe" 	do "16_exploratory_analysis.do" `outcome'
-}
+}*/
 
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
@@ -179,23 +197,32 @@ forvalues i = 1/24 {
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
 *Tabulate results
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 	do "08_an_tablecontent_HRtable.do" `outcome'
 }
 
-foreach outcome of any  covid_death_icu  covid_tpp_prob    {
+foreach outcome of any  covid_death_icu      {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
-foreach outcome of any  covid_death_icu covid_tpp_prob  {
+foreach outcome of any  covid_death_icu   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
 
 ***SENSE ANALYSIS
-foreach outcome of any  covid_death_icu non_covid_death covid_tpp_prob     {
+foreach outcome of any  covid_death_icu non_covid_death      {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
 	}
 
 foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable.do" `outcome'
+}
+
+/*
+foreach outcome of any  covid_death_icu {
+do "13_multiple_imputation_dataset.do" `outcome'
+	}
+
+foreach outcome of any  covid_death_icu {
+do "14_multiple_imputation_analysis.do" `outcome'
 }

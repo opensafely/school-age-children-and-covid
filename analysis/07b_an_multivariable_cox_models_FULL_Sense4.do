@@ -52,30 +52,10 @@ prog define basecoxmodel
 	else local ethnicity
 timer clear
 timer on 1
-	capture stcox 	`exposure' `age' 		///
-			i.male 							///
-			`bmi'							///
-			`smoking'						///
-			`ethnicity'						///
-			i.imd 							///
-			i.htdiag_or_highbp				///
-			i.chronic_respiratory_disease 	///
-			i.asthma						///
-			i.chronic_cardiac_disease 		///
-			i.diabcat						///
-			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
-			i.chronic_liver_disease 		///
-			i.stroke_dementia		 		///
-			i.other_neuro					///
-			i.reduced_kidney_function_cat	///
-			i.esrd							///
-			i.other_transplant 					///
-			i.tot_adults_hh					///
-			i.asplenia 						///
-			i.ra_sle_psoriasis  			///
-			i.other_immuno					///
-			`if'							///
+	capture stcox 	`exposure'			///
+			`demogadjlist' 				///
+			`comordidadjlist' 			///
+			`if'						///
 			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
@@ -123,4 +103,8 @@ else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 }
 
 log close
+
+
+
+exit, clear STATA
 

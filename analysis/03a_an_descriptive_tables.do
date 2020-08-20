@@ -62,6 +62,7 @@ safetab ethnicity, m
 safetab stp
 safetab tot_adults_hh
 safetab household_size
+safetab household_size imd, col chi
 
 
 * Comorbidities
@@ -156,3 +157,7 @@ safetab `var' gp_number_kids, col row
 }
 * Close the log file
 log close
+
+exit, clear STATA
+
+

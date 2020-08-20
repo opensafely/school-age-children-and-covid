@@ -58,13 +58,8 @@ prog define basecoxmodel
 	else local ethnicity
 timer clear
 timer on 1
-	capture stcox 	`exposure' `age' 					///
-			i.male 							///
-			`bmi'					///
-			`smoking'					///
-			`ethnicity'						///
-			i.imd 							///
-			i.tot_adults_hh				///
+	capture stcox 	`exposure' 					///
+			`demogadjlist'					///
 			`if'							///
 			, strata(stp) vce(cluster household_id)
 timer off 1
@@ -140,25 +135,8 @@ else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 }	
 
 }	
-
-stcox kids_cat3 age1 age2 age3  i.male	///
-			i.obese4cat					///
-			, strata(stp) vce(cluster household_id)
-	
-
-stcox kids_cat3 age1 age2 age3  i.male	///
-			i.smoke_nomiss			///
-			, strata(stp) vce(cluster household_id)
-			
-			
-stcox kids_cat3 age1 age2 age3  i.male	///
-			i.imd 							///
-			, strata(stp) vce(cluster household_id)
-
-stcox kids_cat3 age1 age2 age3  i.male	///
-			i.tot_adults_hh				///
-			, strata(stp) vce(cluster household_id)
-			
-			
 	
 log close
+
+exit, clear STATA
+
