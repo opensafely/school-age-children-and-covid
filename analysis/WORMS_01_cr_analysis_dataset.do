@@ -737,13 +737,13 @@ use $tempdir\analysis_dataset_worms_ageband_`x', clear
 * Save a version set on NON ONS covid death outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
+*WEIGHTING - TO REDUCE TIME 
 set seed 30459820
 keep if _d==1|uniform()<.03
 gen pw = 1
 replace pw = (1/0.03) if _d==0
 stset stime_non_covid_death [pweight = pw],  fail(non_covid_death) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
+	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
 	
 }
