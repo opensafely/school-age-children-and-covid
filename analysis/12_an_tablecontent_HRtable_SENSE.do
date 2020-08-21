@@ -165,7 +165,7 @@ gen obsorder=_n
 gsort -obsorder
 gen graphorder = _n
 sort graphorder
-br graphorder Name leveldesc hr  lci uci 
+list graphorder Name leveldesc hr  lci uci 
 
 
 
