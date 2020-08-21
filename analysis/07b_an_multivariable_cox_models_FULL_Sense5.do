@@ -92,8 +92,8 @@ estat phtest, d
 			90.timeperiod#3.smoke_nomiss					///
 		60.timeperiod#1.highimd								///
 			90.timeperiod#1.highimd							///
-		60.timeperiod#1.diabetes							///
-			90.timeperiod#1.diabetes						///		
+		60.timeperiod#1.anydiab					///
+			90.timeperiod#1.anydiab					///		
 		60.timeperiod#1.chronic_liver_disease				///
 			90.timeperiod#1.chronic_liver_disease			///
 		60.timeperiod#1.cancer_exhaem_cat					///
