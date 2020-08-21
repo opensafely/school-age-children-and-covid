@@ -56,6 +56,7 @@ stsplit timeperiod, at(60 90)
 
 *Age and sex adjusted
 stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_time_int_ageband_0, replace						
 
 *Minimally adjusted
@@ -72,6 +73,7 @@ stcox 	i.kids_cat3 	///
 		60.timeperiod#1.highimd								///
 			90.timeperiod#1.highimd							///
 			, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_time_int_ageband_0, replace
 estat phtest, d
 
@@ -101,7 +103,8 @@ estat phtest, d
 		60.timeperiod#1.other_immuno						///
 			90.timeperiod#1.other_immuno					///
 			, strata(stp) vce(cluster household_id)
-estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_0, replace
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_0, replace
 estat phtest, d
 
 
@@ -118,6 +121,7 @@ gen highimd = imd>=3
 gen anydiab= diabcat>=2
 *Age and sex adjusted
 stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_time_int_ageband_1, replace						
 
 *Minimally adjusted
@@ -130,6 +134,7 @@ stcox 	i.kids_cat3 	///
 		60.timeperiod#1.male							///
 			90.timeperiod#1.male						///
 			, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_time_int_ageband_1, replace
 estat phtest, d
 
@@ -148,7 +153,8 @@ stcox 	i.kids_cat3 	 ///
 		60.timeperiod#3.anyreduced_kidney_function						///
 			90.timeperiod#3.anyreduced_kidney_function					///
 			, strata(stp) vce(cluster household_id)
-estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_1, replace
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_1, replace
 
 estat phtest, d
 

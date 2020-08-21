@@ -540,7 +540,7 @@ label define hba1c75 0"<7.5" 1">=7.5"
 safetab hba1c75, m
 
 * Create diabetes, split by control/not
-gen     diabcat = 1 if dm_type==0
+gen     diabcat = 1 if dm_type==0 | dm_type==.
 replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
 replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
 replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)

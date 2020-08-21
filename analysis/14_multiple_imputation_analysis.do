@@ -28,25 +28,27 @@ log using "$logdir\14_multiple_imputation_analysis_`outcome'", text replace
 
 
 forvalues x=0/1 {
-use "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta"
+use "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *Age and sex adjusted
-mi estimate, eform: stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+mi estimate: stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_multiple_imputation_ageband_`x', replace						
 
 *Minimally adjusted
-mi estimate, eform:  stcox 	i.kids_cat3 	///
+mi estimate:  stcox 	i.kids_cat3 	///
 			age1 age2 age3		///
 			i.male 							///
 			i.obese4cat 					///
 			i.smoke_nomiss					///
 			i.imd 						///
 			, strata(stp) vce(cluster household_id)
+estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_multiple_imputation_ageband_`x', replace
 
 
 *Fully adjusted
-mi estimate, eform:  stcox 	i.kids_cat3 	 ///
+mi estimate:  stcox 	i.kids_cat3 	 ///
 			age1 age2 age3		///
 			i.male 							///
 			i.obese4cat 					///
@@ -54,7 +56,8 @@ mi estimate, eform:  stcox 	i.kids_cat3 	 ///
 			i.imd 						///
 			`comordidadjlist'				///	
 			, strata(stp) vce(cluster household_id)
-estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_multiple_imputation_`x', replace
+estimates
+estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_multiple_imputation_ageband_`x', replace
 }
 
 log close

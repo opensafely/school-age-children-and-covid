@@ -50,7 +50,7 @@ replace cumhgp = cumhgp + 1
 
 *What's the cumulative hazard for?
 *Do we need to include household id in some way?
-
+recode diabcat .=0
 mi impute mlogit ethnicity ///
 			i.kids_cat3 age1 age2 age3		///
 			i.male 							///
@@ -63,21 +63,21 @@ mi impute mlogit ethnicity ///
 			i.chronic_cardiac_disease 		///
 			i.diabcat						///
 			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
 			i.chronic_liver_disease 		///
 			i.stroke_dementia		 		///
+			i.other_transplant 					///
+			i.asplenia 						///
+			i.stp 							///
+			i.cumhgp						///
+			i.cancer_haem_cat  				///
 			i.other_neuro					///
 			i.reduced_kidney_function_cat	///
 			i.esrd							///
-			i.other_transplant 					///
 			i.tot_adults_hh					///
-			i.asplenia 						///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno					///
-			i.stp 							///
-			i.cumhgp						///
-			, add(10) rseed(894726318)
-	
+			, add(10) rseed(894726318) augment
+
 
 save "$tempdir\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_`x'.dta", replace
 	
@@ -96,6 +96,7 @@ stset stime_covid_death_icu, fail(covid_death_icu) 				///
 drop if _st==0	
 mi set wide
 mi register imputed ethnicity
+recode diabcat .=0
 
 *Gen NA Cum Haz
 sts generate cumh = na
@@ -132,7 +133,7 @@ mi impute mlogit ethnicity ///
 			i.other_immuno					///
 			i.stp 							///
 			i.cumhgp						///
-			, add(10) rseed(894726318)
+			, add(10) rseed(894726318) augment
 	
 save "$tempdir\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
 
@@ -147,6 +148,7 @@ replace ethnicity=. if ethnicity==.u
 * Save a version set on probable covid
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
+recode diabcat .=0
 
 drop if _st==0	
 mi set wide
@@ -187,7 +189,7 @@ mi impute mlogit ethnicity ///
 			i.other_immuno					///
 			i.stp 							///
 			i.cumhgp						///
-			, add(10) rseed(894726318)
+			, add(10) rseed(894726318) augment
 			
 save "$tempdir\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", replace	
 }
