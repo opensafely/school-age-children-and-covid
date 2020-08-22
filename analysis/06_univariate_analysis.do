@@ -69,3 +69,5 @@ foreach var of any `varlist' {
 
 * Close log file
 log close
+
+exit, clear STATA

@@ -13,7 +13,7 @@
 *	Data created:	None
 *
 *	Other output:	Kaplan-Meier plots (intended for publication)
-*							output/km_age_sex_covid_death_itu.svg 	
+*							output/km_age_sex_covid_death_icu.svg 	
 *							output/km_age_sex_covid_tpp_prob
 
 ********************************************************************************
@@ -37,7 +37,7 @@ global tempdir    "tempdata"
 forvalues x=0/1 {
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
@@ -45,21 +45,22 @@ use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", cle
 
 *** Intended for publication
 
-
 * KM plot for females by age		
 sts graph if male==0, title("Female") 				///
 	failure by(agegroup) 							///
 	xtitle(" ")					///
-	yscale(range(0, 0.008)) 						///
-	ylabel(0 (0.002) 0.008, angle(0) format(%4.3f))	///
-	xscale(range(30, 100)) 							///
+	yscale(range(0, 0.005)) 						///
+	ylabel(0 (0.002) 0.005, angle(0) format(%4.3f))	///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 91 "1 May 20")	 			///
-	legend(order(1 2 3 4 5 6)						///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 			///
+	legend(order(1 2 3 4 5 6 7)						///
 	subtitle("Age group", size(small)) 				///
-	label(1 "18-<40") label(2 "40-<50") 			///
-	label(3 "50-<60") label(4 "60-<70")				///
-	label(5 "70-<80") label(6 "80+")				///
+	label(1 "18-<30") label(2 "30-<40") label(3 "40-<50") 	///
+	label(4 "50-<60") label(5 "60-<70")				///
+	label(6 "70-<80") label(7 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
 	saving(female, replace)
 	
@@ -69,22 +70,24 @@ sts graph if male==0, title("Female") 				///
 sts graph if male==1, title("Male") 				///
 failure by(agegroup) 								///
 	xtitle(" ")										///
-	yscale(range(0, 0.008)) 						///
-	ylabel(0 (0.002) 0.008, angle(0) format(%4.3f))	///
-	xscale(range(30, 100)) 							///
+	yscale(range(0, 0.005)) 						///
+	ylabel(0 (0.002) 0.005, angle(0) format(%4.3f))	///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 91 "1 May 20")	 			///
-	legend(order(1 2 3 4 5 6)						///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 				///
+	legend(order(1 2 3 4 5 6 7)						///
 	subtitle("Age group", size(small)) 				///
-	label(1 "18-<40") label(2 "40-<50") 			///
-	label(3 "50-<60") label(4 "60-<70")				///
-	label(5 "70-<80") label(6 "80+")				///
+	label(1 "18-<30") label(2 "30-<40") label(3 "40-<50") 	///
+	label(4 "50-<60") label(5 "60-<70")				///
+	label(6 "70-<80") label(7 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
 	saving(male, replace)	
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "of COVID-19 death", size(medsmall))
-graph export "output/km_age_sex_covid_death_ageband_`x'.svg", as(svg) replace
+graph export "output/km_age_sex_covid_death_icu_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -110,25 +113,30 @@ sts graph if male==0, title("Female") 				///
 	xtitle(" ")										///
 	yscale(range(0, 0.005)) 						///
 	ylabel(0 (0.001) 0.005, angle(0) format(%4.3f))	///
-	xscale(range(30, 84)) 							///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 84 "25 Apr 20")	 			///
-	legend(order(1 2 3 4 5 6)						///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 	 			///
+	legend(order(1 2 3 4 5 6 7)						///
 	subtitle("Age group", size(small)) 				///
-	label(1 "18-<40") label(2 "40-<50") 			///
-	label(3 "50-<60") label(4 "60-<70")				///
-	label(5 "70-<80") label(6 "80+")				///
+	label(1 "18-<30") label(2 "30-<40") label(3 "40-<50") 	///
+	label(4 "50-<60") label(5 "60-<70")				///
+	label(6 "70-<80") label(7 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
 	saving(female, replace)
+	
 * KM plot for males by age		
 sts graph if male==1, title("Male") 				///
 failure by(agegroup) 								///
 	xtitle("Days since 1 Feb 2020")					///
 	yscale(range(0, 0.005)) 						///
 	ylabel(0 (0.001) 0.005, angle(0) format(%4.3f))	///
-	xscale(range(30, 84)) 							///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 84 "25 Apr 20")	 			///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 	 			///
 	legend(order(1 2 3 4 5 6)						///
 	subtitle("Age group", size(small)) 				///
 	label(1 "18-<40") label(2 "40-<50") 			///
@@ -162,30 +170,36 @@ sts graph if male==0, title("Female") 				///
 	xtitle(" ")										///
 	yscale(range(0, 0.005)) 						///
 	ylabel(0 (0.001) 0.005, angle(0) format(%4.3f))	///
-	xscale(range(30, 84)) 							///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 84 "25 Apr 20")	 			///
-	legend(order(1 2 3 4 5 6)						///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 		 			///
+	legend(order(1 2 3 4 5 6 7)						///
 	subtitle("Age group", size(small)) 				///
-	label(1 "18-<40") label(2 "40-<50") 			///
-	label(3 "50-<60") label(4 "60-<70")				///
-	label(5 "70-<80") label(6 "80+")				///
+	label(1 "18-<30") label(2 "30-<40") label(3 "40-<50") 	///
+	label(4 "50-<60") label(5 "60-<70")				///
+	label(6 "70-<80") label(7 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
 	saving(female, replace)
+	
+	
 * KM plot for males by age		
 sts graph if male==1, title("Male") 				///
 failure by(agegroup) 								///
 	xtitle("Days since 1 Feb 2020")					///
 	yscale(range(0, 0.005)) 						///
 	ylabel(0 (0.001) 0.005, angle(0) format(%4.3f))	///
-	xscale(range(30, 84)) 							///
+	xscale(range(30, 200)) 							///
 	xlabel(0 "1 Feb 20" 29 "1 Mar 20" 				///
-		60 "1 Apr 20" 84 "25 Apr 20")	 			///
-	legend(order(1 2 3 4 5 6)						///
+		60 "1 Apr 20" 91 "1 May 20"  				///
+		121 "1 June 20" 151 "1 July 20" 			///
+		182 "1 Aug 20")	 		 			///
+	legend(order(1 2 3 4 5 6 7)						///
 	subtitle("Age group", size(small)) 				///
-	label(1 "18-<40") label(2 "40-<50") 			///
-	label(3 "50-<60") label(4 "60-<70")				///
-	label(5 "70-<80") label(6 "80+")				///
+	label(1 "18-<30") label(2 "30-<40") label(3 "40-<50") 	///
+	label(4 "50-<60") label(5 "60-<70")				///
+	label(6 "70-<80") label(7 "80+")				///
 	col(3) colfirst size(small))	noorigin		///
 	saving(male, replace)	
 * KM plot for males and females 
@@ -200,4 +214,4 @@ erase male.gph
 }
 
 
-
+exit, clear STATA

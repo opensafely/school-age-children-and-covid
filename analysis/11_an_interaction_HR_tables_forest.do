@@ -181,13 +181,11 @@ replace intNAME="Probable shielding" if int_type=="shield" & int_level==1
 replace intNAME="" if Name!=""
 replace intNAME="" if leveldesc!=""
 
-
 drop if hr==1 & lci==1 &leveldesc==""
 
 foreach var in hr lci uci {
 replace  `var'=. if leveldesc=="Children/young people aged 11-<18 years"
 }
-
 
 gen obsorder=_n
 gsort -obsorder

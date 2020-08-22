@@ -144,3 +144,6 @@ tabulatevariable, variable(shield) start(1) end(1) outcome(`outcome')
 file close tablecontent
 
 }
+
+
+exit, clear STATA

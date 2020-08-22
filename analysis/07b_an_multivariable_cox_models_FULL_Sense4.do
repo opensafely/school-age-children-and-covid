@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense3.do
+*	Do-file:		07b_an_multivariable_cox_models_Sense4.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -10,13 +10,12 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file:  an_multivariable_cox_models.log
+*	Other output:	Log file:  07b_an_multivariable_cox_models_`outcome'.log
 *
 ********************************************************************************
 *
 *	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models for a sense analysis on those with complete data on 
-*					bmi and smoking
+*					Cox models, with age as the underlying timescale
 *  
 ********************************************************************************
 *	
@@ -37,16 +36,10 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agegroup_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCnoeth.ster
-
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense3_`outcome'", text replace
-
+log using "$logdir\07b_an_multivariable_cox_models_`outcome'_Sense4_agetimescale", text replace
 
 
 *************************************************************************************
@@ -75,30 +68,41 @@ forvalues x=0/1 {
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
+*reset underlying timescale to age
+stset
+gen dob=d(01feb2020)-(age*365.25)
+format dob %td
+list age dob in 1/20
+streset, origin(dob) scale(365.25) 
+
 ******************************
 *  Multivariable Cox models  *
 ******************************
 
 
-foreach exposure_type in 	kids_cat3   {
- 
-*Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.bmicat) smoking(i.smoke)
+
+foreach exposure_type in kids_cat3  {
+
+*Age spline model (not adj ethnicity)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCnoeth_bmi_smok_ageband_`x', replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_age_underlying_timescale_ageband_`x', replace
 *estat concordance /*c-statistic*/
- }
- else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
- }
+	/*  Proportional Hazards test  */
+	* Based on Schoenfeld residuals
+	timer clear 
+	timer on 1
+	if e(N_fail)>0 estat phtest, d
+	timer off 1
+	timer list
+}
+else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
 }
-
-
-
+}
 
 log close
-
 
 
 

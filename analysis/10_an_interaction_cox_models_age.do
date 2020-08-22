@@ -59,31 +59,12 @@ prog define basemodel
 	else local ethnicity
 timer clear
 timer on 1
- stcox 	`exposure' `age' 					///
-			i.male 							///
-			i.obese4cat						///
-			i.smoke_nomiss					///
-			i.imd 							///
-			i.htdiag_or_highbp				///
-			i.chronic_respiratory_disease 	///
-			i.asthma						///
-			i.chronic_cardiac_disease 		///
-			i.diabcat						///
-			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
-			i.chronic_liver_disease 		///
-			i.stroke_dementia		 		///
-			i.other_neuro					///
-			i.reduced_kidney_function_cat	///
-			i.esrd							///
-			i.other_transplant 					///
-			i.tot_adults_hh					///
-			i.asplenia 						///
-			i.ra_sle_psoriasis  			///
-			i.other_immuno					///
+stcox 	`exposure'  								///
+			`demogadjlist'							///
+			`comordidadjlist'						///
 			`interaction'							///
 			, strata(stp) vce(cluster household_id)
-	timer off 1
+timer off 1
 timer list
 end
 *************************************************************************************
@@ -113,3 +94,6 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 }
 
 log close
+
+exit, clear STATA
+
