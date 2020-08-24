@@ -170,7 +170,7 @@ assert age66 < .
 
 
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
-tab care_home_type household_size
+*tab care_home_type household_size
 drop if care_home_type!="U"
 
 count

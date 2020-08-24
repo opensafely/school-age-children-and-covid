@@ -177,5 +177,5 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
 		legend(off)  ysize(8) 
 
-graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'_ageband_`x'.svg, as(svg) replace
+graph export ./output/an_tablecontent_HRtable_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
 }

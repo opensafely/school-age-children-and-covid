@@ -28,7 +28,7 @@ forvalues int_level=0/1 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab _tab ("`int_level'")
+	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab _tab ("`int_level'") _tab
 	
 	foreach modeltype of any fulladj {
 	
