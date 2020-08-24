@@ -28,8 +28,24 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-
-
+global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+global comordidadjlist  i.htdiag_or_highbp				///
+			i.chronic_respiratory_disease 	///
+			i.asthma						///
+			i.chronic_cardiac_disease 		///
+			i.diabcat						///
+			i.cancer_exhaem_cat	 			///
+			i.cancer_haem_cat  				///
+			i.chronic_liver_disease 		///
+			i.stroke_dementia		 		///
+			i.other_neuro					///
+			i.reduced_kidney_function_cat	///
+			i.esrd							///
+			i.other_transplant 				///
+			i.asplenia 						///
+			i.ra_sle_psoriasis  			///
+			i.other_immuno		
+			
 local outcome `1' 
 
 
@@ -60,8 +76,8 @@ prog define basecoxmodel
 timer clear
 timer on 1
 	capture stcox 	`exposure'			///
-			`demogadjlist' 				///
-			`comordidadjlist' 			///
+			$demogadjlist 				///
+			$comordidadjlist 			///
 			`if'						///
 			, strata(stp) vce(cluster household_id)
 timer off 1
