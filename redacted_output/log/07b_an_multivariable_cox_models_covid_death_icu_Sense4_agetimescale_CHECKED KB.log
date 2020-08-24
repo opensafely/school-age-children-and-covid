@@ -1,0 +1,318 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_covid_death_icu_Sense4_agetime
+> scale.log
+  log type:  text
+ opened on:  22 Aug 2020, 13:08:24
+
+. 
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2. 
+.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6.         capture stcox   `exposure'                      ///
+>                         `demogadjlist'                          ///
+>                         `comordidadjlist'                       ///
+>                         `if'                                            ///
+>                         , strata(stp) vce(cluster household_id)
+  7. timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. *reset underlying timescale to age
+. stset
+  4. gen dob=d(01feb2020)-(age*365.25)
+  5. format dob %td
+  6. list age dob in 1/20
+  7. streset, origin(dob) scale(365.25) 
+  8. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. 
+. 
+. foreach exposure_type in kids_cat3  {
+  9. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+ 10. if _rc==0{
+ 11. estimates
+ 12. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_age_underlying_timescale_ageba
+> nd_`x', replace
+ 13. *estat concordance /*c-statistic*/
+.         /*  Proportional Hazards test  */
+.         * Based on Schoenfeld residuals
+.         timer clear 
+ 14.         timer on 1
+ 15.         if e(N_fail)>0 estat phtest, d
+ 16.         timer off 1
+ 17.         timer list
+ 18. }
+ 19. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 20. 
+. }
+ 21. }
+-> stset stime_covid_death_icu [pweight=pw], id(patient_id)
+                               failure(covid_death_icu) enter(time
+                               enter_date) origin(time enter_date)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+            weight:  [pweight=pw]
+
+------------------------------------------------------------------------------
+    352,604  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+    352,604  observations remaining, representing
+    352,604  subjects
+      2,705  failures in single-failure-per-subject data
+   64557535  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+     +-----------------+
+     | age         dob |
+     |-----------------|
+  1. |  30   31jan1990 |
+  2. |  39   31jan1981 |
+  3. |  24   01feb1996 |
+  4. |  40   01feb1980 |
+  5. |  47   31jan1973 |
+     |-----------------|
+  6. |  55   31jan1965 |
+  7. |  58   31jan1962 |
+  8. |  40   01feb1980 |
+  9. |  49   31jan1971 |
+ 10. |  39   31jan1981 |
+     |-----------------|
+ 11. |  53   31jan1967 |
+ 12. |  54   31jan1966 |
+ 13. |  38   31jan1982 |
+ 14. |  38   31jan1982 |
+ 15. |  20   01feb2000 |
+     |-----------------|
+ 16. |  57   31jan1963 |
+ 17. |  47   31jan1973 |
+ 18. |  31   31jan1989 |
+ 19. |  47   31jan1973 |
+ 20. |  49   31jan1971 |
+     +-----------------+
+-> stset stime_covid_death_icu [pweight=pw], id(patient_id)
+                               failure(covid_death_icu) enter(time
+                               enter_date) origin(time dob) scale(365.25)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)/365.25
+            origin:  time dob
+            weight:  [pweight=pw]
+
+------------------------------------------------------------------------------
+    352,604  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+    352,604  observations remaining, representing
+    352,604  subjects
+      2,705  failures in single-failure-per-subject data
+  176,748.9  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =        18
+                                          last observed exit t =  65.50376
+   1:     18.49 /        1 =      18.4930
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,005             Number of obs    =     352,604
+No. of failures      =        2,705
+Time at risk         =  5873505.604
+                                                Wald chi2(2)     =        1.78
+Log pseudolikelihood =   -24877.279             Prob > chi2      =      0.4103
+
+                       (Std. Err. adjusted for 346,280 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .9675416   .0776738    -0.41   0.681     .8266765     1.13241
+Kids under 18  |    1.09943   .0871679     1.20   0.232     .9411967    1.284265
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_0.ste
+> r not found)
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_0.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.06570        13.62        1         0.0002
+      2.kids_cat3 |      0.03703         4.15        1         0.0417
+      ------------+---------------------------------------------------
+      global test |                     15.90        2         0.0004
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:     28.14 /        1 =      28.1410
+-> stset stime_covid_death_icu [pweight=pw], id(patient_id)
+                               failure(covid_death_icu) enter(time
+                               enter_date) origin(time enter_date)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+            weight:  [pweight=pw]
+
+------------------------------------------------------------------------------
+    112,797  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+    112,797  observations remaining, representing
+    112,797  subjects
+      8,905  failures in single-failure-per-subject data
+   19708130  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+     +-----------------+
+     | age         dob |
+     |-----------------|
+  1. |  78   31jan1942 |
+  2. |  70   31jan1950 |
+  3. |  72   01feb1948 |
+  4. |  70   31jan1950 |
+  5. |  85   31jan1935 |
+     |-----------------|
+  6. |  83   31jan1937 |
+  7. |  69   31jan1951 |
+  8. |  71   31jan1949 |
+  9. |  69   31jan1951 |
+ 10. |  86   31jan1934 |
+     |-----------------|
+ 11. |  74   31jan1946 |
+ 12. |  83   31jan1937 |
+ 13. |  66   31jan1954 |
+ 14. |  93   31jan1927 |
+ 15. |  86   31jan1934 |
+     |-----------------|
+ 16. |  86   31jan1934 |
+ 17. |  74   31jan1946 |
+ 18. |  89   31jan1931 |
+ 19. |  89   31jan1931 |
+ 20. |  68   01feb1952 |
+     +-----------------+
+-> stset stime_covid_death_icu [pweight=pw], id(patient_id)
+                               failure(covid_death_icu) enter(time
+                               enter_date) origin(time dob) scale(365.25)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)/365.25
+            origin:  time dob
+            weight:  [pweight=pw]
+
+------------------------------------------------------------------------------
+    112,797  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+    112,797  observations remaining, representing
+    112,797  subjects
+      8,905  failures in single-failure-per-subject data
+ 53,957.919  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =        66
+                                          last observed exit t =    107.23
+   1:      3.96 /        1 =       3.9600
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,471,972             Number of obs    =     112,797
+No. of failures      =        8,905
+Time at risk         =  1732425.404
+                                                Wald chi2(2)     =        1.92
+Log pseudolikelihood =   -71249.677             Prob > chi2      =      0.3823
+
+                       (Std. Err. adjusted for 111,700 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   1.165747    .135201     1.32   0.186      .928718    1.463272
+Kids under 18  |   1.062303   .1480352     0.43   0.664     .8084081    1.395937
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_1.ste
+> r not found)
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_1.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |     -0.01626         2.94        1         0.0866
+      2.kids_cat3 |     -0.03027        10.90        1         0.0010
+      ------------+---------------------------------------------------
+      global test |                     13.70        2         0.0011
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:      7.37 /        1 =       7.3730
+
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_covid_death_icu_Sense4_agetime
+> scale.log
+  log type:  text
+ closed on:  22 Aug 2020, 13:09:59
+----------------------------------------------------------------------------------------------------------------------------------

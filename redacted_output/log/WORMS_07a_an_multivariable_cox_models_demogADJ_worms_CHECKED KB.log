@@ -1,0 +1,167 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\WORMS_07a_an_multivariable_cox_models_demogADJ_worms.log
+  log type:  text
+ opened on:  23 Aug 2020, 17:28:48
+
+. 
+. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2. 
+.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6.         capture stcox   `exposure' `age'                                        ///
+>                         i.male                                                  ///
+>                         `bmi'                                   ///
+>                         `smoking'                                       ///
+>                         `ethnicity'                                             ///
+>                         i.imd                                                   ///
+>                         i.tot_adults_hh                         ///
+>                         `if'                                                    ///
+>                         , strata(stp) vce(cluster household_id)
+  7. timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. 
+. foreach exposure_type in kids_cat3 {
+  4. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+  5. if _rc==0{
+  6. estimates
+  7. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_ageband_`x', replace
+  8. *estat concordance /*c-statistic*/
+. }
+  9. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 10. 
+. }
+ 11. }
+   1:     27.79 /        1 =      27.7860
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,563,602             Number of obs    =     348,301
+No. of failures      =        1,436
+Time at risk         =   4220443101
+                                                Wald chi2(17)    =      675.99
+Log pseudolikelihood =   -18461.824             Prob > chi2      =      0.0000
+
+                            (Std. Err. adjusted for 342,111 clusters in household_id)
+-------------------------------------------------------------------------------------
+                    |               Robust
+                 _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+          kids_cat3 |
+     Kids under 12  |    2.51738   .1604268    14.49   0.000     2.221794    2.852292
+     Kids under 18  |   1.189569    .135272     1.53   0.127     .9519087    1.486566
+                    |
+               age1 |   .9767736   .0088815    -2.58   0.010     .9595204    .9943371
+               age2 |    .978556   .0309143    -0.69   0.493     .9198027    1.041062
+               age3 |    1.09501   .1044321     0.95   0.341     .9083191    1.320073
+             1.male |   .5898442   .0318343    -9.78   0.000     .5306368    .6556579
+                    |
+          obese4cat |
+ Obese I (30-34.9)  |   .9933352   .0815886    -0.08   0.935     .8456323    1.166837
+Obese II (35-39.9)  |    1.12937   .1256303     1.09   0.274     .9081328    1.404505
+   Obese III (40+)  |   1.105624   .1569626     0.71   0.479     .8370751    1.460327
+                    |
+       smoke_nomiss |
+            Former  |   1.182783    .076559     2.59   0.010     1.041858     1.34277
+           Current  |   .9871927   .0721821    -0.18   0.860     .8553884    1.139306
+                    |
+                imd |
+                 2  |   1.154892   .1135771     1.46   0.143      .952424      1.4004
+                 3  |   1.063493   .1066886     0.61   0.539     .8736612    1.294573
+                 4  |   1.303056   .1247373     2.77   0.006      1.08014    1.571975
+   5 most deprived  |   1.556384   .1494874     4.61   0.000      1.28932    1.878767
+                    |
+      tot_adults_hh |
+                 2  |   .9870672   .0665641    -0.19   0.847     .8648581    1.126545
+                 3  |   .7532746   .0588532    -3.63   0.000     .6463223    .8779253
+-------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_worms_kids_cat3_DEMOGADJ_noeth_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_worms_kids_cat3_DEMOGADJ_noeth_ageband_0.ster saved
+   1:      4.90 /        1 =       4.9010
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,027,806             Number of obs    =      90,937
+No. of failures      =          106
+Time at risk         =   1105131426
+                                                Wald chi2(17)    =       48.56
+Log pseudolikelihood =   -1220.4728             Prob > chi2      =      0.0001
+
+                             (Std. Err. adjusted for 90,239 clusters in household_id)
+-------------------------------------------------------------------------------------
+                    |               Robust
+                 _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+          kids_cat3 |
+     Kids under 12  |   2.914584   1.519341     2.05   0.040     1.049191    8.096524
+     Kids under 18  |   1.917611   1.421831     0.88   0.380     .4483623    8.201474
+                    |
+               age1 |   1.202585   .1181717     1.88   0.060     .9919113    1.458005
+               age2 |   .3458965   .1671335    -2.20   0.028     .1341698    .8917386
+               age3 |    10.5959   12.27259     2.04   0.042     1.094567    102.5731
+             1.male |   .6267441    .129948    -2.25   0.024     .4174492    .9409725
+                    |
+          obese4cat |
+ Obese I (30-34.9)  |   .5840168   .1812579    -1.73   0.083     .3178651     1.07302
+Obese II (35-39.9)  |   .6989641   .3242085    -0.77   0.440     .2815998    1.734912
+   Obese III (40+)  |   2.460928   .9722343     2.28   0.023     1.134531    5.338036
+                    |
+       smoke_nomiss |
+            Former  |   .8099603   .1625938    -1.05   0.294     .5465011    1.200429
+           Current  |   .4259168    .200445    -1.81   0.070     .1693294    1.071315
+                    |
+                imd |
+                 2  |   1.055914   .3255305     0.18   0.860     .5770449    1.932181
+                 3  |     1.0942    .356407     0.28   0.782     .5778832    2.071826
+                 4  |   1.369673    .463205     0.93   0.352     .7059146    2.657553
+   5 most deprived  |   1.307589   .4424432     0.79   0.428     .6736801    2.537982
+                    |
+      tot_adults_hh |
+                 2  |   .7971995   .1801022    -1.00   0.316     .5119938    1.241279
+                 3  |   .8966004   .3050708    -0.32   0.748     .4602303    1.746718
+-------------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_worms_kids_cat3_DEMOGADJ_noeth_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_worms_kids_cat3_DEMOGADJ_noeth_ageband_1.ster saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\WORMS_07a_an_multivariable_cox_models_demogADJ_worms.log
+  log type:  text
+ closed on:  23 Aug 2020, 17:29:22
+----------------------------------------------------------------------------------------------------------------------------------

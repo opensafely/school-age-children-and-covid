@@ -1,0 +1,437 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\13_multiple_imputation_dataset_covid_death_icu.log
+  log type:  text
+ opened on:  24 Aug 2020, 05:29:44
+
+. 
+. 
+. *******************************************************************************
+. forvalues x=0/1 {
+  2. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+  3. replace ethnicity=. if ethnicity==.u 
+  4. count
+  5. * Save a version set on NON ONS covid death outcome
+. stset stime_non_covid_death, fail(non_covid_death)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+  6.         
+. drop if _st==0  
+  7. mi set wide
+  8. mi register imputed ethnicity
+  9. 
+. *Gen NA Cum Haz
+. sts generate cumh = na
+ 10. egen cumhgp = cut(cumh), group(5)
+ 11. replace cumhgp = cumhgp + 1
+ 12. 
+. *HIV code: mi impute mlogit ethnicity i.hiv i.stp $adjustmentlist i.cumhgp _d, add(10) rseed(3040985)
+. 
+. *What's the cumulative hazard for?
+. *Do we need to include household id in some way?
+. recode diabcat .=0
+ 13. mi impute mlogit ethnicity ///
+>                         i.kids_cat3 age1 age2 age3              ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                                   ///
+>                         i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabcat                                               ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_transplant                                      ///
+>                         i.asplenia                                              ///
+>                         i.stp                                                   ///
+>                         i.cumhgp                                                ///
+>                         i.cancer_haem_cat                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.esrd                                                  ///
+>                         i.tot_adults_hh                                 ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  ///
+>                         , add(10) rseed(894726318) augment
+ 14. 
+. 
+. save "$tempdir\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_`x'.dta", replace
+ 15.         
+.         
+.         
+.         
+.         
+.         
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 16. replace ethnicity=. if ethnicity==.u 
+ 17. 
+. * Save a version set on covid death/icu  outcome
+. stset stime_covid_death_icu, fail(covid_death_icu)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 18. 
+. drop if _st==0  
+ 19. mi set wide
+ 20. mi register imputed ethnicity
+ 21. recode diabcat .=0
+ 22. 
+. *Gen NA Cum Haz
+. sts generate cumh = na
+ 23. egen cumhgp = cut(cumh), group(5)
+ 24. replace cumhgp = cumhgp + 1
+ 25. 
+. *HIV code: mi impute mlogit ethnicity i.hiv i.stp $adjustmentlist i.cumhgp _d, add(10) rseed(3040985)
+. 
+. *What's the cumulative hazard for?
+. *Do we need to include household id in some way?
+. 
+. mi impute mlogit ethnicity ///
+>                         i.kids_cat3 age1 age2 age3              ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                                   ///
+>                         i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabcat                                               ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.cancer_haem_cat                               ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.esrd                                                  ///
+>                         i.other_transplant                                      ///
+>                         i.tot_adults_hh                                 ///
+>                         i.asplenia                                              ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  ///
+>                         i.stp                                                   ///
+>                         i.cumhgp                                                ///
+>                         , add(10) rseed(894726318) augment
+ 26.         
+. save "$tempdir\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
+ 27. 
+. 
+. 
+. 
+. 
+. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 28. replace ethnicity=. if ethnicity==.u 
+ 29. 
+. * Save a version set on probable covid
+. stset stime_covid_tpp_prob, fail(covid_tpp_prob)                                ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 30. recode diabcat .=0
+ 31. 
+. drop if _st==0  
+ 32. mi set wide
+ 33. mi register imputed ethnicity
+ 34. 
+. *Gen NA Cum Haz
+. sts generate cumh = na
+ 35. egen cumhgp = cut(cumh), group(5)
+ 36. replace cumhgp = cumhgp + 1
+ 37. 
+. *HIV code: mi impute mlogit ethnicity i.hiv i.stp $adjustmentlist i.cumhgp _d, add(10) rseed(3040985)
+. 
+. *What's the cumulative hazard for?
+. *Do we need to include household id in some way?
+. 
+. mi impute mlogit ethnicity ///
+>                         i.kids_cat3 age1 age2 age3              ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                                   ///
+>                         i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabcat                                               ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.cancer_haem_cat                               ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.esrd                                                  ///
+>                         i.other_transplant                                      ///
+>                         i.tot_adults_hh                                 ///
+>                         i.asplenia                                              ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  ///
+>                         i.stp                                                   ///
+>                         i.cumhgp                                                ///
+>                         , add(10) rseed(894726318) augment
+ 38.                         
+. save "$tempdir\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", replace       
+ 39. }
+(2,670,501 real changes made, 2,670,501 to missing)
+  11,661,633
+
+                id:  patient_id
+     failure event:  non_covid_death != 0 & non_covid_death < .
+obs. time interval:  (stime_non_covid_death[_n-1], stime_non_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   11661633  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   11661633  observations remaining, representing
+   11661633  subjects
+     10,217  failures in single-failure-per-subject data
+ 2.1446e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(0 observations deleted)
+(11,661,633 real changes made)
+(diabcat: 183287 changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    8991132      2670501   2670501 |  11661633
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_0.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_0.dta saved
+(2,670,501 real changes made, 2,670,501 to missing)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   11661633  total observations
+          1  observation ends on or before enter()
+------------------------------------------------------------------------------
+   11661632  observations remaining, representing
+   11661632  subjects
+      2,705  failures in single-failure-per-subject data
+ 2.1444e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(1 observation deleted)
+(diabcat: 183287 changes made)
+(11,661,632 real changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    8991131      2670501   2670501 |  11661632
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_0.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_0.dta saved
+(2,670,501 real changes made, 2,670,501 to missing)
+
+                id:  patient_id
+     failure event:  covid_tpp_prob != 0 & covid_tpp_prob < .
+obs. time interval:  (stime_covid_tpp_prob[_n-1], stime_covid_tpp_prob]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   11661633  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   11661633  observations remaining, representing
+   11661633  subjects
+     33,450  failures in single-failure-per-subject data
+ 2.1288e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(diabcat: 183287 changes made)
+(0 observations deleted)
+(11,661,633 real changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    8991132      2670501   2670501 |  11661633
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_0.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_0.dta saved
+(911,980 real changes made, 911,980 to missing)
+  3,473,837
+
+                id:  patient_id
+     failure event:  non_covid_death != 0 & non_covid_death < .
+obs. time interval:  (stime_non_covid_death[_n-1], stime_non_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,473,837  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,473,837  observations remaining, representing
+  3,473,837  subjects
+     53,034  failures in single-failure-per-subject data
+  633109344  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(0 observations deleted)
+(3,473,837 real changes made)
+(diabcat: 160105 changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    2561857       911980    911980 |   3473837
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_1.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_non_covid_death_ageband_1.dta saved
+(911,980 real changes made, 911,980 to missing)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,473,837  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,473,837  observations remaining, representing
+  3,473,837  subjects
+      8,905  failures in single-failure-per-subject data
+  633067149  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(0 observations deleted)
+(diabcat: 160105 changes made)
+(3,473,837 real changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    2561857       911980    911980 |   3473837
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_1.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_covid_death_icu_ageband_1.dta saved
+(911,980 real changes made, 911,980 to missing)
+
+                id:  patient_id
+     failure event:  covid_tpp_prob != 0 & covid_tpp_prob < .
+obs. time interval:  (stime_covid_tpp_prob[_n-1], stime_covid_tpp_prob]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,473,837  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,473,837  observations remaining, representing
+  3,473,837  subjects
+     15,583  failures in single-failure-per-subject data
+  630360961  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(diabcat: 160105 changes made)
+(0 observations deleted)
+(3,473,837 real changes made)
+
+Univariate imputation                       Imputations =       10
+Multinomial logistic regression                   added =       10
+Imputed: m=1 through m=10                       updated =        0
+
+------------------------------------------------------------------
+                   |               Observations per m             
+                   |----------------------------------------------
+          Variable |   Complete   Incomplete   Imputed |     Total
+-------------------+-----------------------------------+----------
+         ethnicity |    2561857       911980    911980 |   3473837
+------------------------------------------------------------------
+(complete + incomplete = total; imputed is the minimum across m
+ of the number of filled-in observations.)
+
+Note: Perfect prediction was not detected.
+(note: file tempdata\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_1.dta not found)
+file tempdata\cr_imputed_analysis_dataset_STSET_covid_tpp_prob_ageband_1.dta saved
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\13_multiple_imputation_dataset_covid_death_icu.log
+  log type:  text
+ closed on:  24 Aug 2020, 08:54:51
+----------------------------------------------------------------------------------------------------------------------------------

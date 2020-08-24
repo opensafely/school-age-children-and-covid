@@ -1,0 +1,294 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_non_covid_death.log
+  log type:  text
+ opened on:  22 Aug 2020, 13:08:15
+
+. 
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2. 
+.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6.         capture stcox   `exposure'                              ///
+>                         `demogadjlist'                                  ///
+>                         `comordidadjlist'                               ///
+>                         `if'                                                    ///
+>                         , strata(stp) vce(cluster household_id)
+  7. timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. 
+. 
+. foreach exposure_type in        kids_cat3  {
+  4. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+  5. if _rc==0{
+  6. estimates
+  7. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
+  8. *estat concordance /*c-statistic*/
+.         /*  Proportional Hazards test  */
+.         * Based on Schoenfeld residuals
+.         timer clear 
+  9.         timer on 1
+ 10.         if e(N_fail)>0 estat phtest, d
+ 11.         timer off 1
+ 12.         timer list
+ 13. }
+ 14. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 15. 
+. }
+ 16. 
+. *SENSITIVITY ANALYSIS: 12 months FUP
+. keep if has_12_m_follow_up == 1
+ 17. foreach exposure_type in kids_cat3   {
+ 18. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+ 19. if _rc==0{
+ 20. estimates
+ 21. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_12mo_ageband_`x', replac
+> e
+ 22. *estat concordance /*c-statistic*/
+. }
+ 23. else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
+ 24. 
+. 
+. }       
+ 25. 
+.  
+.  
+.  foreach exposure_type in       gp_number_kids {
+ 26. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+ 27. if _rc==0{
+ 28. estimates
+ 29. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
+ 30. }
+ 31. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 32. }
+ 33. 
+. }
+   1:     45.44 /        1 =      45.4360
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =     359,905
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(2)     =     1000.01
+Log pseudolikelihood =    -132594.4             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 353,434 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .2588036   .0126362   -27.68   0.000     .2351852    .2847939
+Kids under 18  |   .4335085   .0219341   -16.52   0.000     .3925813    .4787024
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_0.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.01369         1.93        1         0.1645
+      2.kids_cat3 |      0.00148         0.02        1         0.8806
+      ------------+---------------------------------------------------
+      global test |                      1.94        2         0.3790
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:     72.09 /        1 =      72.0880
+(24,642 observations deleted)
+   1:     27.01 /        1 =      27.0140
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   10,861,541             Number of obs    =     335,263
+No. of failures      =        9,708
+Time at risk         =   1997416002
+                                                Wald chi2(2)     =      984.51
+Log pseudolikelihood =   -125308.74             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 329,437 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .2486082   .0126643   -27.32   0.000     .2249855    .2747113
+Kids under 18  |   .4228338    .021901   -16.62   0.000     .3820156    .4680134
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_12mo_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_12mo_ageband_0.ster saved
+   1:     33.60 /        1 =      33.6040
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   10,861,541             Number of obs    =     335,263
+No. of failures      =        9,708
+Time at risk         =   1997416002
+                                                Wald chi2(4)     =      982.98
+Log pseudolikelihood =   -125306.44             Prob > chi2      =      0.0000
+
+                         (Std. Err. adjusted for 329,437 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+  gp_number_kids |
+ only >12 years  |   .4228295   .0219008   -16.62   0.000     .3820118    .4680087
+    1 child <12  |   .2609673   .0143932   -24.36   0.000     .2342285    .2907586
+ 2 children <12  |   .1999678   .0268958   -11.97   0.000     .1536288    .2602838
+3+ children <12  |   .1710162    .070066    -4.31   0.000      .076612    .3817491
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_0.ster saved
+   1:      8.27 /        1 =       8.2690
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     155,632
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(2)     =       56.44
+Log pseudolikelihood =   -627740.47             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 153,630 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .6644191    .039822    -6.82   0.000     .5907793    .7472379
+Kids under 18  |   .8114714   .0528098    -3.21   0.001     .7142953    .9218679
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_1.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.00138         0.13        1         0.7137
+      2.kids_cat3 |     -0.00188         0.26        1         0.6075
+      ------------+---------------------------------------------------
+      global test |                      0.40        2         0.8180
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:     15.83 /        1 =      15.8300
+(3,742 observations deleted)
+   1:      7.77 /        1 =       7.7680
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,395,020             Number of obs    =     151,890
+No. of failures      =       51,587
+Time at risk         =  618669626.6
+                                                Wald chi2(2)     =       58.35
+Log pseudolikelihood =      -609446             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 149,959 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .6567885   .0405372    -6.81   0.000     .5819546    .7412453
+Kids under 18  |   .7904512   .0528577    -3.52   0.000     .6933539    .9011459
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_12mo_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_noeth_12mo_ageband_1.ster saved
+   1:     10.27 /        1 =      10.2670
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,395,020             Number of obs    =     151,890
+No. of failures      =       51,587
+Time at risk         =  618669626.6
+                                                Wald chi2(4)     =       58.85
+Log pseudolikelihood =   -609445.59             Prob > chi2      =      0.0000
+
+                         (Std. Err. adjusted for 149,959 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+  gp_number_kids |
+ only >12 years  |   .7904452   .0528573    -3.52   0.000     .6933487    .9011391
+    1 child <12  |   .6472195    .043663    -6.45   0.000     .5670579    .7387131
+ 2 children <12  |   .7352481   .1199408    -1.89   0.059     .5340448    1.012255
+3+ children <12  |   .5696835   .2353825    -1.36   0.173     .2534738    1.280366
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_non_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_1.ster saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_non_covid_death.log
+  log type:  text
+ closed on:  22 Aug 2020, 13:11:59
+----------------------------------------------------------------------------------------------------------------------------------

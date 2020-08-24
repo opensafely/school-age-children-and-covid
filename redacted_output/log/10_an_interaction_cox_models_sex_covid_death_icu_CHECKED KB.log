@@ -1,0 +1,277 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\10_an_interaction_cox_models_sex_covid_death_icu.log
+  log type:  text
+ opened on:  22 Aug 2020, 13:08:38
+
+. 
+. 
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basemodel
+
+. prog define basemodel
+  1.         syntax , exposure(string)  age(string) [ethnicity(real 0) interaction(string)] 
+  2.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6. stcox   `exposure'                                                              ///
+>                         `demogadjlist'                                                  ///
+>                         `comordidadjlist'                                               ///
+>                         `interaction'                                                   ///
+>                         , strata(stp) vce(cluster household_id)
+  7.         timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3.         
+. foreach int_type in  male  {
+  4. 
+. *Age interaction for 3-level exposure vars
+. foreach exposure_type in kids_cat3  {
+  5. 
+. *Age spline model (not adj ethnicity, no interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
+  6. 
+. *Age spline model (not adj ethnicity, interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposu
+> re_type')
+  7. if _rc==0{
+  8. testparm 1.`int_type'#i.`exposure_type'
+  9. di _n "`exposure_type' <66" _n "****************"
+ 10. lincom 2.`exposure_type', eform
+ 11. di "`exposure_type' 66+" _n "****************"
+ 12. lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+ 13. estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noe
+> th_ageband_`x', replace
+ 14. }
+ 15. else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+ 16. 
+. }
+ 17. }
+ 18. }
+
+         failure _d:  covid_death_icu
+   analysis time _t:  (stime_covid_death_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 11,666,004.55508)
+Iteration 0:   log pseudolikelihood = -35440.272
+Iteration 1:   log pseudolikelihood = -35381.592
+Iteration 2:   log pseudolikelihood = -35379.071
+Iteration 3:   log pseudolikelihood = -35379.061
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -35379.061
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,005             Number of obs    =     352,604
+No. of failures      =        2,705
+Time at risk         =   2145297922
+                                                Wald chi2(2)     =       99.51
+Log pseudolikelihood =   -35379.061             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 346,280 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .4853291   .0355062    -9.88   0.000     .4204973    .5601565
+Kids under 18  |   .8484246   .0635385    -2.19   0.028     .7325998    .9825615
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:     35.35 /        1 =      35.3470
+
+         failure _d:  covid_death_icu
+   analysis time _t:  (stime_covid_death_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 11,666,004.55508)
+Iteration 0:   log pseudolikelihood = -35440.272
+Iteration 1:   log pseudolikelihood = -35332.074
+Iteration 2:   log pseudolikelihood = -35318.505
+Iteration 3:   log pseudolikelihood = -35317.826
+Iteration 4:   log pseudolikelihood = -35317.823
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -35317.823
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,005             Number of obs    =     352,604
+No. of failures      =        2,705
+Time at risk         =   2145297922
+                                                Wald chi2(4)     =      161.65
+Log pseudolikelihood =   -35317.823             Prob > chi2      =      0.0000
+
+                         (Std. Err. adjusted for 346,280 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+       kids_cat3 |
+  Kids under 12  |   .2247816   .0309853   -10.83   0.000     .1715638    .2945071
+  Kids under 18  |   .4875583   .0624672    -5.61   0.000     .3792874    .6267361
+                 |
+  male#kids_cat3 |
+1#Kids under 12  |    3.65447   .5767177     8.21   0.000     2.682223    4.979134
+1#Kids under 18  |   2.658471   .4051341     6.42   0.000     1.972034    3.583849
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:     31.89 /        1 =      31.8850
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+
+           chi2(  2) =  108.64
+         Prob > chi2 =    0.0000
+
+kids_cat3 <66
+****************
+
+ ( 1)  2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .4875583   .0624672    -5.61   0.000     .3792874    .6267361
+------------------------------------------------------------------------------
+kids_cat3 66+
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    1.29616   .1156884     2.91   0.004      1.08814    1.543947
+------------------------------------------------------------------------------
+(note: file ./output/an_interaction_cox_models_covid_death_icu_kids_cat3_male_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.s
+> ter not found)
+file ./output/an_interaction_cox_models_covid_death_icu_kids_cat3_male_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.ster sav
+> ed
+
+         failure _d:  covid_death_icu
+   analysis time _t:  (stime_covid_death_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 3,471,971.5345612)
+Iteration 0:   log pseudolikelihood = -105161.42
+Iteration 1:   log pseudolikelihood = -105159.14
+Iteration 2:   log pseudolikelihood = -105159.13
+Iteration 3:   log pseudolikelihood = -105159.13
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -105159.13
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,471,972             Number of obs    =     112,797
+No. of failures      =        8,905
+Time at risk         =  632768378.9
+                                                Wald chi2(2)     =        3.93
+Log pseudolikelihood =   -105159.13             Prob > chi2      =      0.1402
+
+                       (Std. Err. adjusted for 111,700 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .8253063   .0901762    -1.76   0.079     .6662075      1.0224
+Kids under 18  |   .8854726   .1148053    -0.94   0.348     .6867729    1.141661
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:      6.73 /        1 =       6.7280
+
+         failure _d:  covid_death_icu
+   analysis time _t:  (stime_covid_death_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 3,471,971.5345612)
+Iteration 0:   log pseudolikelihood = -105161.42
+Iteration 1:   log pseudolikelihood = -105151.66
+Iteration 2:   log pseudolikelihood =  -105151.3
+Iteration 3:   log pseudolikelihood =  -105151.3
+Refining estimates:
+Iteration 0:   log pseudolikelihood =  -105151.3
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,471,972             Number of obs    =     112,797
+No. of failures      =        8,905
+Time at risk         =  632768378.9
+                                                Wald chi2(4)     =       16.60
+Log pseudolikelihood =    -105151.3             Prob > chi2      =      0.0023
+
+                         (Std. Err. adjusted for 111,700 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+       kids_cat3 |
+  Kids under 12  |   .6417035    .108301    -2.63   0.009     .4609738    .8932902
+  Kids under 18  |   .5768004   .1195536    -2.65   0.008     .3842348    .8658732
+                 |
+  male#kids_cat3 |
+1#Kids under 12  |   1.601894   .3533658     2.14   0.033     1.039597    2.468325
+1#Kids under 18  |   2.225611   .5770749     3.09   0.002     1.338883    3.699609
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:      8.01 /        1 =       8.0070
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+
+           chi2(  2) =   14.08
+         Prob > chi2 =    0.0009
+
+kids_cat3 <66
+****************
+
+ ( 1)  2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .5768004   .1195536    -2.65   0.008     .3842348    .8658732
+------------------------------------------------------------------------------
+kids_cat3 66+
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.283733   .2092739     1.53   0.125     .9326356    1.767004
+------------------------------------------------------------------------------
+(note: file ./output/an_interaction_cox_models_covid_death_icu_kids_cat3_male_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.s
+> ter not found)
+file ./output/an_interaction_cox_models_covid_death_icu_kids_cat3_male_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster sav
+> ed
+
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\10_an_interaction_cox_models_sex_covid_death_icu.log
+  log type:  text
+ closed on:  22 Aug 2020, 13:10:02
+----------------------------------------------------------------------------------------------------------------------------------

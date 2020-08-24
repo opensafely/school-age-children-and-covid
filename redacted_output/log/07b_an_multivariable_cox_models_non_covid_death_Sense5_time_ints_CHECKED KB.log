@@ -1,0 +1,988 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_non_covid_death_Sense5_time_in
+> ts.log
+  log type:  text
+ opened on:  22 Aug 2020, 13:08:37
+
+. 
+. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_0.dta", clear
+
+. *make vars binary
+. gen anyreduced_kidney_function = reduced_kidney_function_cat>=2
+
+. gen anyobesity = obese4cat>=2
+
+. gen highimd = imd>=3
+
+. gen anydiab= diabcat>=2
+
+. 
+. stsplit timeperiod, at(60 90)
+(710,280 observations (episodes) created)
+
+. 
+. *Age and sex adjusted
+. stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 34,988,626.332764)
+Iteration 0:   log pseudolikelihood = -133315.25
+Iteration 1:   log pseudolikelihood = -128605.43
+Iteration 2:   log pseudolikelihood = -127089.47
+Iteration 3:   log pseudolikelihood = -127068.43
+Iteration 4:   log pseudolikelihood = -127068.43
+Iteration 5:   log pseudolikelihood = -127068.43
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -127068.43
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(6)     =     7689.19
+Log pseudolikelihood =   -127068.43             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 353,434 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .6083192   .0314422    -9.62   0.000     .5497123    .6731744
+Kids under 18  |   .6307321   .0327116    -8.89   0.000     .5697695    .6982174
+               |
+          age1 |   1.114795   .0129411     9.36   0.000     1.089718     1.14045
+          age2 |   1.000383   .0257448     0.01   0.988     .9511752    1.052136
+          age3 |   .9659717   .0610061    -0.55   0.584     .8535061    1.093257
+        1.male |   1.403194   .0291192    16.32   0.000     1.347267    1.461443
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(6)     =     7689.19
+Log pseudolikelihood =   -127068.43             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 353,434 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .6083192   .0314422    -9.62   0.000     .5497123    .6731744
+Kids under 18  |   .6307321   .0327116    -8.89   0.000     .5697695    .6982174
+               |
+          age1 |   1.114795   .0129411     9.36   0.000     1.089718     1.14045
+          age2 |   1.000383   .0257448     0.01   0.988     .9511752    1.052136
+          age3 |   .9659717   .0610061    -0.55   0.584     .8535061    1.093257
+        1.male |   1.403194   .0291192    16.32   0.000     1.347267    1.461443
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_time_int_ageband_0, replace                                  
+>         
+(note: file ./output/an_univariable_cox_models_non_covid_death_AGESEX_time_int_ageband_0.ster not found)
+file ./output/an_univariable_cox_models_non_covid_death_AGESEX_time_int_ageband_0.ster saved
+
+. 
+. *Minimally adjusted
+. stcox   i.kids_cat3     ///
+>                         age1 age2 age3          ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                           ///
+>                 60.timeperiod#1.anyobesity                                                      ///
+>                         90.timeperiod#1.anyobesity                                              ///
+>                 60.timeperiod#3.smoke_nomiss                                            ///
+>                         90.timeperiod#3.smoke_nomiss                                    ///
+>                 60.timeperiod#1.highimd                                                         ///
+>                         90.timeperiod#1.highimd                                                 ///
+>                         , strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 34,988,626.332764)
+Iteration 0:   log pseudolikelihood = -133315.25
+Iteration 1:   log pseudolikelihood =  -127082.9
+Iteration 2:   log pseudolikelihood = -125622.49
+Iteration 3:   log pseudolikelihood = -125603.96
+Iteration 4:   log pseudolikelihood = -125603.95
+Iteration 5:   log pseudolikelihood = -125603.95
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -125603.95
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(21)    =     9477.89
+Log pseudolikelihood =   -125603.95             Prob > chi2      =      0.0000
+
+                                (Std. Err. adjusted for 353,434 clusters in household_id)
+-----------------------------------------------------------------------------------------
+                        |               Robust
+                     _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------+----------------------------------------------------------------
+              kids_cat3 |
+         Kids under 12  |   .6241281    .032131    -9.16   0.000     .5642256    .6903904
+         Kids under 18  |   .6719594   .0349744    -7.64   0.000     .6067914    .7441263
+                        |
+                   age1 |   1.101457   .0131096     8.12   0.000      1.07606    1.127453
+                   age2 |   1.028425   .0270418     1.07   0.286     .9767671    1.082816
+                   age3 |   .9148916   .0589351    -1.38   0.167     .8063756    1.038011
+                 1.male |   1.328197   .0281789    13.38   0.000       1.2741    1.384591
+                        |
+              obese4cat |
+     Obese I (30-34.9)  |   .8740588   .0359697    -3.27   0.001     .8063277    .9474793
+    Obese II (35-39.9)  |   1.072188   .0537239     1.39   0.164     .9718967    1.182829
+       Obese III (40+)  |   1.711725   .0936963     9.82   0.000     1.537591    1.905579
+                        |
+           smoke_nomiss |
+                Former  |    1.51724    .039363    16.07   0.000     1.442018    1.596385
+               Current  |   3.013433   .1136268    29.25   0.000     2.798759    3.244573
+                        |
+                    imd |
+                     2  |   1.130286   .0423509     3.27   0.001     1.050255    1.216416
+                     3  |    1.36545   .0648642     6.56   0.000     1.244057    1.498688
+                     4  |   1.560129   .0732768     9.47   0.000     1.422921    1.710567
+       5 most deprived  |   2.059137   .0966535    15.39   0.000     1.878152    2.257562
+                        |
+  timeperiod#anyobesity |
+                  60 1  |   .9684148   .0614383    -0.51   0.613     .8551836    1.096639
+                  90 1  |   .9097983   .0451487    -1.90   0.057     .8254757    1.002734
+                        |
+timeperiod#smoke_nomiss |
+            60#Current  |   .9556382   .0571902    -0.76   0.448     .8498717    1.074567
+            90#Current  |   .9060659   .0423019    -2.11   0.035     .8268361    .9928878
+                        |
+     timeperiod#highimd |
+                  60 1  |   .9789586   .0636023    -0.33   0.743     .8619108    1.111902
+                  90 1  |   .9606306   .0486093    -0.79   0.427     .8699302    1.060788
+-----------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(21)    =     9477.89
+Log pseudolikelihood =   -125603.95             Prob > chi2      =      0.0000
+
+                                (Std. Err. adjusted for 353,434 clusters in household_id)
+-----------------------------------------------------------------------------------------
+                        |               Robust
+                     _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------+----------------------------------------------------------------
+              kids_cat3 |
+         Kids under 12  |   .6241281    .032131    -9.16   0.000     .5642256    .6903904
+         Kids under 18  |   .6719594   .0349744    -7.64   0.000     .6067914    .7441263
+                        |
+                   age1 |   1.101457   .0131096     8.12   0.000      1.07606    1.127453
+                   age2 |   1.028425   .0270418     1.07   0.286     .9767671    1.082816
+                   age3 |   .9148916   .0589351    -1.38   0.167     .8063756    1.038011
+                 1.male |   1.328197   .0281789    13.38   0.000       1.2741    1.384591
+                        |
+              obese4cat |
+     Obese I (30-34.9)  |   .8740588   .0359697    -3.27   0.001     .8063277    .9474793
+    Obese II (35-39.9)  |   1.072188   .0537239     1.39   0.164     .9718967    1.182829
+       Obese III (40+)  |   1.711725   .0936963     9.82   0.000     1.537591    1.905579
+                        |
+           smoke_nomiss |
+                Former  |    1.51724    .039363    16.07   0.000     1.442018    1.596385
+               Current  |   3.013433   .1136268    29.25   0.000     2.798759    3.244573
+                        |
+                    imd |
+                     2  |   1.130286   .0423509     3.27   0.001     1.050255    1.216416
+                     3  |    1.36545   .0648642     6.56   0.000     1.244057    1.498688
+                     4  |   1.560129   .0732768     9.47   0.000     1.422921    1.710567
+       5 most deprived  |   2.059137   .0966535    15.39   0.000     1.878152    2.257562
+                        |
+  timeperiod#anyobesity |
+                  60 1  |   .9684148   .0614383    -0.51   0.613     .8551836    1.096639
+                  90 1  |   .9097983   .0451487    -1.90   0.057     .8254757    1.002734
+                        |
+timeperiod#smoke_nomiss |
+            60#Current  |   .9556382   .0571902    -0.76   0.448     .8498717    1.074567
+            90#Current  |   .9060659   .0423019    -2.11   0.035     .8268361    .9928878
+                        |
+     timeperiod#highimd |
+                  60 1  |   .9789586   .0636023    -0.33   0.743     .8619108    1.111902
+                  90 1  |   .9606306   .0486093    -0.79   0.427     .8699302    1.060788
+-----------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_time_int_ageband_0, replace
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_DEMOGADJ_time_int_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_DEMOGADJ_time_int_ageband_0.ster saved
+
+. estat phtest, d
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.01579         2.76        1         0.0964
+      2.kids_cat3 |      0.00364         0.14        1         0.7053
+      age1        |      0.00561         0.46        1         0.4963
+      age2        |     -0.00436         0.27        1         0.6057
+      age3        |      0.00432         0.25        1         0.6142
+      0b.male     |            .            .        1             .
+      1.male      |     -0.00715         0.59        1         0.4411
+      1b.obese4cat|            .            .        1             .
+      2.obese4cat |      0.00141         0.02        1         0.8837
+      3.obese4cat |     -0.00070         0.01        1         0.9402
+      4.obese4cat |      0.00886         0.90        1         0.3438
+      1b.smoke_n~s|            .            .        1             .
+      2.smoke_no~s|     -0.01523         2.52        1         0.1123
+      3.smoke_no~s|     -0.00212         0.05        1         0.8264
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.01214         1.61        1         0.2040
+      3.imd       |      0.00644         0.46        1         0.4982
+      4.imd       |      0.01420         2.21        1         0.1368
+      5.imd       |      0.00214         0.05        1         0.8208
+      60bn.timep~y|     -0.00132         0.02        1         0.8930
+      90.timeper~y|      0.00294         0.09        1         0.7647
+      60bn.timep~s|     -0.00200         0.04        1         0.8381
+      90.timeper~s|      0.00453         0.21        1         0.6441
+      60bn.timep~d|     -0.00159         0.03        1         0.8696
+      90.timeper~d|     -0.00077         0.01        1         0.9366
+      ------------+---------------------------------------------------
+      global test |                     16.12       21         0.7628
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+
+. 
+. 
+. *Fully adjusted
+.  stcox  i.kids_cat3      ///
+>                         age1 age2 age3          ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                           ///
+>                         `comordidadjlist'       ///     
+>                 60.timeperiod#1.anyobesity                                                      ///
+>                         90.timeperiod#1.anyobesity                                              ///
+>                 60.timeperiod#3.smoke_nomiss                                            ///
+>                         90.timeperiod#3.smoke_nomiss                                    ///
+>                 60.timeperiod#1.highimd                                                         ///
+>                         90.timeperiod#1.highimd                                                 ///
+>                 60.timeperiod#1.anydiab                                 ///
+>                         90.timeperiod#1.anydiab                                 ///             
+>                 60.timeperiod#1.chronic_liver_disease                           ///
+>                         90.timeperiod#1.chronic_liver_disease                   ///
+>                 60.timeperiod#1.cancer_exhaem_cat                                       ///
+>                         90.timeperiod#1.cancer_exhaem_cat                               ///
+>                 60.timeperiod#1.asplenia                                                ///
+>                         90.timeperiod#1.asplenia                                                ///
+>                 60.timeperiod#1.other_immuno                                            ///
+>                         90.timeperiod#1.other_immuno                                    ///
+>                         , strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 34,988,626.332764)
+Iteration 0:   log pseudolikelihood = -133315.25
+Iteration 1:   log pseudolikelihood = -126909.73
+Iteration 2:   log pseudolikelihood = -121782.42
+Iteration 3:   log pseudolikelihood = -121583.98
+Iteration 4:   log pseudolikelihood = -121574.09
+Iteration 5:   log pseudolikelihood = -121573.93
+Iteration 6:   log pseudolikelihood = -121573.93
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -121573.93
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(31)    =    14893.54
+Log pseudolikelihood =   -121573.93             Prob > chi2      =      0.0000
+
+                                         (Std. Err. adjusted for 353,434 clusters in household_id)
+--------------------------------------------------------------------------------------------------
+                                 |               Robust
+                              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------------------------+----------------------------------------------------------------
+                       kids_cat3 |
+                  Kids under 12  |   .6507725   .0340738    -8.20   0.000     .5873015    .7211029
+                  Kids under 18  |   .6807995   .0367018    -7.13   0.000     .6125353    .7566715
+                                 |
+                            age1 |   1.098689   .0130793     7.91   0.000      1.07335    1.124625
+                            age2 |   1.022738   .0271944     0.85   0.398     .9708028    1.077451
+                            age3 |   .9033251   .0592843    -1.55   0.121     .7942927    1.027324
+                          1.male |   1.417246    .033216    14.88   0.000     1.353617    1.483867
+                                 |
+                       obese4cat |
+              Obese I (30-34.9)  |   .9158554   .0381318    -2.11   0.035     .8440865    .9937264
+             Obese II (35-39.9)  |   1.078058   .0568648     1.42   0.154     .9721732    1.195476
+                Obese III (40+)  |   1.699974   .0998625     9.03   0.000     1.515094    1.907413
+                                 |
+                    smoke_nomiss |
+                         Former  |   1.428753   .0395808    12.88   0.000     1.353244    1.508475
+                        Current  |   2.827551   .1066713    27.55   0.000     2.626021    3.044546
+                                 |
+                             imd |
+                              2  |   1.106918    .043346     2.59   0.009      1.02514     1.19522
+                              3  |   1.355788   .0657695     6.27   0.000     1.232821    1.491021
+                              4  |   1.515627   .0729565     8.64   0.000     1.379173    1.665582
+                5 most deprived  |   2.012265   .0964548    14.59   0.000     1.831826    2.210478
+                                 |
+           timeperiod#anyobesity |
+                           60 1  |   .8131532   .0552126    -3.05   0.002       .71183    .9288989
+                           90 1  |   .7756304   .0419785    -4.69   0.000     .6975676    .8624289
+                                 |
+         timeperiod#smoke_nomiss |
+                     60#Current  |   .9889124   .0619154    -0.18   0.859     .8747107    1.118024
+                     90#Current  |   .9295307   .0467134    -1.45   0.146     .8423387    1.025748
+                                 |
+              timeperiod#highimd |
+                           60 1  |    .940723   .0631278    -0.91   0.363     .8247862    1.072957
+                           90 1  |   .9273592   .0489604    -1.43   0.153     .8361966     1.02846
+                                 |
+              timeperiod#anydiab |
+                           60 1  |   1.880441   .1214482     9.78   0.000     1.656856    2.134197
+                           90 1  |   1.729815   .0826044    11.48   0.000     1.575259    1.899536
+                                 |
+timeperiod#chronic_liver_disease |
+                           60 1  |   6.464504    .678521    17.78   0.000     5.262501    7.941055
+                           90 1  |   7.116674   .5864891    23.81   0.000     6.055208    8.364212
+                                 |
+    timeperiod#cancer_exhaem_cat |
+                       60#Never  |   .0872912   .0048189   -44.17   0.000     .0783393     .097266
+                       90#Never  |    .086405   .0034303   -61.68   0.000     .0799367    .0933968
+                                 |
+             timeperiod#asplenia |
+                           60 1  |    3.01229   .8446997     3.93   0.000     1.738621    5.219019
+                           90 1  |   3.097102   .6692864     5.23   0.000      2.02773    4.730433
+                                 |
+         timeperiod#other_immuno |
+                           60 1  |   2.633978    .646888     3.94   0.000     1.627656    4.262474
+                           90 1  |   2.454034   .4879756     4.51   0.000     1.661966    3.623588
+--------------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,483             Number of obs    =   1,070,185
+No. of failures      =       10,217
+Time at risk         =   2145469056
+                                                Wald chi2(31)    =    14893.54
+Log pseudolikelihood =   -121573.93             Prob > chi2      =      0.0000
+
+                                         (Std. Err. adjusted for 353,434 clusters in household_id)
+--------------------------------------------------------------------------------------------------
+                                 |               Robust
+                              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------------------------+----------------------------------------------------------------
+                       kids_cat3 |
+                  Kids under 12  |   .6507725   .0340738    -8.20   0.000     .5873015    .7211029
+                  Kids under 18  |   .6807995   .0367018    -7.13   0.000     .6125353    .7566715
+                                 |
+                            age1 |   1.098689   .0130793     7.91   0.000      1.07335    1.124625
+                            age2 |   1.022738   .0271944     0.85   0.398     .9708028    1.077451
+                            age3 |   .9033251   .0592843    -1.55   0.121     .7942927    1.027324
+                          1.male |   1.417246    .033216    14.88   0.000     1.353617    1.483867
+                                 |
+                       obese4cat |
+              Obese I (30-34.9)  |   .9158554   .0381318    -2.11   0.035     .8440865    .9937264
+             Obese II (35-39.9)  |   1.078058   .0568648     1.42   0.154     .9721732    1.195476
+                Obese III (40+)  |   1.699974   .0998625     9.03   0.000     1.515094    1.907413
+                                 |
+                    smoke_nomiss |
+                         Former  |   1.428753   .0395808    12.88   0.000     1.353244    1.508475
+                        Current  |   2.827551   .1066713    27.55   0.000     2.626021    3.044546
+                                 |
+                             imd |
+                              2  |   1.106918    .043346     2.59   0.009      1.02514     1.19522
+                              3  |   1.355788   .0657695     6.27   0.000     1.232821    1.491021
+                              4  |   1.515627   .0729565     8.64   0.000     1.379173    1.665582
+                5 most deprived  |   2.012265   .0964548    14.59   0.000     1.831826    2.210478
+                                 |
+           timeperiod#anyobesity |
+                           60 1  |   .8131532   .0552126    -3.05   0.002       .71183    .9288989
+                           90 1  |   .7756304   .0419785    -4.69   0.000     .6975676    .8624289
+                                 |
+         timeperiod#smoke_nomiss |
+                     60#Current  |   .9889124   .0619154    -0.18   0.859     .8747107    1.118024
+                     90#Current  |   .9295307   .0467134    -1.45   0.146     .8423387    1.025748
+                                 |
+              timeperiod#highimd |
+                           60 1  |    .940723   .0631278    -0.91   0.363     .8247862    1.072957
+                           90 1  |   .9273592   .0489604    -1.43   0.153     .8361966     1.02846
+                                 |
+              timeperiod#anydiab |
+                           60 1  |   1.880441   .1214482     9.78   0.000     1.656856    2.134197
+                           90 1  |   1.729815   .0826044    11.48   0.000     1.575259    1.899536
+                                 |
+timeperiod#chronic_liver_disease |
+                           60 1  |   6.464504    .678521    17.78   0.000     5.262501    7.941055
+                           90 1  |   7.116674   .5864891    23.81   0.000     6.055208    8.364212
+                                 |
+    timeperiod#cancer_exhaem_cat |
+                       60#Never  |   .0872912   .0048189   -44.17   0.000     .0783393     .097266
+                       90#Never  |    .086405   .0034303   -61.68   0.000     .0799367    .0933968
+                                 |
+             timeperiod#asplenia |
+                           60 1  |    3.01229   .8446997     3.93   0.000     1.738621    5.219019
+                           90 1  |   3.097102   .6692864     5.23   0.000      2.02773    4.730433
+                                 |
+         timeperiod#other_immuno |
+                           60 1  |   2.633978    .646888     3.94   0.000     1.627656    4.262474
+                           90 1  |   2.454034   .4879756     4.51   0.000     1.661966    3.623588
+--------------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_0, replace
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_0.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_0.ster saved
+
+. estat phtest, d
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.01979         4.53        1         0.0334
+      2.kids_cat3 |      0.00511         0.30        1         0.5828
+      age1        |      0.00036         0.00        1         0.9652
+      age2        |     -0.00092         0.01        1         0.9124
+      age3        |     -0.00250         0.09        1         0.7662
+      0b.male     |            .            .        1             .
+      1.male      |      0.00917         1.19        1         0.2763
+      1b.obese4cat|            .            .        1             .
+      2.obese4cat |      0.01189         1.59        1         0.2078
+      3.obese4cat |      0.00031         0.00        1         0.9718
+      4.obese4cat |      0.00700         0.66        1         0.4166
+      1b.smoke_n~s|            .            .        1             .
+      2.smoke_no~s|     -0.03283        13.41        1         0.0003
+      3.smoke_no~s|     -0.01894         3.86        1         0.0496
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.00826         0.82        1         0.3655
+      3.imd       |      0.00326         0.12        1         0.7249
+      4.imd       |      0.01030         1.24        1         0.2657
+      5.imd       |     -0.00349         0.14        1         0.7041
+      60bn.timep~y|     -0.00166         0.03        1         0.8558
+      90.timeper~y|      0.00163         0.03        1         0.8524
+      60bn.timep~s|     -0.00134         0.02        1         0.8845
+      90.timeper~s|      0.00323         0.13        1         0.7171
+      60bn.timep~d|     -0.00225         0.06        1         0.8079
+      90.timeper~d|     -0.00034         0.00        1         0.9701
+      60bn.timep~b|      0.00287         0.13        1         0.7211
+      90.timeper~b|      0.00410         0.31        1         0.5802
+      60bn.timep~a|      0.00080         0.02        1         0.9003
+      90.timeper~a|     -0.00316         0.32        1         0.5724
+      60bn.timep~t|     -0.01068         1.80        1         0.1799
+      90.timeper~t|     -0.01565         4.44        1         0.0350
+      60bn.timep~a|      0.00350         0.21        1         0.6434
+      90.timeper~a|      0.00940         2.07        1         0.1507
+      60bn.timep~o|      0.00412         0.39        1         0.5329
+      90.timeper~o|      0.00624         1.15        1         0.2838
+      ------------+---------------------------------------------------
+      global test |                    110.25       31         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+
+. 
+. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_1.dta", clear
+
+. stsplit timeperiod, at(60 90)
+(262,443 observations (episodes) created)
+
+. 
+. *make vars binary
+. gen anyreduced_kidney_function = reduced_kidney_function_cat>=2
+
+. gen anyobesity = obese4cat>=2
+
+. gen highimd = imd>=3
+
+. gen anydiab= diabcat>=2
+
+. *Age and sex adjusted
+. stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 10,362,643.942245)
+Iteration 0:   log pseudolikelihood = -627783.68
+Iteration 1:   log pseudolikelihood = -609271.47
+Iteration 2:   log pseudolikelihood = -606763.75
+Iteration 3:   log pseudolikelihood = -606740.66
+Iteration 4:   log pseudolikelihood = -606740.61
+Iteration 5:   log pseudolikelihood = -606740.61
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -606740.61
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(6)     =    20924.38
+Log pseudolikelihood =   -606740.61             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 153,630 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .9623788   .0660212    -0.56   0.576     .8413019    1.100881
+Kids under 18  |   1.042388   .0769437     0.56   0.574     .9019828     1.20465
+               |
+          age1 |   1.093429   .0072766    13.42   0.000      1.07926    1.107784
+          age2 |   1.035951   .0282139     1.30   0.195      .982103    1.092752
+          age3 |   .9590704   .0677927    -0.59   0.554     .8349925    1.101586
+        1.male |   1.412063   .0178814    27.25   0.000     1.377448    1.447549
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(6)     =    20924.38
+Log pseudolikelihood =   -606740.61             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 153,630 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .9623788   .0660212    -0.56   0.576     .8413019    1.100881
+Kids under 18  |   1.042388   .0769437     0.56   0.574     .9019828     1.20465
+               |
+          age1 |   1.093429   .0072766    13.42   0.000      1.07926    1.107784
+          age2 |   1.035951   .0282139     1.30   0.195      .982103    1.092752
+          age3 |   .9590704   .0677927    -0.59   0.554     .8349925    1.101586
+        1.male |   1.412063   .0178814    27.25   0.000     1.377448    1.447549
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_time_int_ageband_1, replace                                  
+>         
+(note: file ./output/an_univariable_cox_models_non_covid_death_AGESEX_time_int_ageband_1.ster not found)
+file ./output/an_univariable_cox_models_non_covid_death_AGESEX_time_int_ageband_1.ster saved
+
+. 
+. *Minimally adjusted
+. stcox   i.kids_cat3     ///
+>                         age1 age2 age3          ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                           ///
+>                 60.timeperiod#1.male                                                    ///
+>                         90.timeperiod#1.male                                            ///
+>                         , strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 10,362,643.942245)
+Iteration 0:   log pseudolikelihood = -627783.68
+Iteration 1:   log pseudolikelihood = -607552.03
+Iteration 2:   log pseudolikelihood = -604340.37
+Iteration 3:   log pseudolikelihood = -604310.62
+Iteration 4:   log pseudolikelihood = -604310.55
+Iteration 5:   log pseudolikelihood = -604310.55
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -604310.55
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(17)    =    21473.92
+Log pseudolikelihood =   -604310.55             Prob > chi2      =      0.0000
+
+                            (Std. Err. adjusted for 153,630 clusters in household_id)
+-------------------------------------------------------------------------------------
+                    |               Robust
+                 _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+          kids_cat3 |
+     Kids under 12  |   .9386166   .0677612    -0.88   0.380     .8147751    1.081281
+     Kids under 18  |   1.043955   .0770702     0.58   0.560       .90332    1.206485
+                    |
+               age1 |   1.096415   .0073991    13.64   0.000     1.082009    1.111014
+               age2 |   1.046782   .0289632     1.65   0.098     .9915273    1.105117
+               age3 |   .9279625   .0666881    -1.04   0.298      .806044    1.068322
+             1.male |   1.366878   .0238351    17.92   0.000     1.320951    1.414401
+                    |
+          obese4cat |
+ Obese I (30-34.9)  |   .8393077   .0149289    -9.85   0.000     .8105519    .8690838
+Obese II (35-39.9)  |   1.045695   .0293564     1.59   0.111     .9897116    1.104845
+   Obese III (40+)  |   1.366677   .0575248     7.42   0.000     1.258456    1.484204
+                    |
+       smoke_nomiss |
+            Former  |   1.388286   .0196036    23.23   0.000     1.350391    1.427245
+           Current  |   2.452634   .0581698    37.83   0.000     2.341232    2.569336
+                    |
+                imd |
+                 2  |   1.104485   .0210533     5.21   0.000     1.063982    1.146529
+                 3  |   1.180161   .0230855     8.47   0.000     1.135771    1.226286
+                 4  |   1.319803   .0269943    13.57   0.000     1.267942    1.373786
+   5 most deprived  |   1.519855   .0340004    18.71   0.000     1.454655    1.587977
+                    |
+    timeperiod#male |
+              60 1  |   .9700688    .024011    -1.23   0.220     .9241315     1.01829
+              90 1  |   .9514956   .0184918    -2.56   0.011     .9159338     .988438
+-------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(17)    =    21473.92
+Log pseudolikelihood =   -604310.55             Prob > chi2      =      0.0000
+
+                            (Std. Err. adjusted for 153,630 clusters in household_id)
+-------------------------------------------------------------------------------------
+                    |               Robust
+                 _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------+----------------------------------------------------------------
+          kids_cat3 |
+     Kids under 12  |   .9386166   .0677612    -0.88   0.380     .8147751    1.081281
+     Kids under 18  |   1.043955   .0770702     0.58   0.560       .90332    1.206485
+                    |
+               age1 |   1.096415   .0073991    13.64   0.000     1.082009    1.111014
+               age2 |   1.046782   .0289632     1.65   0.098     .9915273    1.105117
+               age3 |   .9279625   .0666881    -1.04   0.298      .806044    1.068322
+             1.male |   1.366878   .0238351    17.92   0.000     1.320951    1.414401
+                    |
+          obese4cat |
+ Obese I (30-34.9)  |   .8393077   .0149289    -9.85   0.000     .8105519    .8690838
+Obese II (35-39.9)  |   1.045695   .0293564     1.59   0.111     .9897116    1.104845
+   Obese III (40+)  |   1.366677   .0575248     7.42   0.000     1.258456    1.484204
+                    |
+       smoke_nomiss |
+            Former  |   1.388286   .0196036    23.23   0.000     1.350391    1.427245
+           Current  |   2.452634   .0581698    37.83   0.000     2.341232    2.569336
+                    |
+                imd |
+                 2  |   1.104485   .0210533     5.21   0.000     1.063982    1.146529
+                 3  |   1.180161   .0230855     8.47   0.000     1.135771    1.226286
+                 4  |   1.319803   .0269943    13.57   0.000     1.267942    1.373786
+   5 most deprived  |   1.519855   .0340004    18.71   0.000     1.454655    1.587977
+                    |
+    timeperiod#male |
+              60 1  |   .9700688    .024011    -1.23   0.220     .9241315     1.01829
+              90 1  |   .9514956   .0184918    -2.56   0.011     .9159338     .988438
+-------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_time_int_ageband_1, replace
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_DEMOGADJ_time_int_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_DEMOGADJ_time_int_ageband_1.ster saved
+
+. estat phtest, d
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.00073         0.06        1         0.8135
+      2.kids_cat3 |     -0.00219         0.46        1         0.4973
+      age1        |     -0.00565         2.57        1         0.1087
+      age2        |      0.00741         5.39        1         0.0202
+      age3        |     -0.00814         7.13        1         0.0076
+      0b.male     |            .            .        1             .
+      1.male      |     -0.00045         0.02        1         0.8936
+      1b.obese4cat|            .            .        1             .
+      2.obese4cat |      0.00658         4.23        1         0.0397
+      3.obese4cat |      0.00172         0.29        1         0.5930
+      4.obese4cat |     -0.00353         1.28        1         0.2579
+      1b.smoke_n~s|            .            .        1             .
+      2.smoke_no~s|     -0.01617        27.96        1         0.0000
+      3.smoke_no~s|     -0.01534        28.37        1         0.0000
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.00064         0.04        1         0.8350
+      3.imd       |     -0.00127         0.18        1         0.6748
+      4.imd       |     -0.00395         1.76        1         0.1852
+      5.imd       |     -0.00188         0.42        1         0.5158
+      60bn.timep~e|     -0.00026         0.00        1         0.9529
+      90.timeper~e|     -0.00113         0.07        1         0.7935
+      ------------+---------------------------------------------------
+      global test |                     73.49       17         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+
+. 
+. 
+. 
+. *Fully adjusted
+. stcox   i.kids_cat3      ///
+>                         age1 age2 age3          ///
+>                         i.male                                                  ///
+>                         i.obese4cat                                     ///
+>                         i.smoke_nomiss                                  ///
+>                         i.imd                                           ///
+>                         `comordidadjlist'       ///     
+>                 60.timeperiod#1.male                                                    ///
+>                         90.timeperiod#1.male                                            ///
+>                 60.timeperiod#3.anyreduced_kidney_function                                              ///
+>                         90.timeperiod#3.anyreduced_kidney_function                                      ///
+>                         , strata(stp) vce(cluster household_id)
+
+         failure _d:  non_covid_death
+   analysis time _t:  (stime_non_covid_death-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+             weight:  [pweight=pw]
+
+(sum of wgt is 10,362,643.942245)
+note: 60.timeperiod#3.anyreduced_kidney_function identifies no observations in the sample
+note: 90.timeperiod#3.anyreduced_kidney_function identifies no observations in the sample
+Iteration 0:   log pseudolikelihood = -627783.68
+Iteration 1:   log pseudolikelihood = -607552.03
+Iteration 2:   log pseudolikelihood = -604340.37
+Iteration 3:   log pseudolikelihood = -604310.62
+Iteration 4:   log pseudolikelihood = -604310.55
+Iteration 5:   log pseudolikelihood = -604310.55
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -604310.55
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(17)    =    21473.92
+Log pseudolikelihood =   -604310.55             Prob > chi2      =      0.0000
+
+                                              (Std. Err. adjusted for 153,630 clusters in household_id)
+-------------------------------------------------------------------------------------------------------
+                                      |               Robust
+                                   _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------------------------+----------------------------------------------------------------
+                            kids_cat3 |
+                       Kids under 12  |   .9386166   .0677612    -0.88   0.380     .8147751    1.081281
+                       Kids under 18  |   1.043955   .0770702     0.58   0.560       .90332    1.206485
+                                      |
+                                 age1 |   1.096415   .0073991    13.64   0.000     1.082009    1.111014
+                                 age2 |   1.046782   .0289632     1.65   0.098     .9915273    1.105117
+                                 age3 |   .9279625   .0666881    -1.04   0.298      .806044    1.068322
+                               1.male |   1.366878   .0238351    17.92   0.000     1.320951    1.414401
+                                      |
+                            obese4cat |
+                   Obese I (30-34.9)  |   .8393077   .0149289    -9.85   0.000     .8105519    .8690838
+                  Obese II (35-39.9)  |   1.045695   .0293564     1.59   0.111     .9897116    1.104845
+                     Obese III (40+)  |   1.366677   .0575248     7.42   0.000     1.258456    1.484204
+                                      |
+                         smoke_nomiss |
+                              Former  |   1.388286   .0196036    23.23   0.000     1.350391    1.427245
+                             Current  |   2.452634   .0581698    37.83   0.000     2.341232    2.569336
+                                      |
+                                  imd |
+                                   2  |   1.104485   .0210533     5.21   0.000     1.063982    1.146529
+                                   3  |   1.180161   .0230855     8.47   0.000     1.135771    1.226286
+                                   4  |   1.319803   .0269943    13.57   0.000     1.267942    1.373786
+                     5 most deprived  |   1.519855   .0340004    18.71   0.000     1.454655    1.587977
+                                      |
+                      timeperiod#male |
+                                60 1  |   .9700688    .024011    -1.23   0.220     .9241315     1.01829
+                                90 1  |   .9514956   .0184918    -2.56   0.011     .9159338     .988438
+                                      |
+timeperiod#anyreduced_kidney_function |
+                                60 3  |          1  (empty)
+                                90 3  |          1  (empty)
+-------------------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,472,967             Number of obs    =     418,075
+No. of failures      =       53,034
+Time at risk         =  632830785.7
+                                                Wald chi2(17)    =    21473.92
+Log pseudolikelihood =   -604310.55             Prob > chi2      =      0.0000
+
+                                              (Std. Err. adjusted for 153,630 clusters in household_id)
+-------------------------------------------------------------------------------------------------------
+                                      |               Robust
+                                   _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+--------------------------------------+----------------------------------------------------------------
+                            kids_cat3 |
+                       Kids under 12  |   .9386166   .0677612    -0.88   0.380     .8147751    1.081281
+                       Kids under 18  |   1.043955   .0770702     0.58   0.560       .90332    1.206485
+                                      |
+                                 age1 |   1.096415   .0073991    13.64   0.000     1.082009    1.111014
+                                 age2 |   1.046782   .0289632     1.65   0.098     .9915273    1.105117
+                                 age3 |   .9279625   .0666881    -1.04   0.298      .806044    1.068322
+                               1.male |   1.366878   .0238351    17.92   0.000     1.320951    1.414401
+                                      |
+                            obese4cat |
+                   Obese I (30-34.9)  |   .8393077   .0149289    -9.85   0.000     .8105519    .8690838
+                  Obese II (35-39.9)  |   1.045695   .0293564     1.59   0.111     .9897116    1.104845
+                     Obese III (40+)  |   1.366677   .0575248     7.42   0.000     1.258456    1.484204
+                                      |
+                         smoke_nomiss |
+                              Former  |   1.388286   .0196036    23.23   0.000     1.350391    1.427245
+                             Current  |   2.452634   .0581698    37.83   0.000     2.341232    2.569336
+                                      |
+                                  imd |
+                                   2  |   1.104485   .0210533     5.21   0.000     1.063982    1.146529
+                                   3  |   1.180161   .0230855     8.47   0.000     1.135771    1.226286
+                                   4  |   1.319803   .0269943    13.57   0.000     1.267942    1.373786
+                     5 most deprived  |   1.519855   .0340004    18.71   0.000     1.454655    1.587977
+                                      |
+                      timeperiod#male |
+                                60 1  |   .9700688    .024011    -1.23   0.220     .9241315     1.01829
+                                90 1  |   .9514956   .0184918    -2.56   0.011     .9159338     .988438
+                                      |
+timeperiod#anyreduced_kidney_function |
+                                60 3  |          1  (empty)
+                                90 3  |          1  (empty)
+-------------------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+
+. estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_1, replace
+(note: file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_1.ster not found)
+file ./output/an_multivariate_cox_models_non_covid_death_kids_cat3_MAINFULLYADJMODEL_time_int_ageband_1.ster saved
+
+. 
+. estat phtest, d
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.00073         0.06        1         0.8135
+      2.kids_cat3 |     -0.00219         0.46        1         0.4973
+      age1        |     -0.00565         2.57        1         0.1087
+      age2        |      0.00741         5.39        1         0.0202
+      age3        |     -0.00814         7.13        1         0.0076
+      0b.male     |            .            .        1             .
+      1.male      |     -0.00045         0.02        1         0.8936
+      1b.obese4cat|            .            .        1             .
+      2.obese4cat |      0.00658         4.23        1         0.0397
+      3.obese4cat |      0.00172         0.29        1         0.5930
+      4.obese4cat |     -0.00353         1.28        1         0.2579
+      1b.smoke_n~s|            .            .        1             .
+      2.smoke_no~s|     -0.01617        27.96        1         0.0000
+      3.smoke_no~s|     -0.01534        28.37        1         0.0000
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.00064         0.04        1         0.8350
+      3.imd       |     -0.00127         0.18        1         0.6748
+      4.imd       |     -0.00395         1.76        1         0.1852
+      5.imd       |     -0.00188         0.42        1         0.5158
+      60bn.timep~e|     -0.00026         0.00        1         0.9529
+      90.timeper~e|     -0.00113         0.07        1         0.7935
+      60bno.time~_|            .            .        1             .
+      90o.timepe~_|            .            .        1             .
+      ------------+---------------------------------------------------
+      global test |                     73.49       17         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_non_covid_death_Sense5_time_in
+> ts.log
+  log type:  text
+ closed on:  22 Aug 2020, 13:39:38
+----------------------------------------------------------------------------------------------------------------------------------

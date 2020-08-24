@@ -1,0 +1,119 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_FULL_Sense2_covid_death_icu.lo
+> g
+  log type:  text
+ opened on:  22 Aug 2020, 13:08:40
+
+. 
+. *set trace on
+. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicitytimer clear
+  4. timer on 1
+  5.         capture stcox   `exposure'                      ///
+>                         `demogadjlist'                          ///
+>                         `comordidadjlist'                       ///
+>                         `if'                                            ///
+>                         , strata(stp) vce(cluster household_id)
+  6. timer off 1
+  7. timer list
+  8. end
+
+. *************************************************************************************
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. foreach exposure_type in        kids_cat3  {
+  4.  
+. *Complete case ethnicity model
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.bmicat) smoking(i.smoke)
+  5. if _rc==0{
+  6. estimates
+  7. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_`x', re
+> place
+  8. *estat concordance /*c-statistic*/
+.  }
+  9.  else di "WARNING CC ETHN BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
+ 10.  
+.  }
+ 11.  
+.  }
+   1:     53.56 /        1 =      53.5600
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,666,005             Number of obs    =     352,604
+No. of failures      =        2,705
+Time at risk         =   2145297922
+                                                Wald chi2(2)     =       99.51
+Log pseudolikelihood =   -35379.061             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 346,280 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .4853291   .0355062    -9.88   0.000     .4204973    .5601565
+Kids under 18  |   .8484246   .0635385    -2.19   0.028     .7325998    .9825615
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_0.ster not foun
+> d)
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_0.ster saved
+   1:     62.43 /        2 =      31.2135
+
+----------------------------------------------------------------------------------------------------------------------------------
+active results
+----------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,471,972             Number of obs    =     112,797
+No. of failures      =        8,905
+Time at risk         =  632768378.9
+                                                Wald chi2(2)     =        3.93
+Log pseudolikelihood =   -105159.13             Prob > chi2      =      0.1402
+
+                       (Std. Err. adjusted for 111,700 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+     kids_cat3 |
+Kids under 12  |   .8253063   .0901762    -1.76   0.079     .6662075      1.0224
+Kids under 18  |   .8854726   .1148053    -0.94   0.348     .6867729    1.141661
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_1.ster not foun
+> d)
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_1.ster saved
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_FULL_Sense2_covid_death_icu.lo
+> g
+  log type:  text
+ closed on:  22 Aug 2020, 13:09:52
+----------------------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,324 @@
+----------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\08_an_tablecontent_HRtable_covid_death_icu.log
+  log type:  text
+ opened on:  24 Aug 2020, 05:28:52
+
+. 
+. 
+. ***********************************************************************************************************************
+. *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
+. cap prog drop outputHRsforvar
+
+. prog define outputHRsforvar
+  1. syntax, variable(string) min(real) max(real) outcome(string)
+  2. forvalues x=0/1 {
+  3. file write tablecontents ("age") ("`x'") _n
+  4. forvalues i=`min'/`max'{
+  5. local endwith "_tab"
+  6. 
+.         *put the varname and condition to left so that alignment can be checked vs shell
+.         file write tablecontents ("`variable'") _tab ("`i'") _tab
+  7.         
+.         use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  8.         *put total N, PYFU and Rate in table
+.         cou if `variable' == `i' & _d == 1
+  9.         local event = r(N)
+ 10.     bysort `variable': egen total_follow_up = total(_t)
+ 11.         su total_follow_up if `variable' == `i'
+ 12.         local person_years = r(mean)
+ 13.         local rate = 1000*(`event'/`person_years')
+ 14.         
+.         file write tablecontents (`event') _tab %10.0f (`person_years') _tab %3.2f (`rate') _tab
+ 15.         drop total_follow_up
+ 16.         
+.         
+.         *models
+.         foreach modeltype of any minadj demogadj fulladj {
+ 17.         
+.                 local noestimatesflag 0 /*reset*/
+ 18. 
+. *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
+.                 if "`modeltype'"=="fulladj" local endwith "_n"
+ 19. 
+.                 ***********************
+.                 *1) GET THE RIGHT ESTIMATES INTO MEMORY
+.                 
+.                 if "`modeltype'"=="minadj" {
+ 20.                         cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'_ageband_`x'
+ 21.                         if _rc!=0 local noestimatesflag 1
+ 22.                         }
+ 23.                 if "`modeltype'"=="demogadj" {
+ 24.                         cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth_ageband_`x'
+ 25.                         if _rc!=0 local noestimatesflag 1
+ 26.                         }
+ 27.                 if "`modeltype'"=="fulladj" {
+ 28.                                 cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_
+> noeth_ageband_`x'  
+ 29.                                 if _rc!=0 local noestimatesflag 1
+ 30.                                 }
+ 31.                 
+.                 ***********************
+.                 *2) WRITE THE HRs TO THE OUTPUT FILE
+.                 
+.                 if `noestimatesflag'==0{
+ 32.                         cap lincom `i'.`variable', eform
+ 33.                         if _rc==0 file write tablecontents %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")")
+>  `endwith'
+ 34.                                 else file write tablecontents %4.2f ("ERR IN MODEL") `endwith'
+ 35.                         }
+ 36.                         else file write tablecontents %4.2f ("DID NOT FIT") `endwith' 
+ 37.                         
+.                 *3) Save the estimates for plotting
+.                 if `noestimatesflag'==0{
+ 38.                         if "`modeltype'"=="fulladj" {
+ 39.                                 local hr = r(estimate)
+ 40.                                 local lb = r(lb)
+ 41.                                 local ub = r(ub)
+ 42.                                 cap gen `variable'=.
+ 43.                                 testparm i.`variable'
+ 44.                                 *drop `variable'
+.                                 }
+ 45.                 }       
+ 46.                 } /*min adj, full adj*/
+ 47.                 
+. } /*variable levels*/
+ 48. 
+. } /*agebands*/
+ 49. 
+. end
+
+. ***********************************************************************************************************************
+. /*Generic code to write a full row of "ref category" to the output file
+> cap prog drop refline
+> prog define refline
+> file write tablecontents _tab _tab ("1.00 (ref)") _tab ("1.00 (ref)")  _n
+> end*/
+. ***********************************************************************************************************************
+. 
+. *MAIN CODE TO PRODUCE TABLE CONTENTS
+. 
+. cap file close tablecontents
+
+. file open tablecontents using ./output/an_tablecontents_HRtable_`outcome'.txt, t w replace 
+(note: file ./output/an_tablecontents_HRtable_covid_death_icu.txt not found)
+
+. 
+. *Primary exposure
+. outputHRsforvar, variable("kids_cat3") min(0) max(2) outcome(`outcome')
+  2,300
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    275,111    5.03e+07           0   5.03e+07   5.03e+07
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =   99.51
+         Prob > chi2 =    0.0000
+  207
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     49,810     9140395           0    9140395    9140395
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =   99.51
+         Prob > chi2 =    0.0000
+  198
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     27,683     5070576           0    5070576    5070576
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =   99.51
+         Prob > chi2 =    0.0000
+  8,744
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    110,725    1.93e+07           0   1.93e+07   1.93e+07
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =    3.93
+         Prob > chi2 =    0.1402
+  93
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |      1,205      211145           0     211145     211145
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =    3.93
+         Prob > chi2 =    0.1402
+  68
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |        867      151803           0     151803     151803
+
+ ( 1)  1.kids_cat3 = 0
+ ( 2)  2.kids_cat3 = 0
+
+           chi2(  2) =    3.93
+         Prob > chi2 =    0.1402
+
+. file write tablecontents _n
+
+. 
+. *Number kids
+. outputHRsforvar, variable("gp_number_kids") min(0) max(4) outcome(`outcome')
+  2,300
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    275,111    5.03e+07           0   5.03e+07   5.03e+07
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =   95.27
+         Prob > chi2 =    0.0000
+  198
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     27,683     5070576           0    5070576    5070576
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =   95.27
+         Prob > chi2 =    0.0000
+  167
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |     40,129     7363717           0    7363717    7363717
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =   95.27
+         Prob > chi2 =    0.0000
+  34
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |      8,579     1574535           0    1574535    1574535
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =   95.27
+         Prob > chi2 =    0.0000
+  6
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |      1,102      202143           0     202143     202143
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =   95.27
+         Prob > chi2 =    0.0000
+  8,744
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |    110,725    1.93e+07           0   1.93e+07   1.93e+07
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =    5.49
+         Prob > chi2 =    0.2410
+  68
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |        867      151803           0     151803     151803
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =    5.49
+         Prob > chi2 =    0.2410
+  74
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |      1,014      178165           0     178165     178165
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =    5.49
+         Prob > chi2 =    0.2410
+  15
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |        161       27805           0      27805      27805
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =    5.49
+         Prob > chi2 =    0.2410
+  4
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+total_foll~p |         30        5175           0       5175       5175
+
+ ( 1)  1.gp_number_kids = 0
+ ( 2)  2.gp_number_kids = 0
+ ( 3)  3.gp_number_kids = 0
+ ( 4)  4.gp_number_kids = 0
+
+           chi2(  4) =    5.49
+         Prob > chi2 =    0.2410
+
+. file write tablecontents _n 
+
+. 
+. file close tablecontents
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  e:\analyses\school-age-children-and-covid\analysis\log\08_an_tablecontent_HRtable_covid_death_icu.log
+  log type:  text
+ closed on:  24 Aug 2020, 05:29:09
+----------------------------------------------------------------------------------------------------------------------------------
