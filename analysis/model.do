@@ -1,6 +1,6 @@
 *Model do file
 
-*When running in parallel locally use "C:\Program Files (x86)\Stata15\stata-64.exe"
+*When running in parallel locally use "c:\program files\stata16\statamp-64.exe"
 *When running on server use "c:\program files\stata16\statamp-64.exe"
 
 
@@ -44,7 +44,7 @@ global comordidadjlist  i.htdiag_or_highbp				///
 
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
-
+/*
 /*  Checks  */
 do "02_an_data_checks.do"
 
@@ -64,10 +64,10 @@ winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2
 	}
 	
 winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
-
+*/
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-foreach outcome of any  covid_death_icu non_covid_death      {
+foreach outcome of any  covid_death covid_icu    {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -78,16 +78,16 @@ winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SE
 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-foreach outcome of any  covid_death_icu non_covid_death      {
+foreach outcome of any   covid_death covid_icu     {
 winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 }
-foreach outcome of any  covid_death_icu non_covid_death      {
+foreach outcome of any    covid_death covid_icu     {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }		
 
 
 
-foreach outcome of any  covid_death_icu non_covid_death   {
+foreach outcome of any  covid_death_icu   {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
@@ -109,20 +109,20 @@ foreach outcome of any  covid_death_icu     {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
 }*/
 *Sex
-foreach outcome of any  covid_death_icu     {
+foreach outcome of any covid_death_icu  covid_death covid_icu   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
 }
 *Shield
-foreach outcome of any  covid_death_icu     {
+foreach outcome of any  covid_death_icu  covid_death covid_icu  {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
 }
 *Time
-foreach outcome of any  covid_death_icu     {
+foreach outcome of any  covid_death_icu  covid_death covid_icu  {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
 
 
-
+/*
 
 /*EXPLORATORY ANALYSIS: prop hazards investigation
 foreach outcome of any  covid_death_icu non_covid_death  {
@@ -181,14 +181,14 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariabl
 winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
-
+*/
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/60 {
+forvalues i = 1/24 {
     di `i'
     sleep 10000
 }
@@ -197,14 +197,15 @@ forvalues i = 1/60 {
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
 *Tabulate results
-foreach outcome of any  covid_death_icu non_covid_death      {
+foreach outcome of any  covid_death covid_icu      {
 	do "08_an_tablecontent_HRtable.do" `outcome'
 }
 
-foreach outcome of any  covid_death_icu      {
+foreach outcome of any  covid_death covid_icu     {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
+/*
 foreach outcome of any  covid_death_icu   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
@@ -223,8 +224,9 @@ do "13_multiple_imputation_dataset.do" `outcome'
 foreach outcome of any  covid_death_icu {
 do "14_multiple_imputation_analysis.do" `outcome'
 }
+*/
 
 ***SENSE ANALYSIS
-foreach outcome of any  covid_death_icu      {
+foreach outcome of any covid_death_icu      {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
 	}

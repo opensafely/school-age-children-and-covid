@@ -91,6 +91,7 @@ stsplit cat_time, at(0,34, 200)
 recode cat_time 34=1 200=2 
 recode `outcome' .=0 
 tab cat_time
+tab cat_time `outcome'
  
 /*Overlapping time periods
 gen cat_time0=1 if cat==0

@@ -54,13 +54,23 @@ local endwith "_tab"
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
 		
-		if `noestimatesflag'==0{
+		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"!="multiple_imputation" {
 			cap lincom `i'.`variable', eform
 			if _rc==0 file write tablecontents_sense %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
 				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
 			}
-			else file write tablecontents_sense %4.2f ("DID NOT FIT") `endwith' 
-			
+		
+		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"=="multiple_imputation" {
+			cap lincom `i'.`variable', eform
+			local hr = exp( el(e(b_mi),1,2) )
+			di `hr'
+			local lb = exp( el(e(b_mi),1,2)  - 1.96*  sqrt(el(e(V_mi),2,2))  )
+			di `lb'
+			local ub = exp( el(e(b_mi),1,2)  + 1.96*  sqrt(el(e(V_mi),2,2))  )
+			if _rc==0 file write tablecontents_sense %4.2f (`hr') (" (") %4.2f (`lb') ("-") %4.2f (`ub') (")") `endwith'
+				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
+			}
+				
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
 			if "`modeltype'"=="fulladj" & "`sense'"!="multiple_imputation"  {

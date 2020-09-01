@@ -630,12 +630,16 @@ gen covid_death_icu = (covid_icu_death_date < .)
 gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
 gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid)
 gen stime_covid_death_icu = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, covid_icu_date)
+gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid)
+gen stime_covid_icu = min(onscoviddeathcensor_date, died_date_ons, covid_icu_date)
 
 
 * If outcome was after censoring occurred, set to zero
 replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
 replace non_covid_death = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date)
 replace covid_death_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
+replace covid_death = 0 if (died_date_onscovid > onscoviddeathcensor_date)
+replace covid_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
 
 
 * Format date variables
@@ -735,7 +739,9 @@ lab var covid_icu_date					"Date admission to ICU for COVID"
 * Survival times
 label var  stime_covid_tpp_prob					"Survival tme (date); outcome "
 label var  stime_non_covid_death				"Survival tme (date); outcome non_covid_death	"
-label var  stime_covid_death_icu				"Survival time (date); outcome covid death"
+label var  stime_covid_death_icu				"Survival time (date); outcome covid death or icu"
+label var  stime_covid_death				"Survival time (date); outcome covid death"
+label var  stime_covid_icu				"Survival time (date); outcome covid icu"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
@@ -820,6 +826,18 @@ replace pw = (1/0.03) if _d==0
 stset stime_covid_death_icu [pweight = pw],  fail(covid_death_icu) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
+
+use $tempdir\analysis_dataset_ageband_`x', clear
+* Save a version set on covid icu  outcome only
+stset stime_covid_icu, fail(covid_icu) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_icu_ageband_`x'.dta", replace
+
+use $tempdir\analysis_dataset_ageband_`x', clear
+* Save a version set on covid death only
+stset stime_covid_death, fail(covid_death) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", replace
 
 
 use $tempdir\analysis_dataset_ageband_`x', clear
