@@ -28,7 +28,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male	i.ethnicity i.obese4cat i.smoke_nomiss	i.imd i.tot_adults_hh
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -69,27 +69,6 @@ log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense1_`outcome'", text 
 *  Multivariable Cox models  *
 ******************************
 
-*************************************************************************************
-*PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
-cap prog drop basecoxmodel
-prog define basecoxmodel
-	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
-
-	if `ethnicity'==1 local ethnicity "i.ethnicity"
-	else local ethnicity
-timer clear
-timer on 1
-	capture stcox 	`exposure'			///
-			$demogadjlist				///
-			$comordidadjlist		///
-			`if'						///
-			, strata(stp) vce(cluster household_id)
-
-timer off 1
-timer list
-end
-*************************************************************************************
-
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
@@ -100,7 +79,10 @@ foreach exposure_type in 	kids_cat3  {
 
 
 *Complete case ethnicity model
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+	capture stcox 	i.`exposure_type'			///
+			$demogadjlist				///
+			$comordidadjlist		///
+			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_ageband_`x', replace
