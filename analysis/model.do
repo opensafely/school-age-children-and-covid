@@ -41,10 +41,10 @@ global comordidadjlist  i.htdiag_or_highbp				///
 
 ********************************************************************************
 
-/*
+
 /*  Pre-analysis data manipulation  */
 do "01_cr_analysis_dataset.do"
-
+/*
 /*  Checks  */
 do "02_an_data_checks.do"
 
