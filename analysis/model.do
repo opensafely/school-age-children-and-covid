@@ -66,6 +66,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2
 winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
 */
 
+/*
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  covid_death covid_icu    {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
@@ -84,7 +85,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_m
 foreach outcome of any    covid_death covid_icu     {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }		
-
+*/
 
 
 foreach outcome of any  covid_death_icu   {
@@ -188,7 +189,7 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariabl
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/24 {
+forvalues i = 1/4320 {
     di `i'
     sleep 10000
 }

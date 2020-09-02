@@ -1,0 +1,27 @@
+age0
+0	kids_cat3	1		0	0.93 (0.73-1.19)
+0	kids_cat3	1		1	1.28 (1.09-1.50)
+0	kids_cat3	1		0	DID NOT FIT
+0	kids_cat3	1		1	DID NOT FIT
+0	kids_cat3	1		0	DID NOT FIT
+0	kids_cat3	1		1	DID NOT FIT
+0	kids_cat3	2		0	1.05 (0.79-1.39)
+0	kids_cat3	2		1	1.30 (1.07-1.57)
+0	kids_cat3	2		0	DID NOT FIT
+0	kids_cat3	2		1	DID NOT FIT
+0	kids_cat3	2		0	DID NOT FIT
+0	kids_cat3	2		1	DID NOT FIT
+age1
+1	kids_cat3	1		0	1.43 (0.75-2.72)
+1	kids_cat3	1		1	1.02 (0.63-1.65)
+1	kids_cat3	1		0	DID NOT FIT
+1	kids_cat3	1		1	DID NOT FIT
+1	kids_cat3	1		0	DID NOT FIT
+1	kids_cat3	1		1	DID NOT FIT
+1	kids_cat3	2		0	1.30 (0.48-3.54)
+1	kids_cat3	2		1	1.36 (0.74-2.49)
+1	kids_cat3	2		0	DID NOT FIT
+1	kids_cat3	2		1	DID NOT FIT
+1	kids_cat3	2		0	DID NOT FIT
+1	kids_cat3	2		1	DID NOT FIT
+
