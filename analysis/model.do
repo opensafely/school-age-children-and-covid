@@ -66,7 +66,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2
 winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
 */
 
-*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
+/*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  covid_death covid_icu    {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
@@ -83,7 +83,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_m
 }
 foreach outcome of any    covid_death covid_icu     {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
-}		
+}	*/	
 
 
 
@@ -107,7 +107,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 /*Age - now startifying on age
 foreach outcome of any  covid_death_icu     {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_age" `outcome'	
-}*/
+}
 *Sex
 foreach outcome of any covid_death_icu  covid_death covid_icu   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
@@ -115,7 +115,7 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 *Shield
 foreach outcome of any  covid_death_icu  covid_death covid_icu  {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
-}
+}*/
 *Time
 foreach outcome of any  covid_death_icu  covid_death covid_icu  {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
@@ -196,11 +196,11 @@ forvalues i = 1/24 {
 *pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 
-*Tabulate results
+/*Tabulate results
 foreach outcome of any  covid_death covid_icu      {
 	do "08_an_tablecontent_HRtable.do" `outcome'
 }
-
+*/
 foreach outcome of any  covid_death covid_icu     {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
@@ -226,7 +226,7 @@ do "14_multiple_imputation_analysis.do" `outcome'
 }
 */
 
-***SENSE ANALYSIS
+/***SENSE ANALYSIS
 foreach outcome of any covid_death_icu      {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
-	}
+	}*/
