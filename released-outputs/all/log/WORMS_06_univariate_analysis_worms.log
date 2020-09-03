@@ -1,0 +1,168 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\WORMS_06_univariate_analysis_worms.log
+  log type:  text
+ opened on:  26 Aug 2020, 20:21:05
+
+. 
+. 
+. forvalues x=0/1 {
+  2. 
+. * Open dataset and fit specified model(s)
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. 
+. foreach var of any `varlist' {
+  4. 
+.         *Special cases
+.         if "`var'"=="agesplsex" local model "age1 age2 age3 i.male"
+  5.         else if "`var'"=="agegroupsex" local model "ib3.agegroup i.male"
+  6.         else if "`var'"=="bmicat" local model "age1 age2 age3 i.male ib2.bmicat"
+  7.         *General form of model
+.         else local model "age1 age2 age3 i.male i.`var'"
+  8. 
+.         *Fit and save model
+.         cap erase ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'.ster
+  9.         capture stcox `model' , strata(stp) vce(cluster household_id)
+ 10.         if _rc==0 {
+ 11.                 estimates
+ 12.                 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_`var'_ageband_`x'.ster, replace
+ 13.                 }
+ 14.         else di "WARNING - `var' vs `outcome' MODEL DID NOT SUCCESSFULLY FIT"
+ 15. 
+. }
+ 16. 
+. }
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,524,499             Number of obs    =     347,125
+No. of failures      =        1,433
+Time at risk         =   4206145255
+                                                Wald chi2(6)     =      596.02
+Log pseudolikelihood =   -18444.094             Prob > chi2      =      0.0000
+
+                       (Std. Err. adjusted for 340,938 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+          age1 |   .9899588   .0085564    -1.17   0.243     .9733298    1.006872
+          age2 |   .9366633   .0289228    -2.12   0.034      .881657    .9951014
+          age3 |   1.236104   .1160299     2.26   0.024     1.028384    1.485783
+        1.male |   .5706979   .0304214   -10.52   0.000      .514082    .6335489
+               |
+     kids_cat3 |
+Kids under 12  |    2.56871   .1619615    14.96   0.000     2.270102    2.906597
+Kids under 18  |   1.196672   .1335667     1.61   0.108     .9615418      1.4893
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_worms_AGESEX_kids_cat3_ageband_0.ster not found)
+file ./output/an_univariable_cox_models_worms_AGESEX_kids_cat3_ageband_0.ster saved
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,524,499             Number of obs    =     347,125
+No. of failures      =        1,433
+Time at risk         =   4206145255
+                                                Wald chi2(8)     =      690.27
+Log pseudolikelihood =   -18409.063             Prob > chi2      =      0.0000
+
+                         (Std. Err. adjusted for 340,938 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+            age1 |   .9818832   .0086112    -2.08   0.037     .9651499    .9989067
+            age2 |   .9655612   .0303118    -1.12   0.264     .9079419    1.026837
+            age3 |   1.134314   .1080829     1.32   0.186     .9410804    1.367225
+          1.male |    .571067   .0304386   -10.51   0.000     .5144189    .6339532
+                 |
+  gp_number_kids |
+ only >12 years  |   1.183374   .1320893     1.51   0.131     .9508456    1.472766
+    1 child <12  |   1.935877   .1510331     8.47   0.000     1.661379    2.255728
+ 2 children <12  |   3.075149   .2550005    13.55   0.000     2.613858    3.617848
+3+ children <12  |   4.497919    .483674    13.98   0.000     3.643171    5.553206
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_worms_AGESEX_gp_number_kids_ageband_0.ster not found)
+file ./output/an_univariable_cox_models_worms_AGESEX_gp_number_kids_ageband_0.ster saved
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,044,539             Number of obs    =      91,439
+No. of failures      =          106
+Time at risk         =   1111220806
+                                                Wald chi2(6)     =       26.02
+Log pseudolikelihood =    -1227.435             Prob > chi2      =      0.0002
+
+                        (Std. Err. adjusted for 90,790 clusters in household_id)
+--------------------------------------------------------------------------------
+               |               Robust
+            _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+---------------+----------------------------------------------------------------
+          age1 |    1.14065   .1051229     1.43   0.153     .9521493    1.366468
+          age2 |   .4699328   .2048751    -1.73   0.083     .1999587    1.104413
+          age3 |    4.51027   4.388442     1.55   0.122     .6698736    30.36771
+        1.male |   .5827239   .1153876    -2.73   0.006     .3952874    .8590388
+               |
+     kids_cat3 |
+Kids under 12  |   3.132123   1.585305     2.26   0.024     1.161471    8.446354
+Kids under 18  |   1.916925   1.351438     0.92   0.356      .481399     7.63317
+--------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_worms_AGESEX_kids_cat3_ageband_1.ster not found)
+file ./output/an_univariable_cox_models_worms_AGESEX_kids_cat3_ageband_1.ster saved
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,044,539             Number of obs    =      91,439
+No. of failures      =          106
+Time at risk         =   1111220806
+                                                Wald chi2(8)     =       33.77
+Log pseudolikelihood =   -1225.5355             Prob > chi2      =      0.0000
+
+                          (Std. Err. adjusted for 90,790 clusters in household_id)
+----------------------------------------------------------------------------------
+                 |               Robust
+              _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-----------------+----------------------------------------------------------------
+            age1 |   1.144113   .1053725     1.46   0.144      .955154    1.370454
+            age2 |   .4626475    .201418    -1.77   0.077     .1970932    1.085998
+            age3 |   4.671117   4.537496     1.59   0.113     .6959346    31.35256
+          1.male |   .5841379   .1155009    -2.72   0.007     .3964681    .8606419
+                 |
+  gp_number_kids |
+ only >12 years  |     1.9189   1.352735     0.92   0.355     .4819421    7.640286
+    1 child <12  |   1.641091   1.689614     0.48   0.630     .2181542    12.34531
+ 2 children <12  |   3.686139   2.647874     1.82   0.069      .901832    15.06668
+3+ children <12  |   13.23831   9.862285     3.47   0.001     3.074002    57.01133
+----------------------------------------------------------------------------------
+                                                             Stratified by stp
+(note: file ./output/an_univariable_cox_models_worms_AGESEX_gp_number_kids_ageband_1.ster not found)
+file ./output/an_univariable_cox_models_worms_AGESEX_gp_number_kids_ageband_1.ster saved
+
+. 
+. * Close log file
+. log close
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\WORMS_06_univariate_analysis_worms.log
+  log type:  text
+ closed on:  26 Aug 2020, 20:21:48
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
