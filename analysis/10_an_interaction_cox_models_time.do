@@ -86,9 +86,9 @@ forvalues x=0/1 {
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
-*Split data by time of study period: days to April 3rd (31 d March, 3d April)
-stsplit cat_time, at(0,34, 200)
-recode cat_time 34=1 200=2 
+*Split data by time of study period: days to April 3rd (29d Feb, 31 d March, 3d April)
+stsplit cat_time, at(0,63, 200)
+recode cat_time 63=1 200=2 
 recode `outcome' .=0 
 tab cat_time
 tab cat_time `outcome'
