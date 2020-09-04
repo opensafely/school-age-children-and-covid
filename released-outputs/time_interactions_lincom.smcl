@@ -1,0 +1,154 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}E:\will\school-age-children-and-covid\time_interactions_lincom.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res} 4 Sep 2020, 14:43:54
+{txt}
+{com}. 
+. forvalues x=0/1 {c -(}
+{txt}  2{com}. foreach outcome in covid_death_icu  covid_death covid_icu   {c -(}
+{txt}  3{com}. 
+. estimates use  ./analysis/output/an_interaction_cox_models_`outcome'_kids_cat3_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'.ster
+{txt}  4{com}. di _n "`outcome' " _n "****************"
+{txt}  5{com}. lincom 1.kids_cat3 + 1.cat_time#1.kids_cat3, eform
+{txt}  6{com}. di "`outcome'" _n "****************"
+{txt}  7{com}. lincom 2.kids_cat3 + 1.cat_time#2.kids_cat3, eform
+{txt}  8{com}. {c )-}
+{txt}  9{com}. {c )-}
+{res}
+covid_death_icu 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .9300895{col 26}{space 2} .0708719{col 37}{space 1}   -0.95{col 46}{space 3}0.342{col 54}{space 4} .8010581{col 67}{space 3} 1.079905
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_death_icu
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 1.012172{col 26}{space 2} .0914389{col 37}{space 1}    0.13{col 46}{space 3}0.893{col 54}{space 4} .8479245{col 67}{space 3} 1.208234
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+covid_death 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .8845848{col 26}{space 2} .0914407{col 37}{space 1}   -1.19{col 46}{space 3}0.235{col 54}{space 4} .7223533{col 67}{space 3} 1.083252
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_death
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .9811916{col 26}{space 2} .1162654{col 37}{space 1}   -0.16{col 46}{space 3}0.873{col 54}{space 4} .7778421{col 67}{space 3} 1.237702
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+covid_icu 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 1.149331{col 26}{space 2} .1029887{col 37}{space 1}    1.55{col 46}{space 3}0.120{col 54}{space 4}  .964209{col 67}{space 3} 1.369996
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_icu
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 1.138885{col 26}{space 2} .1238133{col 37}{space 1}    1.20{col 46}{space 3}0.232{col 54}{space 4} .9203267{col 67}{space 3} 1.409347
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+covid_death_icu 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .8595234{col 26}{space 2} .0834978{col 37}{space 1}   -1.56{col 46}{space 3}0.119{col 54}{space 4}  .710507{col 67}{space 3} 1.039794
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_death_icu
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .8928698{col 26}{space 2} .1170829{col 37}{space 1}   -0.86{col 46}{space 3}0.388{col 54}{space 4} .6905088{col 67}{space 3} 1.154535
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+covid_death 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .8812785{col 26}{space 2} .0863891{col 37}{space 1}   -1.29{col 46}{space 3}0.197{col 54}{space 4} .7272311{col 67}{space 3} 1.067957
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_death
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} .8851492{col 26}{space 2} .1180463{col 37}{space 1}   -0.91{col 46}{space 3}0.360{col 54}{space 4} .6815497{col 67}{space 3}  1.14957
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{res}
+covid_icu 
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 + 1.cat_time#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 1.357997{col 26}{space 2}  .346634{col 37}{space 1}    1.20{col 46}{space 3}0.231{col 54}{space 4} .8234289{col 67}{space 3} 2.239604
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+covid_icu
+****************
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 1.762927{col 26}{space 2} .5777807{col 37}{space 1}    1.73{col 46}{space 3}0.084{col 54}{space 4} .9273888{col 67}{space 3} 3.351248
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. 
+. log close
+      {txt}name:  {res}<unnamed>
+       {txt}log:  {res}E:\will\school-age-children-and-covid\time_interactions_lincom.smcl
+  {txt}log type:  {res}smcl
+ {txt}closed on:  {res} 4 Sep 2020, 14:43:57
+{txt}{.-}
+{smcl}
+{txt}{sf}{ul off}
