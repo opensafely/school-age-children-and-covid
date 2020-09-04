@@ -1,0 +1,515 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_covid_death_icu_Sense4_agetimescale.log
+  log type:  text
+ opened on:   3 Sep 2020, 16:27:28
+
+. 
+. 
+. *************************************************************************************
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basecoxmodel
+
+. prog define basecoxmodel
+  1.         syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+  2. 
+.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6.         capture stcox   `exposure'                      ///
+>                         $demogadjlist                           ///
+>                         $comordidadjlist                        ///
+>                         `if'                                            ///
+>                         , strata(stp) vce(cluster household_id)
+  7. timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. *reset underlying timescale to age
+. stset
+  4. gen dob=d(01feb2020)-(age*365.25)
+  5. format dob %td
+  6. list age dob in 1/20
+  7. streset, origin(dob) scale(365.25) 
+  8. 
+. ******************************
+. *  Multivariable Cox models  *
+. ******************************
+. 
+. 
+. 
+. foreach exposure_type in kids_cat3  {
+  9. 
+. *Age spline model (not adj ethnicity)
+. basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+ 10. if _rc==0{
+ 11. estimates
+ 12. estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_age_underlying_timescale_ageband_`x', replace
+ 13. *estat concordance /*c-statistic*/
+.         /*  Proportional Hazards test  */
+.         * Based on Schoenfeld residuals
+.         timer clear 
+ 14.         timer on 1
+ 15.         if e(N_fail)>0 estat phtest, d
+ 16.         timer off 1
+ 17.         timer list
+ 18. }
+ 19. else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+ 20. 
+. }
+ 21. }
+-> stset stime_covid_death_icu, id(patient_id) failure(covid_death_icu)
+                                enter(time enter_date) origin(time enter_date)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12054790  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12054790  observations remaining, representing
+   12054790  subjects
+      2,718  failures in single-failure-per-subject data
+ 2.2168e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+     +-----------------+
+     | age         dob |
+     |-----------------|
+  1. |  [REDACTED]     |
+  2. |  [REDACTED]     |
+  3. |  [REDACTED]     |
+  4. |  [REDACTED]     |
+  5. |  [REDACTED]     |
+     |-----------------|
+  6. |  [REDACTED]     |
+  7. |  [REDACTED]     |
+  8. |  [REDACTED]     |
+  9. |  [REDACTED]     |
+ 10. |  [REDACTED]     |
+     |-----------------|
+ 11. |  [REDACTED]     |
+ 12. |  [REDACTED]     |
+ 13. |  [REDACTED]     |
+ 14. |  [REDACTED]     |
+ 15. |  [REDACTED]     |
+     |-----------------|
+ 16. |  [REDACTED]     |
+ 17. |  [REDACTED]     |
+ 18. |  [REDACTED]     |
+ 19. |  [REDACTED]     |
+ 20. |  [REDACTED]     |
+     +-----------------+
+-> stset stime_covid_death_icu, id(patient_id) failure(covid_death_icu)
+                                enter(time enter_date) origin(time dob)
+                                scale(365.25)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)/365.25
+            origin:  time dob
+
+------------------------------------------------------------------------------
+   12054790  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12054790  observations remaining, representing
+   12054790  subjects
+      2,718  failures in single-failure-per-subject data
+  6,069,164  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =        18
+                                          last observed exit t =  65.50376
+   1:   5214.65 /        1 =    5214.6540
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,870,825             Number of obs    =  11,870,825
+No. of failures      =        2,587
+Time at risk         =  5976604.011
+                                                Wald chi2(36)    =     4951.16
+Log pseudolikelihood =   -22365.723             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 6,752,811 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   .9763242   .0615684    -0.38   0.704     .8628117    1.104771
+               Kids under 18  |   1.076176   .0787834     1.00   0.316     .9323298    1.242216
+                              |
+                         age1 |   1.007046   .0317253     0.22   0.824     .9467465    1.071186
+                         age2 |   1.234234          .        .       .            .           .
+                         age3 |   1.648208   .7929339     1.04   0.299     .6419614    4.231704
+                       1.male |   1.672772   .0698779    12.32   0.000     1.541271    1.815493
+                              |
+                          imd |
+                           2  |   1.133158   .0833113     1.70   0.089     .9810905    1.308796
+                           3  |   1.264865   .0909473     3.27   0.001     1.098602     1.45629
+                           4  |   1.597328   .1095642     6.83   0.000     1.396395    1.827173
+             5 most deprived  |   1.707988   .1210132     7.56   0.000     1.486538    1.962427
+                              |
+                tot_adults_hh |
+                           2  |   .8905563   .0474101    -2.18   0.029     .8023177    .9884993
+                           3  |   1.159873   .0601303     2.86   0.004      1.04781    1.283922
+                              |
+           1.htdiag_or_highbp |   1.610591   .0740568    10.37   0.000      1.47179    1.762481
+1.chronic_respiratory_disease |   2.371512   .1594063    12.85   0.000     2.078787    2.705457
+                     1.asthma |   1.228526   .0623283     4.06   0.000     1.112242    1.356967
+    1.chronic_cardiac_disease |   1.425615   .0896794     5.64   0.000      1.26025    1.612678
+                              |
+                      diabcat |
+            T1DM, controlled  |    1.90238   .5825001     2.10   0.036      1.04391     3.46682
+          T1DM, uncontrolled  |   2.732187   .4423181     6.21   0.000     1.989335    3.752431
+            T2DM, controlled  |   2.390298   .1541839    13.51   0.000     2.106426    2.712427
+          T2DM, uncontrolled  |   3.749145   .2287593    21.66   0.000     3.326558    4.225416
+          Diabetes, no HbA1c  |   3.570114   1.276191     3.56   0.000      1.77177    7.193774
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   3.625713   .5469698     8.54   0.000      2.69763     4.87309
+               2-5 years ago  |   1.898021   .2353965     5.17   0.000     1.488447    2.420298
+                    5+ years  |   1.145053   .1454676     1.07   0.286     .8926654    1.468798
+                              |
+              cancer_haem_cat |
+                   Last year  |   5.257197    1.79611     4.86   0.000     2.691182    10.26988
+               2-5 years ago  |   5.254099   1.054501     8.27   0.000      3.54537    7.786368
+                    5+ years  |   2.013065    .431741     3.26   0.001     1.322211    3.064887
+                              |
+      1.chronic_liver_disease |   2.303258   .2558597     7.51   0.000     1.852619    2.863513
+            1.stroke_dementia |   1.767695   .1626717     6.19   0.000     1.475964    2.117088
+                1.other_neuro |   3.153467   .3428506    10.56   0.000     2.548262    3.902406
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   2.334024   .1846173    10.72   0.000     1.998834    2.725423
+           Stage 4/5 egfr<30  |   3.875646   .6452752     8.14   0.000     2.796555    5.371119
+                              |
+                       1.esrd |    3.35887   .5601001     7.27   0.000      2.42244    4.657289
+           1.other_transplant |   .6229313   .2686381    -1.10   0.272     .2675229    1.450506
+                   1.asplenia |   2.189711   .5633772     3.05   0.002     1.322472    3.625661
+           1.ra_sle_psoriasis |   1.191597   .0893942     2.34   0.019     1.028659    1.380342
+               1.other_immuno |    2.36333   .4059911     5.01   0.000     1.687712    3.309408
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_0.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |      0.02130         1.32        1         0.2509
+      2.kids_cat3 |     -0.01087         0.33        1         0.5635
+      age1        |            .         0.00        1         1.0000
+      age2        |      0.07910            .        1             .
+      age3        |            .         0.00        1         1.0000
+      0b.male     |            .            .        1             .
+      1.male      |      0.01991         1.10        1         0.2941
+      1b.imd      |            .            .        1             .
+      2.imd       |      0.03599         3.46        1         0.0627
+      3.imd       |      0.02670         1.91        1         0.1666
+      4.imd       |     -0.01067         0.31        1         0.5800
+      5.imd       |      0.00644         0.12        1         0.7343
+      1b.tot_adu~h|            .            .        1             .
+      2.tot_adul~h|     -0.00325         0.03        1         0.8649
+      3.tot_adul~h|      0.01406         0.53        1         0.4667
+      0b.htdiag_~p|            .            .        1             .
+      1.htdiag_o~p|     -0.09661        29.80        1         0.0000
+      0b.chronic..|            .            .        1             .
+      1.~y_disease|     -0.03061         3.13        1         0.0769
+      0b.asthma   |            .            .        1             .
+      1.asthma    |      0.00603         0.11        1         0.7433
+      0b.chronic..|            .            .        1             .
+      1.~c_disease|     -0.00573         0.10        1         0.7461
+      1b.diabcat  |            .            .        1             .
+      2.diabcat   |     -0.01315         0.47        1         0.4922
+      3.diabcat   |     -0.01586         0.68        1         0.4087
+      4.diabcat   |     -0.02823         2.43        1         0.1191
+      5.diabcat   |     -0.06778        15.02        1         0.0001
+      6.diabcat   |     -0.01823         0.91        1         0.3412
+      1b.c~exhae~t|            .            .        1             .
+      2.cancer_e~t|     -0.00580         0.09        1         0.7606
+      3.cancer_e~t|     -0.00812         0.18        1         0.6699
+      4.cancer_e~t|     -0.03715         3.68        1         0.0550
+      1b.cancer_..|            .            .        1             .
+      2.cancer_h~t|     -0.00076         0.00        1         0.9676
+      3.cancer_h~t|     -0.00594         0.10        1         0.7465
+      4.cancer_h~t|      0.00333         0.03        1         0.8579
+      0b.chronic..|            .            .        1             .
+      1.~r_disease|     -0.01965         1.16        1         0.2806
+      0b.stroke_~a|            .            .        1             .
+      1.stroke_d~a|      0.00299         0.03        1         0.8636
+      0b.other_n~o|            .            .        1             .
+      1.other_ne~o|     -0.00288         0.03        1         0.8734
+      1b.reduced~t|            .            .        1             .
+      2.reduced_~t|     -0.00614         0.11        1         0.7400
+      3.reduced_~t|      0.03337         5.03        1         0.0249
+      0b.esrd     |            .            .        1             .
+      1.esrd      |     -0.03252         4.87        1         0.0273
+      0b.other_t~t|            .            .        1             .
+      1.other_tr~t|      0.03858         4.82        1         0.0282
+      0b.asplenia |            .            .        1             .
+      1.asplenia  |     -0.01927         1.14        1         0.2866
+      0b.ra_sle_~s|            .            .        1             .
+      1.ra_sle_p~s|     -0.00275         0.02        1         0.8856
+      0b.other_i~o|            .            .        1             .
+      1.other_im~o|     -0.05091         7.68        1         0.0056
+      ------------+---------------------------------------------------
+      global test |                    108.88       36         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:   2641.31 /        1 =    2641.3080
+-> stset stime_covid_death_icu, id(patient_id) failure(covid_death_icu)
+                                enter(time enter_date) origin(time enter_date)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,489,829  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,489,829  observations remaining, representing
+  3,489,829  subjects
+      8,930  failures in single-failure-per-subject data
+  635992694  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+
+     +-----------------+
+     | age         dob |
+     |-----------------|
+  1. |  [REDACTED]     |
+  2. |  [REDACTED]     |
+  3. |  [REDACTED]     |
+  4. |  [REDACTED]     |
+  5. |  [REDACTED]     |
+     |-----------------|
+  6. |  [REDACTED]     |
+  7. |  [REDACTED]     |
+  8. |  [REDACTED]     |
+  9. |  [REDACTED]     |
+ 10. |  [REDACTED]     |
+     |-----------------|
+ 11. |  [REDACTED]     |
+ 12. |  [REDACTED]     |
+ 13. |  [REDACTED]     |
+ 14. |  [REDACTED]     |
+ 15. |  [REDACTED]     |
+     |-----------------|
+ 16. |  [REDACTED]     |
+ 17. |  [REDACTED]     |
+ 18. |  [REDACTED]     |
+ 19. |  [REDACTED]     |
+ 20. |  [REDACTED]     |
+     +-----------------+
+-> stset stime_covid_death_icu, id(patient_id) failure(covid_death_icu)
+                                enter(time enter_date) origin(time dob)
+                                scale(365.25)
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)/365.25
+            origin:  time dob
+
+------------------------------------------------------------------------------
+  3,489,829  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,489,829  observations remaining, representing
+  3,489,829  subjects
+      8,930  failures in single-failure-per-subject data
+  1,741,253  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =        66
+                                          last observed exit t =  110.5038
+   1:    917.29 /        1 =     917.2860
+
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+active results
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,329,528             Number of obs    =   3,329,528
+No. of failures      =        8,460
+Time at risk         =   1661283.25
+                                                Wald chi2(34)    =     7420.17
+Log pseudolikelihood =   -64788.356             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 2,523,113 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   .9055082   .0764288    -1.18   0.240     .7674451    1.068409
+               Kids under 18  |   .8919404   .1033159    -0.99   0.324     .7107859    1.119265
+                              |
+                         age1 |   1.310517          .        .       .            .           .
+                         age2 |   1.177702          .        .       .            .           .
+                         age3 |   .8119952          .        .       .            .           .
+                       1.male |   1.764874   .0410782    24.41   0.000     1.686171    1.847251
+                              |
+                          imd |
+                           2  |   1.112962   .0395037     3.02   0.003     1.038168    1.193145
+                           3  |   1.227516   .0435067     5.78   0.000     1.145138    1.315819
+                           4  |   1.415824   .0507428     9.70   0.000     1.319783    1.518854
+             5 most deprived  |   1.645963   .0621829    13.19   0.000      1.52849    1.772465
+                              |
+                tot_adults_hh |
+                           2  |   .8013332   .0204735    -8.67   0.000     .7621939    .8424823
+                           3  |    .991962   .0375626    -0.21   0.831     .9210063    1.068384
+                              |
+           1.htdiag_or_highbp |   .9416389   .0255321    -2.22   0.027     .8929034    .9930344
+1.chronic_respiratory_disease |   1.830976   .0486097    22.78   0.000     1.738139    1.928772
+                     1.asthma |   1.112377   .0345473     3.43   0.001     1.046686    1.182192
+    1.chronic_cardiac_disease |   1.368143   .0327939    13.08   0.000     1.305355    1.433952
+                              |
+                      diabcat |
+            T1DM, controlled  |   1.770342   .3849549     2.63   0.009     1.156022    2.711115
+          T1DM, uncontrolled  |    2.94968   .3676876     8.68   0.000     2.310307    3.765998
+            T2DM, controlled  |   1.479323   .0413241    14.02   0.000     1.400507    1.562575
+          T2DM, uncontrolled  |    2.07683    .071804    21.14   0.000     1.940759    2.222441
+          Diabetes, no HbA1c  |   2.380235   .5662529     3.65   0.000     1.493209    3.794188
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   2.114818   .1454154    10.89   0.000      1.84818    2.419924
+               2-5 years ago  |   1.193512   .0631486     3.34   0.001     1.075944    1.323926
+                    5+ years  |   1.057222    .036007     1.63   0.102     .9889532    1.130203
+                              |
+              cancer_haem_cat |
+                   Last year  |   3.434974   .5134582     8.26   0.000     2.562633    4.604269
+               2-5 years ago  |   2.489744   .2467305     9.20   0.000     2.050226    3.023484
+                    5+ years  |   1.566712   .1336572     5.26   0.000     1.325479     1.85185
+                              |
+      1.chronic_liver_disease |   1.987588    .158336     8.62   0.000     1.700269    2.323459
+            1.stroke_dementia |   1.729469    .049768    19.04   0.000     1.634626    1.829816
+                1.other_neuro |   2.458409   .1182081    18.71   0.000     2.237307    2.701361
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   1.310489   .0338136    10.48   0.000     1.245863    1.378467
+           Stage 4/5 egfr<30  |   2.452488   .1116908    19.70   0.000     2.243064    2.681466
+                              |
+                       1.esrd |    3.20042   .2816607    13.22   0.000     2.693363    3.802936
+           1.other_transplant |   1.845131   .5620507     2.01   0.044     1.015641    3.352078
+                   1.asplenia |    1.02467   .2068134     0.12   0.904      .689894    1.521898
+           1.ra_sle_psoriasis |   1.273987   .0468257     6.59   0.000     1.185438     1.36915
+               1.other_immuno |   1.751142   .3040787     3.23   0.001     1.245988    2.461099
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+file ./output/an_multivariate_cox_models_covid_death_icu_kids_cat3_MAINFULLYADJMODEL_age_underlying_timescale_ageband_1.ster saved
+
+      Test of proportional-hazards assumption
+
+      Time:  Time
+      ----------------------------------------------------------------
+                  |       rho            chi2       df       Prob>chi2
+      ------------+---------------------------------------------------
+      0b.kids_cat3|            .            .        1             .
+      1.kids_cat3 |     -0.02634         6.11        1         0.0134
+      2.kids_cat3 |     -0.03758        12.63        1         0.0004
+      age1        |            .            .        1             .
+      age2        |            .            .        1             .
+      age3        |            .            .        1             .
+      0b.male     |            .            .        1             .
+      1.male      |      0.01617         2.40        1         0.1216
+      1b.imd      |            .            .        1             .
+      2.imd       |     -0.02084         3.85        1         0.0498
+      3.imd       |     -0.03264         9.22        1         0.0024
+      4.imd       |     -0.03688        11.89        1         0.0006
+      5.imd       |     -0.03043         8.26        1         0.0041
+      1b.tot_adu~h|            .            .        1             .
+      2.tot_adul~h|      0.01993         3.71        1         0.0542
+      3.tot_adul~h|      0.02869         8.29        1         0.0040
+      0b.htdiag_~p|            .            .        1             .
+      1.htdiag_o~p|     -0.03220         9.21        1         0.0024
+      0b.chronic..|            .            .        1             .
+      1.~y_disease|     -0.03056         8.56        1         0.0034
+      0b.asthma   |            .            .        1             .
+      1.asthma    |     -0.00609         0.32        1         0.5693
+      0b.chronic..|            .            .        1             .
+      1.~c_disease|     -0.00792         0.58        1         0.4456
+      1b.diabcat  |            .            .        1             .
+      2.diabcat   |      0.00504         0.23        1         0.6321
+      3.diabcat   |     -0.00499         0.22        1         0.6390
+      4.diabcat   |     -0.05755        28.74        1         0.0000
+      5.diabcat   |     -0.04440        17.33        1         0.0000
+      6.diabcat   |     -0.00163         0.02        1         0.8800
+      1b.c~exhae~t|            .            .        1             .
+      2.cancer_e~t|     -0.03712        12.17        1         0.0005
+      3.cancer_e~t|     -0.01403         1.71        1         0.1911
+      4.cancer_e~t|     -0.01059         0.97        1         0.3242
+      1b.cancer_..|            .            .        1             .
+      2.cancer_h~t|     -0.03059         8.38        1         0.0038
+      3.cancer_h~t|     -0.04398        16.88        1         0.0000
+      4.cancer_h~t|     -0.01718         2.55        1         0.1100
+      0b.chronic..|            .            .        1             .
+      1.~r_disease|     -0.00440         0.17        1         0.6791
+      0b.stroke_~a|            .            .        1             .
+      1.stroke_d~a|     -0.02544         6.14        1         0.0132
+      0b.other_n~o|            .            .        1             .
+      1.other_ne~o|     -0.04583        19.65        1         0.0000
+      1b.reduced~t|            .            .        1             .
+      2.reduced_~t|     -0.04826        22.12        1         0.0000
+      3.reduced_~t|     -0.07178        50.31        1         0.0000
+      0b.esrd     |            .            .        1             .
+      1.esrd      |      0.00217         0.04        1         0.8404
+      0b.other_t~t|            .            .        1             .
+      1.other_tr~t|     -0.00000         0.00        1         0.9997
+      0b.asplenia |            .            .        1             .
+      1.asplenia  |     -0.00728         0.46        1         0.4978
+      0b.ra_sle_~s|            .            .        1             .
+      1.ra_sle_p~s|     -0.03408         9.97        1         0.0016
+      0b.other_i~o|            .            .        1             .
+      1.other_im~o|      0.01160         1.22        1         0.2694
+      ------------+---------------------------------------------------
+      global test |                    327.18       34         0.0000
+      ----------------------------------------------------------------
+
+note: robust variance-covariance matrix used.
+   1:    854.00 /        1 =     853.9990
+
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\07b_an_multivariable_cox_models_covid_death_icu_Sense4_agetimescale.log
+  log type:  text
+ closed on:   3 Sep 2020, 19:15:48
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------

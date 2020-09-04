@@ -1,0 +1,595 @@
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\10_an_interaction_cox_models_time_covid_icu.log
+  log type:  text
+ opened on:   3 Sep 2020, 16:27:28
+
+. 
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
+. cap prog drop basemodel
+
+. prog define basemodel
+  1.         syntax , exposure(string)  age(string) [ethnicity(real 0) interaction(string)] 
+  2.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6. stcox   `exposure'                                                              ///
+>                         $demogadjlist                                                   ///
+>                         $comordidadjlist                                                ///
+>                         `interaction'                                                   ///
+>                         , strata(stp) vce(cluster household_id)
+  7.         timer off 1
+  8. timer list
+  9. end
+
+. *************************************************************************************
+. 
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+  3. 
+. *Split data by time of study period: days to April 3rd (29d Feb, 31 d March, 3d April)
+. stsplit cat_time, at(0,63, 200)
+  4. recode cat_time 63=1 200=2 
+  5. recode `outcome' .=0 
+  6. tab cat_time
+  7. tab cat_time `outcome'
+  8.  
+. /*Overlapping time periods
+> gen cat_time0=1 if cat==0
+> gen cat_time1=1 if cat==0 | cat==0.25
+> */
+.         
+. 
+. 
+. foreach int_type in cat_time  {
+  9. 
+. *Age interaction for 3-level exposure vars
+. foreach exposure_type in kids_cat3  {
+ 10. 
+. *Age spline model (not adj ethnicity, no interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
+ 11. 
+. *Age spline model (not adj ethnicity, interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
+ 12. if _rc==0{
+ 13. testparm 1.`int_type'#i.`exposure_type'
+ 14. di _n "`exposure_type' <66" _n "****************"
+ 15. lincom 2.`exposure_type', eform
+ 16. di "`exposure_type' 66+" _n "****************"
+ 17. lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+ 18. estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
+ 19. }
+ 20. else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+ 21. 
+. }
+ 22. 
+. }
+ 23. 
+. }
+(12,049,796 observations (episodes) created)
+(cat_time: 12049796 changes made)
+(covid_icu: 12049796 changes made)
+
+Observation |
+   interval |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 | 12,054,790       50.01       50.01
+          1 | 12,049,796       49.99      100.00
+------------+-----------------------------------
+      Total | 24,104,586      100.00
+
+           |   Failure/censoring
+           |     indicator for
+Observatio |  outcome: covid icu
+n interval |         0          1 |     Total
+-----------+----------------------+----------
+         0 |12,054,043        747 |12,054,790 
+         1 |12,048,726      1,070 |12,049,796 
+-----------+----------------------+----------
+     Total |24,102,769      1,817 |24,104,586 
+
+         failure _d:  covid_icu
+   analysis time _t:  (stime_covid_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log pseudolikelihood =   -22607.6
+Iteration 1:   log pseudolikelihood = -21974.569
+Iteration 2:   log pseudolikelihood = -21412.128
+Iteration 3:   log pseudolikelihood = -21156.605
+Iteration 4:   log pseudolikelihood = -21149.464
+Iteration 5:   log pseudolikelihood = -21149.407
+Iteration 6:   log pseudolikelihood = -21149.407
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -21149.407
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,870,825             Number of obs    =  23,736,816
+No. of failures      =        1,724
+Time at risk         =   2182954615
+                                                Wald chi2(37)    =     4088.84
+Log pseudolikelihood =   -21149.407             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 6,752,811 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   1.164054   .0827357     2.14   0.033     1.012683    1.338052
+               Kids under 18  |   1.208936   .1005208     2.28   0.022     1.027135    1.422916
+                              |
+                         age1 |   1.122182   .0258604     5.00   0.000     1.072624     1.17403
+                         age2 |   .9572931   .0523859    -0.80   0.425     .8599331    1.065676
+                         age3 |   .9842464   .1330893    -0.12   0.907     .7551005     1.28293
+                       1.male |   1.887741   .0981744    12.22   0.000     1.704804    2.090307
+                              |
+                          imd |
+                           2  |    1.09866   .0959129     1.08   0.281     .9258777    1.303687
+                           3  |   1.249622   .1064418     2.62   0.009     1.057484     1.47667
+                           4  |   1.469231   .1212527     4.66   0.000     1.249804    1.727182
+             5 most deprived  |   1.658324   .1400409     5.99   0.000      1.40536     1.95682
+                              |
+                tot_adults_hh |
+                           2  |   .9765716   .0659493    -0.35   0.726     .8555023    1.114774
+                           3  |   1.330248   .0874741     4.34   0.000     1.169391    1.513233
+                              |
+           1.htdiag_or_highbp |   1.713828   .0956265     9.66   0.000     1.536288    1.911885
+1.chronic_respiratory_disease |   1.964829   .1837908     7.22   0.000     1.635698    2.360187
+                     1.asthma |   1.381705   .0838139     5.33   0.000     1.226822    1.556141
+    1.chronic_cardiac_disease |   1.201641   .1024519     2.15   0.031      1.01672    1.420195
+                              |
+                      diabcat |
+            T1DM, controlled  |    2.09461   .8023791     1.93   0.054      .988632     4.43784
+          T1DM, uncontrolled  |   2.776299   .5769856     4.91   0.000     1.847417    4.172224
+            T2DM, controlled  |   2.580781    .205812    11.89   0.000     2.207342    3.017399
+          T2DM, uncontrolled  |   3.998076   .3033235    18.27   0.000     3.445661    4.639054
+          Diabetes, no HbA1c  |   3.829229   1.719791     2.99   0.003     1.587881    9.234314
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   1.009509   .3587392     0.03   0.979     .5030684    2.025784
+               2-5 years ago  |   .8894917   .2011899    -0.52   0.605     .5709691    1.385706
+                    5+ years  |   .5900884   .1307246    -2.38   0.017     .3822496    .9109344
+                              |
+              cancer_haem_cat |
+                   Last year  |   4.206136   2.124503     2.84   0.004     1.562949    11.31936
+               2-5 years ago  |   4.529882   1.277391     5.36   0.000     2.606483    7.872614
+                    5+ years  |   2.279784   .6045275     3.11   0.002     1.355756     3.83359
+                              |
+      1.chronic_liver_disease |   1.009691   .2109392     0.05   0.963     .6704401    1.520607
+            1.stroke_dementia |   1.548228   .2034049     3.33   0.001     1.196753    2.002926
+                1.other_neuro |   1.346267   .2769658     1.45   0.148     .8995276    2.014874
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   1.752745   .2054997     4.79   0.000       1.3929    2.205553
+           Stage 4/5 egfr<30  |   1.668534   .4123001     2.07   0.038     1.028017    2.708131
+                              |
+                       1.esrd |   5.610105   1.183449     8.18   0.000     3.710312    8.482649
+           1.other_transplant |   .4059364   .2987194    -1.23   0.221     .0959573    1.717268
+                   1.asplenia |   2.697069   .8318444     3.22   0.001     1.473533    4.936557
+           1.ra_sle_psoriasis |   1.220279   .1139425     2.13   0.033       1.0162    1.465344
+               1.other_immuno |   2.310997   .5264295     3.68   0.000     1.478772     3.61158
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:   6566.60 /        1 =    6566.6040
+
+         failure _d:  covid_icu
+   analysis time _t:  (stime_covid_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log pseudolikelihood =   -22607.6
+Iteration 1:   log pseudolikelihood = -21974.469
+Iteration 2:   log pseudolikelihood = -21411.701
+Iteration 3:   log pseudolikelihood = -21156.211
+Iteration 4:   log pseudolikelihood =  -21149.07
+Iteration 5:   log pseudolikelihood = -21149.013
+Iteration 6:   log pseudolikelihood = -21149.013
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -21149.013
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =   11,870,825             Number of obs    =  23,736,816
+No. of failures      =        1,724
+Time at risk         =   2182954615
+                                                Wald chi2(39)    =     4090.01
+Log pseudolikelihood =   -21149.013             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 6,752,811 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   1.185384   .1220967     1.65   0.099      .968688    1.450556
+               Kids under 18  |   1.311568   .1610055     2.21   0.027     1.031096    1.668333
+                              |
+                         age1 |   1.122224   .0258641     5.00   0.000      1.07266    1.174079
+                         age2 |   .9571856   .0523828    -0.80   0.424     .8598317    1.065562
+                         age3 |   .9845089   .1331275    -0.12   0.908     .7552979    1.283279
+                       1.male |   1.887743   .0981733    12.22   0.000     1.704809    2.090308
+                              |
+                          imd |
+                           2  |   1.098606   .0959102     1.08   0.281     .9258286    1.303627
+                           3  |   1.249547   .1064363     2.62   0.009      1.05742    1.476583
+                           4  |   1.469107   .1212369     4.66   0.000     1.249708    1.727023
+             5 most deprived  |   1.658235   .1400228     5.99   0.000     1.405303    1.956691
+                              |
+                tot_adults_hh |
+                           2  |   .9764706   .0659422    -0.35   0.724     .8554144    1.114658
+                           3  |   1.330081   .0874772     4.34   0.000      1.16922    1.513075
+                              |
+           1.htdiag_or_highbp |   1.713805   .0956239     9.66   0.000      1.53627    1.911856
+1.chronic_respiratory_disease |    1.96478   .1837861     7.22   0.000     1.635657    2.360128
+                     1.asthma |   1.381715   .0838148     5.33   0.000     1.226831    1.556153
+    1.chronic_cardiac_disease |   1.201612   .1024474     2.15   0.031     1.016699    1.420157
+                              |
+                      diabcat |
+            T1DM, controlled  |   2.094889   .8024895     1.93   0.054     .9887607    4.438446
+          T1DM, uncontrolled  |   2.776159   .5769593     4.91   0.000      1.84732    4.172021
+            T2DM, controlled  |   2.580672   .2058032    11.89   0.000     2.207249    3.017272
+          T2DM, uncontrolled  |   3.997925   .3033159    18.27   0.000     3.445525    4.638888
+          Diabetes, no HbA1c  |    3.82957   1.719937     2.99   0.003     1.588028    9.235104
+                              |
+            cancer_exhaem_cat |
+                   Last year  |    1.00952    .358743     0.03   0.979     .5030741    2.025806
+               2-5 years ago  |   .8894681   .2011861    -0.52   0.605      .570952    1.385674
+                    5+ years  |   .5900993   .1307271    -2.38   0.017     .3822566    .9109514
+                              |
+              cancer_haem_cat |
+                   Last year  |    4.20658   2.124749     2.84   0.004     1.563098    11.32067
+               2-5 years ago  |   4.529931   1.277408     5.36   0.000     2.606508     7.87271
+                    5+ years  |    2.27989   .6045618     3.11   0.002     1.355812    3.833789
+                              |
+      1.chronic_liver_disease |   1.009654     .21093     0.05   0.963     .6704174    1.520546
+            1.stroke_dementia |   1.548226   .2034073     3.33   0.001     1.196748    2.002931
+                1.other_neuro |   1.346118   .2769332     1.44   0.149     .8994304    2.014644
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   1.752751   .2055029     4.79   0.000     1.392902    2.205567
+           Stage 4/5 egfr<30  |   1.668859   .4123623     2.07   0.038      1.02824    2.708601
+                              |
+                       1.esrd |   5.609633   1.183275     8.18   0.000     3.710096    8.481716
+           1.other_transplant |   .4059504   .2987278    -1.23   0.221     .0959615    1.717311
+                   1.asplenia |   2.697061   .8318469     3.22   0.001     1.473524     4.93656
+           1.ra_sle_psoriasis |   1.220308   .1139439     2.13   0.033     1.016225    1.465375
+               1.other_immuno |   2.311714   .5265531     3.68   0.000     1.479281    3.612579
+                              |
+           cat_time#kids_cat3 |
+             1#Kids under 12  |   .9695853   .1252018    -0.24   0.811      .752785    1.248823
+             1#Kids under 18  |   .8683385   .1392123    -0.88   0.379     .6341969    1.188924
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:   6772.56 /        1 =    6772.5570
+
+ ( 1)  1.cat_time#1.kids_cat3 = 0
+ ( 2)  1.cat_time#2.kids_cat3 = 0
+
+           chi2(  2) =    0.78
+         Prob > chi2 =    0.6757
+
+kids_cat3 <66
+****************
+
+ ( 1)  2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.311568   .1610055     2.21   0.027     1.031096    1.668333
+------------------------------------------------------------------------------
+kids_cat3 66+
+****************
+
+ ( 1)  2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.138885   .1238133     1.20   0.232     .9203267    1.409347
+------------------------------------------------------------------------------
+file ./output/an_interaction_cox_models_covid_icu_kids_cat3_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.ster saved
+(3,467,541 observations (episodes) created)
+(cat_time: 3467541 changes made)
+(covid_icu: 3467541 changes made)
+
+Observation |
+   interval |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  3,489,829       50.16       50.16
+          1 |  3,467,541       49.84      100.00
+------------+-----------------------------------
+      Total |  6,957,370      100.00
+
+           |   Failure/censoring
+           |     indicator for
+Observatio |  outcome: covid icu
+n interval |         0          1 |     Total
+-----------+----------------------+----------
+         0 | 3,489,407        422 | 3,489,829 
+         1 | 3,467,092        449 | 3,467,541 
+-----------+----------------------+----------
+     Total | 6,956,499        871 | 6,957,370 
+
+         failure _d:  covid_icu
+   analysis time _t:  (stime_covid_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log pseudolikelihood = -9681.7552
+Iteration 1:   log pseudolikelihood = -9506.1058
+Iteration 2:   log pseudolikelihood = -9413.4268
+Iteration 3:   log pseudolikelihood = -9403.0466
+Iteration 4:   log pseudolikelihood = -9402.1196
+Iteration 5:   log pseudolikelihood = -9402.0794
+Iteration 6:   log pseudolikelihood = -9402.0737
+Iteration 7:   log pseudolikelihood = -9402.0716
+Iteration 8:   log pseudolikelihood = -9402.0709
+Iteration 9:   log pseudolikelihood = -9402.0706
+Iteration 10:  log pseudolikelihood = -9402.0705
+Iteration 11:  log pseudolikelihood = -9402.0705
+Iteration 12:  log pseudolikelihood = -9402.0705
+Iteration 13:  log pseudolikelihood = -9402.0705
+Iteration 14:  log pseudolikelihood = -9402.0705
+Iteration 15:  log pseudolikelihood = -9402.0705
+Iteration 16:  log pseudolikelihood = -9402.0705
+Iteration 17:  log pseudolikelihood = -9402.0705
+Iteration 18:  log pseudolikelihood = -9402.0705
+Iteration 19:  log pseudolikelihood = -9402.0705
+Iteration 20:  log pseudolikelihood = -9402.0705
+Iteration 21:  log pseudolikelihood = -9402.0705
+Iteration 22:  log pseudolikelihood = -9402.0705
+Iteration 23:  log pseudolikelihood = -9402.0705
+Iteration 24:  log pseudolikelihood = -9402.0705
+Iteration 25:  log pseudolikelihood = -9402.0705
+Iteration 26:  log pseudolikelihood = -9402.0705
+Iteration 27:  log pseudolikelihood = -9402.0705
+Iteration 28:  log pseudolikelihood = -9402.0705
+Iteration 29:  log pseudolikelihood = -9402.0705
+Iteration 30:  log pseudolikelihood = -9402.0705
+Iteration 31:  log pseudolikelihood = -9402.0705
+Iteration 32:  log pseudolikelihood = -9402.0705
+Iteration 33:  log pseudolikelihood = -9402.0705
+Iteration 34:  log pseudolikelihood = -9402.0705
+Iteration 35:  log pseudolikelihood = -9402.0705
+Iteration 36:  log pseudolikelihood = -9402.0705
+Iteration 37:  log pseudolikelihood = -9402.0705
+Iteration 38:  log pseudolikelihood = -9402.0705
+Iteration 39:  log pseudolikelihood = -9402.0705
+Iteration 40:  log pseudolikelihood = -9402.0705
+Iteration 41:  log pseudolikelihood = -9402.0705
+Iteration 42:  log pseudolikelihood = -9402.0705
+Iteration 43:  log pseudolikelihood = -9402.0705
+Iteration 44:  log pseudolikelihood = -9402.0705
+Iteration 45:  log pseudolikelihood = -9402.0705
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -9402.0705
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,329,528             Number of obs    =   6,637,802
+No. of failures      =          820
+Time at risk         =    606783707
+                                                Wald chi2(36)    =      562.13
+Log pseudolikelihood =   -9402.0705             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 2,523,113 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   1.132742   .2288255     0.62   0.537     .7623945    1.682994
+               Kids under 18  |   1.340001   .3595817     1.09   0.275      .791936    2.267359
+                              |
+                         age1 |   .9337251   .0263596    -2.43   0.015     .8834646     .986845
+                         age2 |   1.269883   .1843063     1.65   0.100     .9554834    1.687734
+                         age3 |   .3493562   .1525986    -2.41   0.016     .1484102    .8223807
+                       1.male |   2.722518   .2152953    12.67   0.000     2.331623    3.178948
+                              |
+                          imd |
+                           2  |   1.032015   .1130273     0.29   0.774     .8326479    1.279117
+                           3  |   1.199982   .1306647     1.67   0.094     .9693675    1.485461
+                           4  |   1.318491   .1502994     2.43   0.015     1.054497    1.648574
+             5 most deprived  |   1.364203   .1690316     2.51   0.012     1.070067    1.739191
+                              |
+                tot_adults_hh |
+                           2  |   1.180024   .1012129     1.93   0.054     .9974279    1.396047
+                           3  |    1.15711   .1294693     1.30   0.192     .9292516     1.44084
+                              |
+           1.htdiag_or_highbp |   1.185851   .0957787     2.11   0.035     1.012233    1.389249
+1.chronic_respiratory_disease |   1.312059   .1291735     2.76   0.006     1.081811     1.59131
+                     1.asthma |   1.269902    .122719     2.47   0.013     1.050783    1.534714
+    1.chronic_cardiac_disease |   .9691832   .0852683    -0.36   0.722     .8156758     1.15158
+                              |
+                      diabcat |
+            T1DM, controlled  |   .6900848   .6930144    -0.37   0.712     .0964023    4.939893
+          T1DM, uncontrolled  |   2.342448   .9654424     2.07   0.039     1.044351    5.254042
+            T2DM, controlled  |   1.346803   .1329917     3.02   0.003     1.109816    1.634395
+          T2DM, uncontrolled  |   2.048038   .2261808     6.49   0.000     1.649427    2.542979
+          Diabetes, no HbA1c  |   5.23e-20          .        .       .            .           .
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   .8355021   .2815387    -0.53   0.594      .431637    1.617247
+               2-5 years ago  |   .7453716    .155857    -1.41   0.160     .4947512    1.122946
+                    5+ years  |    1.04385   .1319349     0.34   0.734     .8148027    1.337284
+                              |
+              cancer_haem_cat |
+                   Last year  |   5.227994   2.154846     4.01   0.000     2.330728    11.72678
+               2-5 years ago  |    3.57926   1.004363     4.54   0.000     2.065098    6.203627
+                    5+ years  |   1.785633   .5056533     2.05   0.041     1.025062     3.11053
+                              |
+      1.chronic_liver_disease |   .5532389    .224167    -1.46   0.144     .2500427    1.224084
+            1.stroke_dementia |   1.183511   .1570581     1.27   0.204     .9124593    1.535081
+                1.other_neuro |   .8467354   .2285698    -0.62   0.538     .4988527     1.43722
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   1.297037   .1214522     2.78   0.005     1.079561    1.558322
+           Stage 4/5 egfr<30  |   1.485862   .3706191     1.59   0.112     .9113033    2.422669
+                              |
+                       1.esrd |   3.884081    1.17388     4.49   0.000     2.147983    7.023373
+           1.other_transplant |   2.841918   2.081309     1.43   0.154      .676433    11.93983
+                   1.asplenia |   1.626306   .8236383     0.96   0.337     .6027174    4.388246
+           1.ra_sle_psoriasis |   1.316293   .1537295     2.35   0.019     1.046987    1.654871
+               1.other_immuno |   .8679518   .6219729    -0.20   0.843     .2130718    3.535617
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:   4075.75 /        1 =    4075.7530
+
+         failure _d:  covid_icu
+   analysis time _t:  (stime_covid_icu-origin)
+             origin:  time enter_date
+  enter on or after:  time enter_date
+                 id:  patient_id
+
+Iteration 0:   log pseudolikelihood = -9681.7552
+Iteration 1:   log pseudolikelihood = -9504.8426
+Iteration 2:   log pseudolikelihood =  -9412.147
+Iteration 3:   log pseudolikelihood = -9401.7674
+Iteration 4:   log pseudolikelihood = -9400.8407
+Iteration 5:   log pseudolikelihood = -9400.8004
+Iteration 6:   log pseudolikelihood = -9400.7947
+Iteration 7:   log pseudolikelihood = -9400.7927
+Iteration 8:   log pseudolikelihood = -9400.7919
+Iteration 9:   log pseudolikelihood = -9400.7916
+Iteration 10:  log pseudolikelihood = -9400.7915
+Iteration 11:  log pseudolikelihood = -9400.7915
+Iteration 12:  log pseudolikelihood = -9400.7915
+Iteration 13:  log pseudolikelihood = -9400.7915
+Iteration 14:  log pseudolikelihood = -9400.7915
+Iteration 15:  log pseudolikelihood = -9400.7915
+Iteration 16:  log pseudolikelihood = -9400.7915
+Iteration 17:  log pseudolikelihood = -9400.7915
+Iteration 18:  log pseudolikelihood = -9400.7915
+Iteration 19:  log pseudolikelihood = -9400.7915
+Iteration 20:  log pseudolikelihood = -9400.7915
+Iteration 21:  log pseudolikelihood = -9400.7915
+Iteration 22:  log pseudolikelihood = -9400.7915
+Iteration 23:  log pseudolikelihood = -9400.7915
+Iteration 24:  log pseudolikelihood = -9400.7915
+Iteration 25:  log pseudolikelihood = -9400.7915
+Iteration 26:  log pseudolikelihood = -9400.7915
+Refining estimates:
+Iteration 0:   log pseudolikelihood = -9400.7915
+Iteration 1:   log pseudolikelihood = -9400.7915
+Iteration 2:   log pseudolikelihood = -9400.7915
+
+Stratified Cox regr. -- Breslow method for ties
+
+No. of subjects      =    3,329,528             Number of obs    =   6,637,802
+No. of failures      =          820
+Time at risk         =    606783707
+                                                Wald chi2(39)    =   245576.58
+Log pseudolikelihood =   -9400.7915             Prob > chi2      =      0.0000
+
+                                    (Std. Err. adjusted for 2,523,113 clusters in household_id)
+-----------------------------------------------------------------------------------------------
+                              |               Robust
+                           _t | Haz. Ratio   Std. Err.      z    P>|z|     [95% Conf. Interval]
+------------------------------+----------------------------------------------------------------
+                    kids_cat3 |
+               Kids under 12  |   .9010154   .2836632    -0.33   0.741     .4861292    1.669985
+               Kids under 18  |   .9050145   .4095763    -0.22   0.825     .3727632    2.197243
+                              |
+                         age1 |   .9337663   .0263613    -2.43   0.015     .8835025    .9868898
+                         age2 |    1.26972   .1842849     1.65   0.100     .9553574    1.687523
+                         age3 |   .3494395   .1526358    -2.41   0.016      .148445    .8225805
+                       1.male |    2.72255   .2152875    12.67   0.000     2.331667    3.178961
+                              |
+                          imd |
+                           2  |    1.03201    .113029     0.29   0.774     .8326407    1.279117
+                           3  |   1.200014    .130669     1.67   0.094     .9693919    1.485502
+                           4  |   1.318173   .1502781     2.42   0.015      1.05422    1.648214
+             5 most deprived  |   1.363294   .1689691     2.50   0.012     1.069276    1.738156
+                              |
+                tot_adults_hh |
+                           2  |   1.180177   .1012197     1.93   0.053     .9975679    1.396213
+                           3  |   1.157019   .1294377     1.30   0.192     .9292129    1.440675
+                              |
+           1.htdiag_or_highbp |   1.185874   .0957775     2.11   0.035     1.012257    1.389268
+1.chronic_respiratory_disease |    1.31213    .129177     2.76   0.006     1.081876    1.591388
+                     1.asthma |   1.269686   .1226894     2.47   0.013     1.050618    1.534432
+    1.chronic_cardiac_disease |   .9691651   .0852666    -0.36   0.722     .8156607    1.151558
+                              |
+                      diabcat |
+            T1DM, controlled  |   .6898855   .6928168    -0.37   0.712     .0963737    4.938503
+          T1DM, uncontrolled  |    2.34179   .9651808     2.06   0.039     1.044049    5.252609
+            T2DM, controlled  |   1.346663   .1329751     3.01   0.003     1.109705    1.634218
+          T2DM, uncontrolled  |   2.047629   .2260904     6.49   0.000     1.649169    2.542362
+          Diabetes, no HbA1c  |   1.27e-12   8.54e-14  -405.86   0.000     1.11e-12    1.44e-12
+                              |
+            cancer_exhaem_cat |
+                   Last year  |   .8354483   .2815208    -0.53   0.594      .431609    1.617144
+               2-5 years ago  |   .7453308   .1558486    -1.41   0.160     .4947239    1.122885
+                    5+ years  |   1.043825   .1319335     0.34   0.734     .8147811    1.337257
+                              |
+              cancer_haem_cat |
+                   Last year  |    5.22636   2.154172     4.01   0.000     2.329999    11.72311
+               2-5 years ago  |   3.578664   1.004159     4.54   0.000     2.064796    6.202472
+                    5+ years  |   1.785476    .505609     2.05   0.041     1.024971    3.110257
+                              |
+      1.chronic_liver_disease |   .5531873   .2241412    -1.46   0.144     .2500237    1.223949
+            1.stroke_dementia |    1.18351   .1570569     1.27   0.204     .9124602    1.535077
+                1.other_neuro |   .8466743   .2285518    -0.62   0.538     .4988185    1.437111
+                              |
+  reduced_kidney_function_cat |
+Stage 3a/3b egfr 30-60        |   1.297023    .121448     2.78   0.005     1.079554    1.558299
+           Stage 4/5 egfr<30  |   1.486072   .3706274     1.59   0.112     .9114855     2.42287
+                              |
+                       1.esrd |   3.884934   1.173964     4.49   0.000     2.148644    7.024298
+           1.other_transplant |   2.844054    2.08289     1.43   0.154     .6769339    11.94894
+                   1.asplenia |   1.625806   .8233771     0.96   0.337      .602538    4.386855
+           1.ra_sle_psoriasis |   1.316213    .153721     2.35   0.019     1.046922    1.654773
+               1.other_immuno |   .8672337   .6214587    -0.20   0.842     .2128953    3.532695
+                              |
+           cat_time#kids_cat3 |
+             1#Kids under 12  |   1.507185   .5980136     1.03   0.301     .6925175    3.280214
+             1#Kids under 18  |   1.947954    1.07439     1.21   0.227     .6608464    5.741917
+-----------------------------------------------------------------------------------------------
+                                                             Stratified by stp
+   1:   3171.81 /        1 =    3171.8130
+
+ ( 1)  1.cat_time#1.kids_cat3 = 0
+ ( 2)  1.cat_time#2.kids_cat3 = 0
+
+           chi2(  2) =    2.47
+         Prob > chi2 =    0.2909
+
+kids_cat3 <66
+****************
+
+ ( 1)  2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .9050145   .4095763    -0.22   0.825     .3727632    2.197243
+------------------------------------------------------------------------------
+kids_cat3 66+
+****************
+
+ ( 1)  2.kids_cat3 + 1.cat_time#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.762927   .5777807     1.73   0.084     .9273888    3.351248
+------------------------------------------------------------------------------
+file ./output/an_interaction_cox_models_covid_icu_kids_cat3_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster saved
+
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\will\school-age-children-and-covid\analysis\log\10_an_interaction_cox_models_time_covid_icu.log
+  log type:  text
+ closed on:   3 Sep 2020, 22:17:22
+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
