@@ -112,9 +112,9 @@ basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")
 basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
 if _rc==0{
 testparm 1.`int_type'#i.`exposure_type'
-di _n "`exposure_type' <66" _n "****************"
-lincom 2.`exposure_type', eform
-di "`exposure_type' 66+" _n "****************"
+di _n "`exposure_type' " _n "****************"
+lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
+di "`exposure_type'" _n "****************"
 lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
 estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
 }
