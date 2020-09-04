@@ -72,9 +72,29 @@ study = StudyDefinition(
                           covid_identification_in_primary_care_case_codes_test,
                           covid_identification_in_primary_care_case_codes_seq),
         return_first_date_in_period=True,
-        include_month=True,
+        include_day=True,
         return_expectations={"date": {"earliest": "2020-02-01"}},
     ), 
+   
+    covid_admission_date=patients.admitted_to_hospital(
+        returning= "date_admitted" ,  # defaults to "binary_flag"
+        with_these_diagnoses=covid_codelist,  # optional
+        on_or_after="2020-02-01",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD",  
+        return_expectations={"date": {"earliest": "2020-03-01"}},
+   ),
+	covid_admission_primary_diagnosis=patients.admitted_to_hospital(
+        returning="primary_diagnosis",
+        with_these_diagnoses=covid_codelist,  # optional
+        on_or_after="2020-02-01",
+        find_first_match_in_period=True,  
+        date_format="YYYY-MM-DD", 
+        return_expectations={
+            "date": {"earliest": "2020-03-01"},
+            "category": {"ratios": {"U071":0.5, "U072":0.5}},
+        },
+    ),
 
    positive_covid_test_ever=patients.with_test_result_in_sgss(
         pathogen="SARS-CoV-2",

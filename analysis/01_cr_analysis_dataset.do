@@ -54,7 +54,6 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						creatinine_date  ///
 						smoking_status_date ///
 						dereg_date ///
-						covid_tpp_probable ///
 						{
 							
 		capture confirm string variable `var'
@@ -76,7 +75,7 @@ foreach var of varlist 	chronic_respiratory_disease ///
 }
 
 * Recode to dates from the strings 
-foreach var of varlist covid_icu_date	died_date_ons 	{
+foreach var of varlist covid_icu_date	died_date_ons covid_admission_date covid_tpp_probable	{
 						
 	confirm string variable `var'
 	rename `var' `var'_dstr
@@ -85,6 +84,11 @@ foreach var of varlist covid_icu_date	died_date_ons 	{
 	format `var' %td 
 	
 }
+
+gen covid_admission_primary_date = covid_admission_date ///
+if (covid_admission_primary_diagnosi == "U071"| covid_admission_primary_diagnosi == "U072")
+
+ 
 
 /*Tab all variables in initial extract*/
 sum, d f
@@ -556,7 +560,7 @@ label define diabcat 	1 "No diabetes" 			///
 						6 "Diabetes, no HbA1c"
 label values diabcat diabcat
 safetab diabcat, m
-
+*replace diabcat .=1
 
 
 
@@ -584,7 +588,7 @@ recode positive_covid_test_ever .=0
 /*  Cohort entry and censor dates  */
 * Date of cohort entry, 1 Mar 2020
 gen enter_date = date("$indexdate", "DMY")
-
+gen covid_admissioncensor=d(01May2020)
 * Date of study end (typically: last date of outcome data available)
 **** NOTE!! NEEDS UPDATING!!!!
 gen onscoviddeathcensor_date 	    = date("$onscoviddeathcensor", 	"DMY")
@@ -599,6 +603,7 @@ format 	enter_date					///
 
 * Date of Covid death in ONS
 gen died_date_onscovid = died_date_ons if died_ons_covid_flag_any == 1
+gen died_date_onscovid_part1 = died_date_ons if died_ons_covid_flag_underlying == 1
 
 * Date of non-COVID death in ONS 
 * If missing date of death resulting died_date will also be missing
@@ -612,6 +617,8 @@ format died_date_ons %td
 format died_date_onscovid %td 
 format died_date_onsnoncovid %td
 format covid_icu_death_date %td 
+format died_date_onscovid_part1 %td
+format covid_admission_primary_date %td
 
 * Binary indicators for outcomes
 gen covid_tpp_prob = (date_covid_tpp_prob < .)
@@ -619,7 +626,8 @@ gen non_covid_death = (died_date_onsnoncovid < .)
 gen covid_death = (died_date_onscovid < .)
 gen covid_icu = (covid_icu_date < .)
 gen covid_death_icu = (covid_icu_death_date < .)
-
+gen covidadmission = (covid_admission_primary_date < .)
+gen covid_death_part1 = (died_date_onscovid_part1 < .)
 
 
 					/**** Create survival times  ****/
@@ -627,12 +635,13 @@ gen covid_death_icu = (covid_icu_death_date < .)
 
 * Survival time = last followup date (first: end study, death, or that outcome)
 *gen stime_onscoviddeath = min(onscoviddeathcensor_date, 				died_date_ons)
-gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, 	died_date_ons, date_covid_tpp_prob, dereg_date)
-gen stime_non_covid_death = min(onscoviddeathcensor_date, 	died_date_ons, died_date_onsnoncovid)
-gen stime_covid_death_icu = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, covid_icu_date)
-gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid)
-gen stime_covid_icu = min(onscoviddeathcensor_date, died_date_ons, covid_icu_date)
-
+gen stime_covid_death_part1 	= min(onscoviddeathcensor_date, died_date_onscovid_part1, died_date_ons, dereg_date)
+gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, died_date_ons, date_covid_tpp_prob, dereg_date)
+gen stime_non_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onsnoncovid, dereg_date)
+gen stime_covid_death_icu = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, covid_icu_date, dereg_date)
+gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, dereg_date)
+gen stime_covid_icu = min(onscoviddeathcensor_date, died_date_ons, covid_icu_date, dereg_date)
+gen stime_covidadmission 	= min(covid_admissioncensor, covid_admission_primary_date, died_date_ons, dereg_date)
 
 * If outcome was after censoring occurred, set to zero
 replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
@@ -640,7 +649,8 @@ replace non_covid_death = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date
 replace covid_death_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
 replace covid_death = 0 if (died_date_onscovid > onscoviddeathcensor_date)
 replace covid_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
-
+replace covidadmission 	= 0 if (covid_admission_primary_date > covid_admissioncensor | covid_admission_primary_date > died_date_ons) 
+replace covid_death_part1 = 0 if (died_date_onscovid_part1 > onscoviddeathcensor_date)
 
 * Format date variables
 format  stime* %td 
@@ -729,19 +739,25 @@ label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid pro
 label var  non_covid_death				"Failure/censoring indicator for outcome: non-covid death"
 label var  covid_death				    "Failure/censoring indicator for outcome: covid death"
 label var  covid_icu				    "Failure/censoring indicator for outcome: covid icu"
-label var  covid_death_icu			 "Failure/censoring indicator for outcome: covid icu/death"
+label var  covid_death_icu				"Failure/censoring indicator for outcome: covid icu/death"
+lab var covidadmission 					"Failure/censoring indicator for outcome: covid SUS admission"
+lab var covid_death_part1				"Failure/censoring indicator for outcome: covid death part1"
 
 label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
 label var died_date_onsnoncovid	 		"Date of ONS non-COVID Death"
 label var  died_date_onscovid			"Date of ONS COVID Death"
 lab var covid_icu_date					"Date admission to ICU for COVID" 
+lab var covid_admission_primary_date			"Date admission to hospital" 
+label var  died_date_onscovid_part1			"Date of ONS COVID Death part1"
 
 * Survival times
-label var  stime_covid_tpp_prob					"Survival tme (date); outcome "
-label var  stime_non_covid_death				"Survival tme (date); outcome non_covid_death	"
-label var  stime_covid_death_icu				"Survival time (date); outcome covid death or icu"
+label var  stime_covid_tpp_prob				"Survival tme (date); outcome "
+label var  stime_non_covid_death			"Survival tme (date); outcome non_covid_death	"
+label var  stime_covid_death_icu			"Survival time (date); outcome covid death or icu"
 label var  stime_covid_death				"Survival time (date); outcome covid death"
-label var  stime_covid_icu				"Survival time (date); outcome covid icu"
+label var  stime_covid_icu					"Survival time (date); outcome covid icu"
+label var  stime_covidadmission				"Survival time (date); outcome covid hosp admission"
+label var  stime_covid_death_part1				"Survival time (date); outcome covid death part1"
 
 *Key DATES
 label var   died_date_ons				"Date death ONS"
@@ -818,13 +834,6 @@ use $tempdir\analysis_dataset_ageband_`x', clear
 * Save a version set on covid death/icu  outcome
 stset stime_covid_death_icu, fail(covid_death_icu) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
-set seed 30459820
-keep if _d==1|uniform()<.03
-gen pw = 1
-replace pw = (1/0.03) if _d==0
-stset stime_covid_death_icu [pweight = pw],  fail(covid_death_icu) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
 
 use $tempdir\analysis_dataset_ageband_`x', clear
@@ -839,19 +848,24 @@ stset stime_covid_death, fail(covid_death) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", replace
 
+use $tempdir\analysis_dataset_ageband_`x', clear
+* Save a version set on covid death only
+stset stime_covid_death_part1, fail(covid_death_part1) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_`x'.dta", replace
 
 use $tempdir\analysis_dataset_ageband_`x', clear
 * Save a version set on probable covid
 stset stime_covid_tpp_prob, fail(covid_tpp_prob) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-/*WEIGHTING - TO REDUCE TIME 
-set seed 30459820
-keep if _d==1|uniform()<.03
-gen pw = 1
-replace pw = (1/0.03) if _d==0
-stset stime_covid_tpp_prob [pweight = pw],  fail(covid_tpp_prob) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)*/
 save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", replace	
+
+use $tempdir\analysis_dataset_ageband_`x', clear
+* Save a version set on hosp admission for covid
+stset stime_covidadmission, fail(covidadmission) 				///
+	id(patient_id) enter(enter_date) origin(enter_date)
+save "$tempdir\cr_create_analysis_dataset_STSET_covidadmission_ageband_`x'.dta", replace	
+
 }
 
 * Close log file 

@@ -49,6 +49,7 @@ use "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clea
 *Age and sex adjusted
 mi estimate, hr: stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id) 
 estimates
+
 estimates save ./output/an_univariable_cox_models_`outcome'_AGESEX_multiple_imputation_ageband_`x', replace						
 
 *Minimally adjusted

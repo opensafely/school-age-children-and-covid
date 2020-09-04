@@ -12,7 +12,6 @@
 
 local outcome `1' 
 
-
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -22,7 +21,7 @@ forvalues x=0/1 {
 file write tablecontents_sense ("age") ("`x'") _n
 foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
 file write tablecontents_sense ("sense=") ("`sense'") _n
-forvalues i=`min'/`max'{
+forvalues i=1/2 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
@@ -56,36 +55,76 @@ local endwith "_tab"
 		
 		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"!="multiple_imputation" {
 			cap lincom `i'.`variable', eform
-			if _rc==0 file write tablecontents_sense %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+			if _rc==0 file write tablecontents_sense %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") (e(N))  `endwith'
 				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
 			}
-		
-		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"=="multiple_imputation" {
-			cap lincom `i'.`variable', eform
-			local hr = exp( el(e(b_mi),1,2) )
-			di `hr'
-			local lb = exp( el(e(b_mi),1,2)  - 1.96*  sqrt(el(e(V_mi),2,2))  )
-			di `lb'
-			local ub = exp( el(e(b_mi),1,2)  + 1.96*  sqrt(el(e(V_mi),2,2))  )
-			if _rc==0 file write tablecontents_sense %4.2f (`hr') (" (") %4.2f (`lb') ("-") %4.2f (`ub') (")") `endwith'
-				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
-			}
-				
+			
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
 			if "`modeltype'"=="fulladj" & "`sense'"!="multiple_imputation"  {
 				local hr = r(estimate)
 				local lb = r(lb)
 				local ub = r(ub)
-				post HRestimates_sense ("`x'") ("`outcome'") ("`variable'") ("`sense'") (`i') (`hr') (`lb') (`ub')
-				}
-			if "`modeltype'"=="fulladj" & "`sense'"=="multiple_imputation"  {
-				local hr = exp( el(e(b_mi),1,2) )
-				local lb = exp( el(e(b_mi),1,2)  - 1.96*  sqrt(el(e(V_mi),2,2))  )
-				local ub = exp( el(e(b_mi),1,2)  + 1.96*  sqrt(el(e(V_mi),2,2))  )
-				post HRestimates_sense ("`x'") ("`outcome'") ("`variable'") ("`sense'") (`i') (`hr') (`lb') (`ub')
+				local N=e(N)
+				post HRestimates_sense ("`x'") ("`outcome'") ("`variable'") ("`sense'") (`i') (`hr') (`lb') (`ub') (`N') 
 				}
 		}	
+		} /*min adj, full adj*/
+		
+} /*variable levels*/
+
+forvalues i=2/3 {
+local endwith "_tab"
+
+	*put the varname and condition to left so that alignment can be checked vs shell
+	file write tablecontents_sense ("`variable'") _tab ("`i'") _tab
+	
+	foreach modeltype of any fulladj {
+	
+		local noestimatesflag 0 /*reset*/
+
+*CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
+		if "`modeltype'"=="fulladj" local endwith "_n"
+
+		***********************
+		*1) GET THE RIGHT ESTIMATES INTO MEMORY
+		
+		/*if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
+			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'_ageband_`x'
+			if _rc!=0 local noestimatesflag 1
+			}
+		if "`modeltype'"=="demogadj" {
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_`sense'_ageband_`x'
+			if _rc!=0 local noestimatesflag 1
+			}*/
+		if "`modeltype'"=="fulladj" {
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
+				if _rc!=0 local noestimatesflag 1
+				}
+		
+		***********************
+		*2) WRITE THE HRs TO THE OUTPUT FILE
+		
+		
+		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"=="multiple_imputation" {
+			local hr = exp( el(e(b_mi),1,`i') )
+			di `hr'
+			local lb = exp( el(e(b_mi),1,`i')  - 1.96*  sqrt(el(e(V_mi),2,`i'))  )
+			di `lb'
+			local ub = exp( el(e(b_mi),1,`i')  + 1.96*  sqrt(el(e(V_mi),2,`i'))  )
+			if _rc==0 file write tablecontents_sense %4.2f (`hr') (" (") %4.2f (`lb') ("-") %4.2f (`ub') (")") `endwith'
+				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
+			}
+				
+		*3) Save the estimates for plotting
+			if "`modeltype'"=="fulladj" & "`sense'"=="multiple_imputation"  {
+				local hr = exp( el(e(b_mi),1,`i') )
+				local lb = exp( el(e(b_mi),1,`i')  - 1.96*  sqrt(el(e(V_mi),2,`i'))  )
+				local ub = exp( el(e(b_mi),1,`i')  + 1.96*  sqrt(el(e(V_mi),2,`i'))  )
+				local N=e(N)
+				post HRestimates_sense ("`x'") ("`outcome'") ("`variable'") ("`sense'") (`i') (`hr') (`lb') (`ub') (`N') 
+				}
+
 		} /*min adj, full adj*/
 		
 } /*variable levels*/
@@ -102,7 +141,7 @@ file open tablecontents_sense using ./output/an_tablecontents_sense_HRtable_`out
 
 tempfile HRestimates_sense
 cap postutil clear
-postfile HRestimates_sense str10 x str10 outcome str27 variable str27 sense i hr lci uci using `HRestimates_sense'
+postfile HRestimates_sense str10 x str10 outcome str27 variable str27 sense i hr lci uci N using `HRestimates_sense'
 
 
 *Primary exposure
@@ -124,6 +163,11 @@ use `HRestimates_sense', clear
 keep if x=="`x'"
 drop outcome variable
 gen varorder = 1 
+
+
+recode i 2=1 if sense=="multiple_imputation" 
+recode i 3=2 if sense=="multiple_imputation" 
+
 
 sort varorder sense i
 drop varorder
@@ -156,13 +200,21 @@ replace leveldesc = "Children under 12 years" if i==1 & hr!=1 & hr!=.
 replace leveldesc = "Children/young people aged 11-<18 years" if i==2
 
 gen Name = sense if hr==1
-replace Name = "Participants with complete data on ethnicity (N=)" if Name=="CCeth"
-replace Name = "Participants with complete data on ethnicity, BMI and smoking (N=)" if Name=="CCeth_bmi_smok"
-replace Name = "Participants with complete data on BMI and smoking (N=)" if Name=="CCnoeth_bmi_smok"
-replace Name = "Age, instead of time in study, used as the underlying timescale in the cox model (N=)" if Name=="age_underlying_timescale"
-replace Name = "Participants with at least 12 months registration at GP (N=)" if Name=="noeth_12mo"
-replace Name = "Non-PH fitted" if Name=="time_int"
-replace Name = "Using multiple imputation to handle missing ethnicity data (N=)" if Name=="multiple_imputation"
+
+foreach x in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
+sum N if sense=="`x'"
+local number_`x'=r(mean)
+di `number_`x''
+}
+
+
+replace Name = "Participants with complete data on ethnicity (N=`number_CCeth')" if Name=="CCeth"
+replace Name = "Participants with complete data on ethnicity, BMI and smoking  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
+replace Name = "Participants with complete data on BMI and smoking  (N=`number_CCnoeth_bmi_smok')" if Name=="CCnoeth_bmi_smok"
+replace Name = "Age, instead of time in study, used as the underlying timescale in the cox model  (N=`number_age_underlying_timescale')" if Name=="age_underlying_timescale"
+replace Name = "Participants with at least 12 months registration at GP  (N=`number_noeth_12mo')" if Name=="noeth_12mo"
+replace Name = "Non-PH fitted (N=`number_time_int')" if Name=="time_int"
+replace Name = "Using multiple imputation to handle missing ethnicity data  (N=`number_multiple_imputation')" if Name=="multiple_imputation"
 
 
 for var hr lci uci: replace X = . if X==1
