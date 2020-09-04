@@ -108,20 +108,22 @@ foreach comorb in $varlist {
 	safetab `comorb', m
 	
 }
+stop
 
 * Outcome dates
-foreach outcome in covid_icu_death_date died_date_onsnoncovid date_covid_tpp_prob  {
-summ  `outcome', format d
-hist `outcome', saving(`outcome', replace)
+foreach outcome in died_date_onscovid_part1 died_date_onscovid covid_admission_primary_date covid_icu_death_date covid_icu_date died_date_onsnoncovid date_covid_tpp_prob  {
+summ  `outcome', format d 
+hist `outcome', saving(`outcome', replace) xlabel(,labsize(tiny))
 }
 * Combine histograms
-grc1leg covid_icu_death_date.gph died_date_onsnoncovid.gph date_covid_tpp_prob.gph
+grc1leg covid_icu_death_date.gph died_date_onsnoncovid.gph date_covid_tpp_prob.gph died_date_onscovid_part1.gph died_date_onscovid.gph covid_admission_primary_date.gph covid_icu_date.gph
 graph export "output/histogram_outcomes.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase covid_icu_death_date.gph
 erase died_date_onsnoncovid.gph
 erase  date_covid_tpp_prob.gph
+
 *censor dates
 summ dereg_date, format
 summ has_12_m
@@ -204,7 +206,7 @@ foreach var of varlist  asthma						///
  }
 
 
- * Relationships with sex
+*Relationships with sex
 foreach var of varlist asthma						///
 					chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
@@ -226,7 +228,7 @@ foreach var of varlist asthma						///
  	safetab male `var', row 
 }
 
- * Relationships with smoking
+*Relationships with smoking
 foreach var of varlist  asthma						///
 					chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
@@ -256,6 +258,7 @@ safetab non_covid_death covid_death_icu  , row col
 safetab covid_death covid_icu  , row col
 
 safecount if covid_icu==1 & covid_death==1
+safecount if covidadmission==1 & covid_death==1
 
 * Close log file 
 log close

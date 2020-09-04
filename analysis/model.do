@@ -67,7 +67,7 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "05_an_descriptive_plot
 
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
+foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
@@ -78,15 +78,15 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06a_univariate_analysi
 
 ************************************************************
 	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
-foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
+foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission covid_death_part1  {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
 }
-foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
+foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
-stop
 
+***SENSE ANALYSES
 foreach outcome of any covid_death_icu   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
@@ -115,7 +115,7 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"  do "10_an_interaction_cox
 *Shield
 foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
-}*/
+}
 *Time
 foreach outcome of any covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
@@ -194,12 +194,12 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" 	do "WORMS_07b_an_multivar
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/24 {
+forvalues i = 1/60 {
     di `i'
     sleep 10000
 }
-*pauses Stata for 4 minutes: 1/24 whilst testing locally
-*pauses Stata for 10 mins: 1/360 whilst testing on server, on 5% weighted data
+*pauses Stata for 10 minutes: 1/60 whilst testing locally
+*pauses Stata for 1 hour: 1/360 whilst testing on server, on 5% weighted data
 *pauses Stata for 12 hours: 1/4320 whilst testing on server, on full data
 *pauses Stata for 30 hours: 1/12960 whilst testing on server, on full data
 
