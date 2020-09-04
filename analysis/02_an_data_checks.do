@@ -108,7 +108,7 @@ foreach comorb in $varlist {
 	safetab `comorb', m
 	
 }
-stop
+
 
 * Outcome dates
 foreach outcome in died_date_onscovid_part1 died_date_onscovid covid_admission_primary_date covid_icu_death_date covid_icu_date died_date_onsnoncovid date_covid_tpp_prob  {
