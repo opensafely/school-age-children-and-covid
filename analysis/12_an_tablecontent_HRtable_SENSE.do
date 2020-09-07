@@ -189,10 +189,11 @@ gen obsorder=_n
 
 for var hr lci uci : replace X=. if expanded==1 & expanded2==1
 
-gen varx = 0.07
-gen levelx = 0.073
+gen varx = 0.03
+gen levelx = 0.033
 gen intx=0.08
 gen lowerlimit = 0.15
+gen disx=2.5
 
 *Levels
 gen leveldesc = ""
@@ -211,7 +212,7 @@ di `number_`x''
 replace Name = "Participants with complete data on ethnicity (N=`number_CCeth')" if Name=="CCeth"
 replace Name = "Participants with complete data on ethnicity, BMI and smoking  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
 replace Name = "Participants with complete data on BMI and smoking  (N=`number_CCnoeth_bmi_smok')" if Name=="CCnoeth_bmi_smok"
-replace Name = "Age, instead of time in study, used as the underlying timescale in the cox model  (N=`number_age_underlying_timescale')" if Name=="age_underlying_timescale"
+replace Name = "Age used as the underlying timescale in the cox model  (N=`number_age_underlying_timescale')" if Name=="age_underlying_timescale"
 replace Name = "Participants with at least 12 months registration at GP  (N=`number_noeth_12mo')" if Name=="noeth_12mo"
 replace Name = "Non-PH fitted (N=`number_time_int')" if Name=="time_int"
 replace Name = "Using multiple imputation to handle missing ethnicity data  (N=`number_multiple_imputation')" if Name=="multiple_imputation"
@@ -220,7 +221,9 @@ replace Name = "Using multiple imputation to handle missing ethnicity data  (N=`
 for var hr lci uci: replace X = . if X==1
 
 
-*gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
+gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
+replace displayhrci="" if hr==.
+list display 
 
 drop obsorder
 gen obsorder=_n
@@ -229,15 +232,23 @@ gen graphorder = _n
 sort graphorder
 list graphorder Name leveldesc hr  lci uci 
 
+gen hrtitle="Hazard Ratio (95% CI)" if graphorder == 28
 
+gen bf_hrtitle = "{bf:" + hrtitle + "}" 
+gen bf_Name = "{bf:" + Name + "}" 
 
 scatter graphorder hr, mcol(black)	msize(small)		///										///
 	|| rcap lci uci graphorder, hor mcol(black)	lcol(black)			///
-	|| scatter graphorder varx , m(i) mlab(Name) mlabsize(tiny) mlabcol(black) 	///
-	|| scatter graphorder levelx, m(i) mlab(leveldesc) mlabsize(tiny) mlabcol(gs8) 	///
+	|| scatter graphorder varx , m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black) 	///
+	|| scatter graphorder levelx, m(i) mlab(leveldesc) mlabsize(vsmall) mlabcol(black) 	///
+	|| scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
+	|| scatter graphorder disx, m(i) mlab(bf_hrtitle) mlabsize(vsmall) mlabcol(black) ///
 		xline(1,lp(dash)) 															///
-		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
-		legend(off)  ysize(8) 
+		xscale(log range(0.1 6)) xlab(0.5 1 2, labsize(vsmall)) xtitle("")  ///
+		ylab(none) ytitle("")		yscale( lcolor(white))					/// 
+		graphregion(color(white))  legend(off)  ysize(4) ///
+		text(-2 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
+		text(-2 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
 graph export ./output/an_tablecontent_HRtable_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
 }

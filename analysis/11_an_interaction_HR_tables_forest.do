@@ -157,7 +157,7 @@ gen lowerlimit = 0.15
 
 gen Name = variable if (level==-99)
 replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
-
+gen hrtitle="Hazard Ratio (95% CI)" if (level==-99)
 
 gen obsno=_n
 *Levels
@@ -191,20 +191,33 @@ gen obsorder=_n
 gsort -obsorder
 gen graphorder = _n
 sort obsorder
+gen disx=4
 
-gen displayhrci = "<<< HR = " + string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")" if lci<0.15
+gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
+replace displayhrci="" if hr==.
+list display 
 
 list obsorder obsno Name level leveldesc int_type hr   lci uci 
 
+gen bf_hrtitle = "{bf:" + hrtitle + "}" 
+gen bf_Name = "{bf:" + Name + "}" 
+gen bf_leveldesc = "{bf:" + leveldesc + "}" 
+
+
 scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 	|| rcap lci uci graphorder if lci>=.15, hor mcol(black)	lcol(black)			///
-	|| scatter graphorder lowerlimit, m(i) mlab(displayhrci) mlabcol(black) mlabsize(tiny) ///
-	|| scatter graphorder varx , m(i) mlab(Name) mlabsize(tiny) mlabcol(black) 	///
-	|| scatter graphorder levelx, m(i) mlab(leveldesc) mlabsize(tiny) mlabcol(gs8) 	///
-	|| scatter graphorder intx, m(i) mlab(intNAME) mlabsize(tiny) mlabcol(gs8) 	///
+	|| scatter graphorder varx , m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black) 	///
+	|| scatter graphorder levelx, m(i) mlab(bf_leveldesc) mlabsize(vsmall) mlabcol(black) 	///
+	|| scatter graphorder intx, m(i) mlab(intNAME) mlabsize(vsmall) mlabcol(black) 	///
+	|| scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
+	|| scatter graphorder disx, m(i) mlab(bf_hrtitle) mlabsize(vsmall) mlabcol(black) ///
 		xline(1,lp(dash)) 															///
-		xscale(log) xlab(0.25 0.5 1 2 5 10) xtitle("Hazard Ratio & 95% CI") ylab(none) ytitle("")						/// 
-		legend(off)  ysize(8) 
+		xscale(log range(0.1 10)) xlab(0.5 1 2 , labsize(small)) ///
+		xtitle("           ", size(vsmall) ) ///
+		ylab(none) ytitle("")  yscale( lcolor(white))					/// 
+		graphregion(color(white))  legend(off)  ysize(4) ///
+		text(-0.5 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
+		text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
 graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'_ageband_`x'.svg, as(svg) replace
 }
