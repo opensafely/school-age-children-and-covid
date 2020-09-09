@@ -18,7 +18,7 @@ prog define outputHRsforvar
 syntax, variable(string) min(real) max(real)
 forvalues x=0/1 {
 file write tablecontents_all_outcomes ("age") ("`x'") _n
-foreach outcome in covid_death_icu non_covid_death covid_tpp_prob covid_death covid_icu covidadmission {
+foreach outcome in  covid_tpp_prob covidadmission covid_icu covid_death non_covid_death  {
 file write tablecontents_all_outcomes ("outcome=") ("`outcome'") _n
 forvalues i=1/2 {
 local endwith "_tab"
@@ -73,7 +73,7 @@ end
 
 
 cap file close tablecontents_all_outcomes
-file open tablecontents_all_outcomes using ./output/an_tablecontents_sense_HRtable_all_outcomes_ANALYSES.txt, t w replace 
+file open tablecontents_all_outcomes using ./output/an_tablecontents_HRtable_all_outcomes_ANALYSES.txt, t w replace 
 
 tempfile HRestimates_all_outcomes
 cap postutil clear
@@ -88,23 +88,17 @@ file close tablecontents_all_outcomes
 
 postclose HRestimates_all_outcomes
 
-*use `HRestimates_all_outcomes', clear
-*save HRestimates_all_outcomes, replace
+use `HRestimates_all_outcomes', clear
+save ./output/HRestimates_all_outcomes, replace
 
 
 
+foreach age in 0 1 {
 use `HRestimates_all_outcomes', clear
 
-
-
-
-
-*use HRestimates_all_outcomes, clear
-replace outcome="cov_d_icu" if _n==1
-replace outcome="cov_d_icu" if _n==2
-replace outcome="cov_d_icu" if _n==19
-replace outcome="cov_d_icu" if _n==20
-sort x outcome i
+keep if x=="`age'"
+gen littlen=_n
+sort littlen i
 drop variable N 
 
 gen obsorder=_n
@@ -124,8 +118,6 @@ replace leveldesc = "Children under 12 years" if i==1 & hr!=1 & hr!=.
 replace leveldesc = "Children/young people aged 11-<18 years" if i==2
 
 gen Name = outcome if hr==.
-
-replace Name = "COVID-19 death or ICU admission" if Name=="cov_d_icu"
 replace Name = "COVID-19 death" if Name=="covid_deat"
 replace Name = "COVID-19 ICU admission" if Name=="covid_icu"
 replace Name = "COVID-19 diagnosed in primary care" if Name=="covid_tpp_"
@@ -134,17 +126,11 @@ replace Name = "Non COVID-19 death" if Name=="non_covid_"
 
 expand 2 if Name=="COVID-19 death or ICU admission"
 gsort obsorder -expanded 
-gen Agetitle=x if Name=="COVID-19 death or ICU admission"
-replace Agetitle="Adults 65 years and under" if Agetitle=="0"
-replace Agetitle="Adults over 65 years" if Agetitle=="1"
+
 
 gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
 replace displayhrci="" if hr==.
 list display 
-
-replace Name="" if _n==1 | _n==20
-replace Agetitle="" if _n==2 | _n==21
-
 
 gen varx = 0.03
 gen levelx = 0.033
@@ -160,17 +146,15 @@ gen graphorder = _n
 sort obsorder
 
 
-list graphorder Name leveldesc hr  lci uci 
+list 
 
 gen hrtitle="Hazard Ratio (95% CI)" if graphorder == 38
-
 gen bf_hrtitle = "{bf:" + hrtitle + "}" 
-gen bf_Agetitle = "{bf:" + Agetitle + "}" 
 gen bf_Name = "{bf:" + Name + "}" 
+
 
 scatter graphorder hr, mcol(black)	msize(small)		///										///
 	|| rcap lci uci graphorder, hor mcol(black)	lcol(black)			///
-	|| scatter graphorder varx , m(i) mlab(bf_Agetitle) mlabsize(vsmall) mlabcol(black) 	///
 	|| scatter graphorder levelx, m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black) 	///
 	|| scatter graphorder intx, m(i) mlab(leveldesc) mlabsize(vsmall) mlabcol(black) 	///
 	|| scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
@@ -178,9 +162,9 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 		xline(1,lp(dash)) 															///
 		xscale(log range(0.1 6)) xlab(0.5 1 2, labsize(vsmall)) xtitle("")  ///
 		ylab(none) ytitle("")		yscale( lcolor(white))					/// 
-		graphregion(color(white))  legend(off)  ysize(10) ///
-		text(-2.5 0.1 "Lower risk in those living with children", place(e) size(vsmall)) ///
-		text(-2.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
+		graphregion(color(white))  legend(off)  ysize(4) ///
+		text(-0.5 0.1 "Lower risk in those living with children", place(e) size(vsmall)) ///
+		text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
-graph export ./output/an_tablecontent_HRtable_HRforest_SENSE_all_outcomes_ageband.svg, as(svg) replace
-
+graph export ./output/an_HRforest_all_outcomes_ageband_`age'.svg, as(svg) replace
+}
