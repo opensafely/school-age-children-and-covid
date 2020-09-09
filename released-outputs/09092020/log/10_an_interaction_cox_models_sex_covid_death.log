@@ -1,0 +1,241 @@
+---------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\anna\school-age-children-and-covid\analysis\log\10_an_interaction
+> _cox_models_sex_covid_death.log
+  log type:  text
+ opened on:   8 Sep 2020, 18:01:09
+
+. 
+. 
+. *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHN
+> ICITY:
+. cap prog drop basemodel
+
+. prog define basemodel
+  1.         syntax , exposure(string)  age(string) [ethnicity(real 0) interactio
+> n(string)] 
+  2.         if `ethnicity'==1 local ethnicity "i.ethnicity"
+  3.         else local ethnicity
+  4. timer clear
+  5. timer on 1
+  6. cap stcox       `exposure'                                                  
+>             ///
+>                         $demogadjlist                                          
+>          ///
+>                         $comordidadjlist                                       
+>          ///
+>                         `interaction'                                          
+>          ///
+>                         , strata(stp) vce(cluster household_id)
+  7.         timer off 1
+  8. timer list
+  9. end
+
+. *******************************************************************************
+> ******
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clea
+> r
+  3.         
+. foreach int_type in  male  {
+  4. 
+. *Age interaction for 3-level exposure vars
+. foreach exposure_type in kids_cat3  {
+  5. 
+. *Age spline model (not adj ethnicity, no interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
+  6. 
+. *Age spline model (not adj ethnicity, interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`i
+> nt_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
+  7. if _rc==0{
+  8. testparm 1.`int_type'#i.`exposure_type'
+  9. di _n "`exposure_type' " _n "****************"
+ 10. lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
+ 11. di "`exposure_type'" _n "****************"
+ 12. lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+ 13. estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_
+> `int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
+ 14. }
+ 15. else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+ 16. 
+. }
+ 17. }
+ 18. }
+   1:   4078.57 /        1 =    4078.5740
+   1:   4011.72 /        1 =    4011.7240
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+
+           chi2(  2) =    6.08
+         Prob > chi2 =    0.0478
+
+kids_cat3 
+****************
+
+ ( 1)  1.kids_cat3 + 1.male#1.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .9041576   .1013557    -0.90   0.369      .725813    1.126324
+------------------------------------------------------------------------------
+kids_cat3
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.137118   .1408909     1.04   0.300     .8919489    1.449675
+------------------------------------------------------------------------------
+(note: file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFUL
+> LYADJMODEL_agespline_bmicat_noeth_ageband_0.ster not found)
+file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFULLYADJMO
+> DEL_agespline_bmicat_noeth_ageband_0.ster saved
+   1:   1421.64 /        1 =    1421.6450
+   1:   1428.83 /        1 =    1428.8310
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+
+           chi2(  2) =    3.54
+         Prob > chi2 =    0.1706
+
+kids_cat3 
+****************
+
+ ( 1)  1.kids_cat3 + 1.male#1.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .8016525   .0918365    -1.93   0.054     .6404326    1.003457
+------------------------------------------------------------------------------
+kids_cat3
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .8607334   .1322383    -0.98   0.329     .6369346    1.163168
+------------------------------------------------------------------------------
+(note: file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFUL
+> LYADJMODEL_agespline_bmicat_noeth_ageband_1.ster not found)
+file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFULLYADJMO
+> DEL_agespline_bmicat_noeth_ageband_1.ster saved
+
+. 
+. * Open dataset and fit specified model(s)
+. forvalues x=0/1 {
+  2. 
+. use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clea
+> r
+  3. keep if tot_adults_hh==1        
+  4. foreach int_type in  male  {
+  5. 
+. *Age interaction for 3-level exposure vars
+. foreach exposure_type in kids_cat3  {
+  6. 
+. *Age spline model (not adj ethnicity, no interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
+  7. 
+. *Age spline model (not adj ethnicity, interaction)
+. basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`i
+> nt_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type')
+  8. if _rc==0{
+  9. testparm 1.`int_type'#i.`exposure_type'
+ 10. di _n "`exposure_type' " _n "****************"
+ 11. lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
+ 12. di "`exposure_type'" _n "****************"
+ 13. lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
+ 14. estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_
+> `int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
+ 15. }
+ 16. else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
+ 17. 
+. }
+ 18. }
+ 19. }
+(9,227,938 observations deleted)
+   1:    660.55 /        1 =     660.5480
+   1:    687.35 /        1 =     687.3500
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+
+           chi2(  2) =    0.85
+         Prob > chi2 =    0.6524
+
+kids_cat3 
+****************
+
+ ( 1)  1.kids_cat3 + 1.male#1.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .9606428   .4462264    -0.09   0.931       .38652    2.387547
+------------------------------------------------------------------------------
+kids_cat3
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   1.004556   .5102925     0.01   0.993     .3711781    2.718729
+------------------------------------------------------------------------------
+file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFULLYADJMO
+> DEL_agespline_bmicat_noeth_ageband_0.ster saved
+(2,285,270 observations deleted)
+   1:    397.44 /        1 =     397.4450
+   1:    609.05 /        1 =     609.0530
+
+ ( 1)  1.male#1.kids_cat3 = 0
+ ( 2)  1.male#2.kids_cat3 = 0
+       Constraint 2 dropped
+
+           chi2(  1) =    0.05
+         Prob > chi2 =    0.8289
+
+kids_cat3 
+****************
+
+ ( 1)  1.kids_cat3 + 1.male#1.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |   .7092722   .5060245    -0.48   0.630     .1751984    2.871414
+------------------------------------------------------------------------------
+kids_cat3
+****************
+
+ ( 1)  2.kids_cat3 + 1.male#2.kids_cat3 = 0
+
+------------------------------------------------------------------------------
+          _t |     exp(b)   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+         (1) |    .496511   .4969187    -0.70   0.484     .0698278    3.530444
+------------------------------------------------------------------------------
+file ./output/an_interaction_cox_models_covid_death_kids_cat3_male_MAINFULLYADJMO
+> DEL_agespline_bmicat_noeth_ageband_1.ster saved
+
+. 
+. 
+. log close
+      name:  <unnamed>
+       log:  E:\anna\school-age-children-and-covid\analysis\log\10_an_interaction
+> _cox_models_sex_covid_death.log
+  log type:  text
+ closed on:   8 Sep 2020, 21:43:19
+---------------------------------------------------------------------------------
