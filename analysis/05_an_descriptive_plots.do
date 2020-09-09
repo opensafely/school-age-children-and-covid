@@ -13,8 +13,8 @@
 *	Data created:	None
 *
 *	Other output:	Kaplan-Meier plots (intended for publication)
-*							output/km_age_sex_covid_death_icu.svg 	
-*							output/km_age_sex_covid_tpp_prob
+*							output/05_km_age_sex_covid_death_icu.svg 	
+*							output/05_km_age_sex_covid_tpp_prob
 
 ********************************************************************************
 *
@@ -37,7 +37,7 @@ global tempdir    "tempdata"
 forvalues x=0/1 {
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", clear
+use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
@@ -87,7 +87,7 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "of COVID-19 death", size(medsmall))
-graph export "output/km_age_sex_covid_death_icu_ageband_`x'.svg", as(svg) replace
+graph export "output/05_km_age_sex_covid_death_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -147,7 +147,7 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "TPP Covid-19 case", size(medsmall))
-graph export "output/km_age_sex_covid_tpp_prob_ageband_`x'.svg", as(svg) replace
+graph export "output/05_km_age_sex_covid_tpp_prob_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph
@@ -205,7 +205,7 @@ failure by(agegroup) 								///
 * KM plot for males and females 
 grc1leg female.gph male.gph, 						///
 	t1(" ") l1title("Cumulative probability" "Non covid death", size(medsmall))
-graph export "output/km_age_sex_non_covid_death_ageband_`x'.svg", as(svg) replace
+graph export "output/05_km_age_sex_non_covid_death_ageband_`x'.svg", as(svg) replace
 
 * Delete unneeded graphs
 erase female.gph

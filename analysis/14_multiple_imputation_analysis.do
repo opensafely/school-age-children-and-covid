@@ -46,6 +46,7 @@ log using "$logdir\14_multiple_imputation_analysis_`outcome'", text replace
 forvalues x=0/1 {
 use "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
+/*
 *Age and sex adjusted
 mi estimate, hr: stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id) 
 estimates
@@ -62,7 +63,7 @@ mi estimate, hr:  stcox 	i.kids_cat3 	///
 			, strata(stp) vce(cluster household_id)  
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_multiple_imputation_ageband_`x', replace
-
+*/
 
 *Fully adjusted
 mi estimate, hr:  stcox 	i.kids_cat3 	 ///
@@ -71,6 +72,7 @@ mi estimate, hr:  stcox 	i.kids_cat3 	 ///
 			i.obese4cat 					///
 			i.smoke_nomiss					///
 			i.imd 						///
+			i.ethnicity					///
 			$comordidadjlist				///	
 			, strata(stp) vce(cluster household_id)  
 estimates
@@ -79,3 +81,5 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLY
 
 log close
 
+
+exit, clear STATA

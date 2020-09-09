@@ -73,7 +73,7 @@ end
 
 
 cap file close tablecontents_all_outcomes
-file open tablecontents_all_outcomes using ./output/an_tablecontents_HRtable_all_outcomes_ANALYSES.txt, t w replace 
+file open tablecontents_all_outcomes using ./output/15_an_tablecontents_HRtable_all_outcomes_ANALYSES.txt, t w replace 
 
 tempfile HRestimates_all_outcomes
 cap postutil clear
@@ -166,5 +166,5 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 		text(-0.5 0.1 "Lower risk in those living with children", place(e) size(vsmall)) ///
 		text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
-graph export ./output/an_HRforest_all_outcomes_ageband_`age'.svg, as(svg) replace
+graph export ./output/15_an_HRforest_all_outcomes_ageband_`age'.svg, as(svg) replace
 }

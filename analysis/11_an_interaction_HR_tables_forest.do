@@ -18,8 +18,8 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
+file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") _tab ("outcome") _tab ("int_type") _tab ("int_level") _tab ("HR") _n
 forvalues x=0/1 {
-file write tablecontents_int ("age") ("`x'") _n
 forvalues i=`min'/`max'{
 foreach int_type in male cat_time shield {
 
@@ -28,7 +28,7 @@ forvalues int_level=0/1 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab _tab ("`int_level'") _tab
+	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
 	
 	foreach modeltype of any fulladj {
 	
@@ -84,7 +84,7 @@ end
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 cap file close tablecontents_int
-file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
 
 tempfile HRestimates_int
 cap postutil clear
@@ -219,5 +219,5 @@ scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
 		text(-0.5 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
 		text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
-graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'_ageband_`x'.svg, as(svg) replace
+graph export ./output/11_an_int_`outcome'_ageband_`x'.svg, as(svg) replace
 }

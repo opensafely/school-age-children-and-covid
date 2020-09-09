@@ -137,7 +137,7 @@ end
 
 
 cap file close tablecontents_sense
-file open tablecontents_sense using ./output/an_tablecontents_sense_HRtable_`outcome'_SENSE_ANALYSES.txt, t w replace 
+file open tablecontents_sense using ./output/12_an_sense_HRtable_`outcome'_SENSE_ANALYSES.txt, t w replace 
 
 tempfile HRestimates_sense
 cap postutil clear
@@ -202,16 +202,16 @@ replace leveldesc = "Children/young people aged 11-<18 years" if i==2
 
 gen Name = sense if hr==1
 
-foreach x in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
-sum N if sense=="`x'"
-local number_`x'=r(mean)
-di `number_`x''
+foreach type in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
+sum N if sense=="`type'"
+local number_`type'=r(mean)
+di `number_`type''
 }
 
 
-replace Name = "Participants with complete data on ethnicity (N=`number_CCeth')" if Name=="CCeth"
-replace Name = "Participants with complete data on ethnicity, BMI and smoking  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
-replace Name = "Participants with complete data on BMI and smoking  (N=`number_CCnoeth_bmi_smok')" if Name=="CCnoeth_bmi_smok"
+replace Name = "Additionally adjusting for ethnicity (N=`number_CCeth')" if Name=="CCeth"
+replace Name = "Additionally adjusting for ethnicity, BMI and smoking, where data is complete  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
+replace Name = "Restricted to participants with complete data on BMI and smoking  (N=`number_CCnoeth_bmi_smok')" if Name=="CCnoeth_bmi_smok"
 replace Name = "Age used as the underlying timescale in the cox model  (N=`number_age_underlying_timescale')" if Name=="age_underlying_timescale"
 replace Name = "Participants with at least 12 months registration at GP  (N=`number_noeth_12mo')" if Name=="noeth_12mo"
 replace Name = "Non-PH fitted (N=`number_time_int')" if Name=="time_int"
@@ -250,5 +250,5 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 		text(-2 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
 		text(-2 1.5 "Higher risk in those living with children", place(e) size(vsmall))
 
-graph export ./output/an_tablecontent_HRtable_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
+graph export ./output/12_an_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
 }

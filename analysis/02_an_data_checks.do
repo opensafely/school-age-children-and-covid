@@ -110,14 +110,18 @@ foreach comorb in $varlist {
 }
 
 
-* Outcome dates
+*Outcome dates
 foreach outcome in died_date_onscovid_part1 died_date_onscovid covid_admission_primary_date covid_icu_death_date covid_icu_date died_date_onsnoncovid date_covid_tpp_prob  {
 summ  `outcome', format d 
-hist `outcome', saving(`outcome', replace) xlabel(,labsize(tiny))
+hist `outcome', saving(`outcome', replace) ///
+xlabel(,labsize(tiny))  xtitle(, size(small)) ///
+graphregion(color(white))  legend(off) freq  ///
+yscale(range(0 3000)) ylab(0 (500) 3000, labsize(vsmall)) ytitle("Number")  
 }
 * Combine histograms
-grc1leg covid_icu_death_date.gph died_date_onsnoncovid.gph date_covid_tpp_prob.gph died_date_onscovid_part1.gph died_date_onscovid.gph covid_admission_primary_date.gph covid_icu_date.gph
-graph export "output/histogram_outcomes.svg", as(svg) replace
+graph combine date_covid_tpp_prob.gph covid_admission_primary_date.gph covid_icu_date.gph ///
+ died_date_onscovid_part1.gph died_date_onscovid.gph  died_date_onsnoncovid.gph, graphregion(color(white))
+graph export "output/01_histogram_outcomes.svg", as(svg) replace 
 
 * Delete unneeded graphs
 erase covid_icu_death_date.gph
