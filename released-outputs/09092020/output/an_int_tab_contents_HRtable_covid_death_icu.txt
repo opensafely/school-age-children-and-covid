@@ -1,0 +1,27 @@
+age0
+0	kids_cat3	1		0	DID NOT FIT
+0	kids_cat3	1		1	DID NOT FIT
+0	kids_cat3	1		0	DID NOT FIT
+0	kids_cat3	1		1	DID NOT FIT
+0	kids_cat3	1		0	DID NOT FIT
+0	kids_cat3	1		1	DID NOT FIT
+0	kids_cat3	2		0	DID NOT FIT
+0	kids_cat3	2		1	DID NOT FIT
+0	kids_cat3	2		0	DID NOT FIT
+0	kids_cat3	2		1	DID NOT FIT
+0	kids_cat3	2		0	DID NOT FIT
+0	kids_cat3	2		1	DID NOT FIT
+age1
+1	kids_cat3	1		0	DID NOT FIT
+1	kids_cat3	1		1	DID NOT FIT
+1	kids_cat3	1		0	DID NOT FIT
+1	kids_cat3	1		1	DID NOT FIT
+1	kids_cat3	1		0	DID NOT FIT
+1	kids_cat3	1		1	DID NOT FIT
+1	kids_cat3	2		0	DID NOT FIT
+1	kids_cat3	2		1	DID NOT FIT
+1	kids_cat3	2		0	DID NOT FIT
+1	kids_cat3	2		1	DID NOT FIT
+1	kids_cat3	2		0	DID NOT FIT
+1	kids_cat3	2		1	DID NOT FIT
+

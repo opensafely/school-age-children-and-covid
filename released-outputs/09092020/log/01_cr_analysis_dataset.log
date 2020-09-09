@@ -1,0 +1,2636 @@
+--------------------------------------------------------------------------------------------------------------
+      name:  <unnamed>
+       log:  E:\anna\school-age-children-and-covid\analysis\log\01_cr_analysis_dataset.log
+  log type:  text
+ opened on:   7 Sep 2020, 11:09:23
+
+. 
+. 
+. /* CONVERT STRINGS TO DATE====================================================*/
+. /* Comorb dates and TPP case outcome dates are given with month only, so adding day 
+> 15 to enable  them to be processed as dates                                                                 
+>                       */
+. 
+. *cr date for diabetes based on adjudicated type
+. gen diabetes=type1_diabetes if diabetes_type=="T1DM"
+(23,112,719 missing values generated)
+
+. replace diabetes=type2_diabetes if diabetes_type=="T2DM"
+(1,285,380 real changes made)
+
+. replace diabetes=unknown_diabetes if diabetes_type=="UNKNOWN_DM"
+(408,962 real changes made)
+
+. 
+. drop type1_diabetes type2_diabetes unknown_diabetes
+
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 diabetes ///
+>                                                 cancer_haem  ///
+>                                                 cancer_nonhaem  ///
+>                                                 permanent_immunodeficiency  ///
+>                                                 temporary_immunodeficiency  ///
+>                                                 dialysis                                        ///
+>                                                 kidney_transplant                       ///
+>                                                 other_transplant                        /// 
+>                                                 asplenia                        /// 
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke_dementia                         ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 bmi_date_measured   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 smoking_status_date ///
+>                                                 dereg_date ///
+>                                                 {
+  2.                                                         
+.                 capture confirm string variable `var'
+  3.                 if _rc!=0 {
+  4.                         assert `var'==.
+  5.                         rename `var' `var'_date
+  6.                 }
+  7.         
+.                 else {
+  8.                                 replace `var' = `var' + "-15"
+  9.                                 rename `var' `var'_dstr
+ 10.                                 replace `var'_dstr = " " if `var'_dstr == "-15"
+ 11.                                 gen `var'_date = date(`var'_dstr, "YMD") 
+ 12.                                 order `var'_date, after(`var'_dstr)
+ 13.                                 drop `var'_dstr
+ 14.                 }
+ 15.         
+.         format `var'_date %td
+ 16. }
+variable chronic_respiratory_disease was str7 now str10
+(23,215,414 real changes made)
+(22,450,031 real changes made)
+(22,450,031 missing values generated)
+variable chronic_cardiac_disease was str7 now str10
+(23,215,414 real changes made)
+(21,922,094 real changes made)
+(21,922,094 missing values generated)
+variable diabetes was str7 now str10
+(23,215,414 real changes made)
+(21,418,377 real changes made)
+(21,418,377 missing values generated)
+variable cancer_haem was str7 now str10
+(23,215,414 real changes made)
+(23,102,825 real changes made)
+(23,102,825 missing values generated)
+variable cancer_nonhaem was str7 now str10
+(23,215,414 real changes made)
+(22,277,533 real changes made)
+(22,277,533 missing values generated)
+variable permanent_immunodeficiency was str7 now str10
+(23,215,414 real changes made)
+(23,161,533 real changes made)
+(23,161,533 missing values generated)
+variable temporary_immunodeficiency was str7 now str10
+(23,215,414 real changes made)
+(23,209,889 real changes made)
+(23,209,889 missing values generated)
+variable dialysis was str7 now str10
+(23,215,414 real changes made)
+(23,193,324 real changes made)
+(23,193,324 missing values generated)
+variable kidney_transplant was str7 now str10
+(23,215,414 real changes made)
+(23,200,125 real changes made)
+(23,200,125 missing values generated)
+variable other_transplant was str7 now str10
+(23,215,414 real changes made)
+(23,210,583 real changes made)
+(23,210,583 missing values generated)
+variable asplenia was str7 now str10
+(23,215,414 real changes made)
+(23,188,466 real changes made)
+(23,188,466 missing values generated)
+variable chronic_liver_disease was str7 now str10
+(23,215,414 real changes made)
+(23,102,160 real changes made)
+(23,102,160 missing values generated)
+variable other_neuro was str7 now str10
+(23,215,414 real changes made)
+(23,018,998 real changes made)
+(23,018,998 missing values generated)
+variable stroke_dementia was str7 now str10
+(23,215,414 real changes made)
+(22,776,498 real changes made)
+(22,776,498 missing values generated)
+variable esrf was str7 now str10
+(23,215,414 real changes made)
+(23,188,211 real changes made)
+(23,188,211 missing values generated)
+variable hypertension was str7 now str10
+(23,215,414 real changes made)
+(19,322,578 real changes made)
+(19,322,578 missing values generated)
+variable ra_sle_psoriasis was str7 now str10
+(23,215,414 real changes made)
+(22,255,293 real changes made)
+(22,255,293 missing values generated)
+variable bmi_date_measured was str7 now str10
+(23,215,414 real changes made)
+(8,269,509 real changes made)
+(8,269,509 missing values generated)
+variable bp_sys_date_measured was str7 now str10
+(23,215,414 real changes made)
+(6,082,488 real changes made)
+(6,082,488 missing values generated)
+variable bp_dias_date_measured was str7 now str10
+(23,215,414 real changes made)
+(6,085,949 real changes made)
+(6,085,949 missing values generated)
+variable creatinine_date was str7 now str10
+(23,215,414 real changes made)
+(8,870,208 real changes made)
+(8,870,208 missing values generated)
+variable smoking_status_date was str7 now str10
+(23,215,414 real changes made)
+(4,695,410 real changes made)
+(4,695,410 missing values generated)
+variable dereg_date was str7 now str10
+(23,215,414 real changes made)
+(22,814,584 real changes made)
+(22,814,584 missing values generated)
+
+. 
+. * Recode to dates from the strings 
+. foreach var of varlist covid_icu_date   died_date_ons covid_admission_date covid_tpp_probable   {
+  2.                                                 
+.         confirm string variable `var'
+  3.         rename `var' `var'_dstr
+  4.         gen `var' = date(`var'_dstr, "YMD")
+  5.         drop `var'_dstr
+  6.         format `var' %td 
+  7.         
+. }
+(23,212,242 missing values generated)
+(23,107,283 missing values generated)
+(23,184,057 missing values generated)
+(23,134,540 missing values generated)
+
+. 
+. gen covid_admission_primary_date = covid_admission_date ///
+> if (covid_admission_primary_diagnosi == "U071"| covid_admission_primary_diagnosi == "U072")
+(23,194,077 missing values generated)
+
+. 
+.  
+. 
+. /*Tab all variables in initial extract*/
+. sum, d f
+
+                         patient_id
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%       431404           2878
+ 5%      2042743           7276
+10%      4192208           9969       Obs          23,215,414
+25%     1.05e+07           9970       Sum of Wgt.    23215414
+
+50%     2.17e+07                      Mean           2.31e+07
+                        Largest       Std. Dev.      1.47e+07
+75%     3.48e+07       5.34e+07
+90%     4.50e+07       5.34e+07       Variance       2.16e+14
+95%     4.86e+07       5.34e+07       Skewness       .2563938
+99%     5.15e+07       5.34e+07       Kurtosis       1.935277
+
+                       dereg_date_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15feb2020      15feb2020
+ 5%    15feb2020      15feb2020
+10%    15feb2020      15feb2020       Obs             400,830
+25%    15mar2020      15feb2020       Sum of Wgt.     400,830
+
+50%    15may2020                      Mean          10may2020
+                        Largest       Std. Dev.      74.45147
+75%    15jul2020      15aug2020
+90%    15aug2020      15aug2020       Variance       5543.022
+95%    15aug2020      15aug2020       Skewness       109.6865
+99%    15aug2020      15apr2092       Kurtosis       38686.13
+
+                     has_12_m_follow_up
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            1              0       Obs          23,215,414
+25%            1              0       Sum of Wgt.    23215414
+
+50%            1                      Mean           .9366268
+                        Largest       Std. Dev.       .243633
+75%            1              1
+90%            1              1       Variance        .059357
+95%            1              1       Skewness      -3.584299
+99%            1              1       Kurtosis        13.8472
+
+                   died_ons_covid_flag_any
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%            0              0       Sum of Wgt.    23215414
+
+50%            0                      Mean           .0007487
+                        Largest       Std. Dev.      .0273518
+75%            0              1
+90%            0              1       Variance       .0007481
+95%            0              1       Skewness       36.50587
+99%            0              1       Kurtosis       1333.678
+
+               died_ons_covid_flag_underlying
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%            0              0       Sum of Wgt.    23215414
+
+50%            0                      Mean           .0006932
+                        Largest       Std. Dev.      .0263204
+75%            0              1
+90%            0              1       Variance       .0006928
+95%            0              1       Skewness        37.9406
+99%            0              1       Kurtosis       1440.489
+
+              covid_admission_primary_diagnosis
+-------------------------------------------------------------
+no observations
+
+                  positive_covid_test_ever
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%            0              0       Sum of Wgt.    23215414
+
+50%            0                      Mean           .0039948
+                        Largest       Std. Dev.      .0630784
+75%            0              1
+90%            0              1       Variance       .0039789
+95%            0              1       Skewness       15.72662
+99%            0              1       Kurtosis       248.3266
+
+                             age
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              0
+ 5%            5              0
+10%            9              0       Obs          23,215,414
+25%           22              0       Sum of Wgt.    23215414
+
+50%           40                      Mean           41.03924
+                        Largest       Std. Dev.      23.41219
+75%           59            120
+90%           73            120       Variance       548.1307
+95%           80            120       Skewness       .1103851
+99%           89            121       Kurtosis       2.060858
+
+                             sex
+-------------------------------------------------------------
+no observations
+
+                             imd
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%           -1             -1
+ 5%         1100             -1
+10%         2600             -1       Obs          23,215,414
+25%         7600             -1       Sum of Wgt.    23215414
+
+50%        15900                      Mean           15828.81
+                        Largest       Std. Dev.      9502.346
+75%        23900          32800
+90%        29000          32800       Variance       9.03e+07
+95%        30900          32800       Skewness       .0189571
+99%        32400          32800       Kurtosis       1.819275
+
+                             stp
+-------------------------------------------------------------
+no observations
+
+                          ethnicity
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            1              1
+10%            1              1       Obs          16,699,096
+25%            1              1       Sum of Wgt.    16699096
+
+50%            1                      Mean           1.384618
+                        Largest       Std. Dev.      .9517044
+75%            1              5
+90%            3              5       Variance       .9057413
+95%            4              5       Skewness       2.447006
+99%            5              5       Kurtosis       7.994102
+
+                       ethnicity_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%         2003           1888
+ 5%         2007           1899
+10%         2008           1899       Obs          16,699,096
+25%         2010           1899       Sum of Wgt.    16699096
+
+50%         2013                      Mean           2012.843
+                        Largest       Std. Dev.      8.144723
+75%         2017           2066
+90%         2019           2075       Variance       66.33651
+95%         2019           2081       Skewness       -10.2043
+99%         2020           2095       Kurtosis       140.3081
+
+                        household_id
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%      1354280              0       Sum of Wgt.    23215414
+
+50%      4091314                      Mean            4175898
+                        Largest       Std. Dev.       3033238
+75%      6777517        9680110
+90%      8483856        9680111       Variance       9.20e+12
+95%      9083392        9680113       Skewness       .1245382
+99%      9567105        9680113       Kurtosis       1.738219
+
+                       household_size
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%            1              0       Sum of Wgt.    23215414
+
+50%            2                      Mean           4.750484
+                        Largest       Std. Dev.      45.27202
+75%            4           2590
+90%            5           2590       Variance       2049.556
+95%            7           2590       Skewness         34.495
+99%           13           2590       Kurtosis       1501.339
+
+                       care_home_type
+-------------------------------------------------------------
+no observations
+
+                             bmi
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0        -3460.2
+ 5%            0         -277.8
+10%            0           -2.1       Obs          23,215,414
+25%            0           -1.8       Sum of Wgt.    23215414
+
+50%         22.8                      Mean           58.37692
+                        Largest       Std. Dev.      8013.776
+75%           28        1520000
+90%           33        1805556       Variance       6.42e+07
+95%         36.5       1.95e+07       Skewness       2566.943
+99%         44.8       2.85e+07       Kurtosis        8392543
+
+                   bmi_date_measured_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15aug2010      15feb2010
+ 5%    15may2012      15feb2010
+10%    15oct2013      15feb2010       Obs          14,945,905
+25%    15jun2016      15feb2010       Sum of Wgt.    14945905
+
+50%    15oct2018                      Mean          05nov2017
+                        Largest       Std. Dev.      1820.037
+75%    15oct2019      15mar9909
+90%    15mar2020      15apr9909       Variance        3312533
+95%    15jun2020      15apr9912       Skewness       1133.691
+99%    15aug2020      15jul9935       Kurtosis        1757824
+
+                           bp_sys
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0             -1
+ 5%            0             -1
+10%            0             -1       Obs          23,215,414
+25%            0             -1       Sum of Wgt.    23215414
+
+50%          120                      Mean           93.35253
+                        Largest       Std. Dev.      116.6537
+75%          132         136136
+90%          142         137137       Variance        13608.1
+95%          149         139139       Skewness       772.1673
+99%          167         139139       Kurtosis       827610.2
+
+                  bp_sys_date_measured_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15sep2003      15jan1860
+ 5%    15dec2010      15jan1860
+10%    15jan2014      15sep1899       Obs          17,132,926
+25%    15mar2017      15dec1899       Sum of Wgt.    17132926
+
+50%    15feb2019                      Mean          11oct2017
+                        Largest       Std. Dev.      1279.119
+75%    15sep2019      15feb2020
+90%    15dec2019      15feb2020       Variance        1636146
+95%    15jan2020      15feb2020       Skewness      -5.003091
+99%    15jan2020      15feb2020       Kurtosis       90.40106
+
+                           bp_dias
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0             -1
+ 5%            0             -1
+10%            0             -1       Obs          23,215,414
+25%            0             -1       Sum of Wgt.    23215414
+
+50%           70                      Mean           56.13945
+                        Largest       Std. Dev.      39.38249
+75%           80           7597
+90%           87           7690       Variance        1550.98
+95%           90           9074       Skewness       499.6868
+99%          100          89147       Kurtosis        1128410
+
+                 bp_dias_date_measured_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15oct2003      15jan1860
+ 5%    15dec2010      15jan1860
+10%    15jan2014      15sep1899       Obs          17,129,465
+25%    15mar2017      15dec1899       Sum of Wgt.    17129465
+
+50%    15feb2019                      Mean          12oct2017
+                        Largest       Std. Dev.       1256.62
+75%    15sep2019      15feb2020
+90%    15dec2019      15feb2020       Variance        1579095
+95%    15jan2020      15feb2020       Skewness      -4.057532
+99%    15jan2020      15feb2020       Kurtosis        55.3453
+
+                         creatinine
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0            -40
+ 5%            0             -1
+10%            0             -1       Obs          23,215,414
+25%            0             -1       Sum of Wgt.    23215414
+
+50%           60                      Mean           1348.303
+                        Largest       Std. Dev.      327973.5
+75%           77       1.19e+08
+90%           92       1.20e+08       Variance       1.08e+11
+95%          101       1.21e+08       Skewness       264.9406
+99%          129       1.58e+08       Kurtosis       72921.72
+
+                    creatinine_date_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15dec2004      15dec1899
+ 5%    15nov2010      15dec1899
+10%    15aug2013      15dec1899       Obs          14,345,206
+25%    15jan2017      15jan1900       Sum of Wgt.    14345206
+
+50%    15jan2019                      Mean          17sep2017
+                        Largest       Std. Dev.      1184.364
+75%    15sep2019      15feb2020
+90%    15dec2019      15feb2020       Variance        1402717
+95%    15jan2020      15feb2020       Skewness       -3.68939
+99%    15jan2020      15feb2020       Kurtosis       60.80489
+
+                       smoking_status
+-------------------------------------------------------------
+no observations
+
+                  smoking_status_date_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15dec2004      15sep1899
+ 5%    15mar2010      15sep1899
+10%    15aug2012      15sep1899       Obs          18,520,004
+25%    15oct2015      15sep1899       Sum of Wgt.    18520004
+
+50%    15jul2018                      Mean          16feb2017
+                        Largest       Std. Dev.      1324.002
+75%    15jul2019      15feb2020
+90%    15nov2019      15feb2020       Variance        1752982
+95%    15dec2019      15feb2020       Skewness      -4.691635
+99%    15jan2020      15feb2020       Kurtosis       97.55336
+
+              chronic_respiratory_disease_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1800
+ 5%    15oct1991      15jan1860
+10%    15may2001      15dec1899       Obs             765,383
+25%    15oct2007      15dec1899       Sum of Wgt.     765,383
+
+50%    15apr2013                      Mean          04may2009
+                        Largest       Std. Dev.       6331.09
+75%    15mar2017      15aug2020
+90%    15mar2019      15aug2020       Variance       4.01e+07
+95%    15oct2019      15aug2020       Skewness       -4.83041
+99%    15may2020      15aug2020       Kurtosis       29.46788
+
+                chronic_cardiac_disease_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1840
+ 5%    15jan1987      15dec1840
+10%    15oct1994      15jan1850       Obs           1,293,320
+25%    15aug2003      15jan1850       Sum of Wgt.   1,293,320
+
+50%    15may2011                      Mean          30jan2007
+                        Largest       Std. Dev.      6544.244
+75%    15sep2016      15aug2020
+90%    15feb2019      15aug2020       Variance       4.28e+07
+95%    15nov2019      15aug2020       Skewness      -4.263406
+99%    15jun2020      15sep2106       Kurtosis       25.07187
+
+                        diabetes_type
+-------------------------------------------------------------
+no observations
+
+                     diabetes_exeter_os
+-------------------------------------------------------------
+no observations
+
+                       diabetes_exeter
+-------------------------------------------------------------
+no observations
+
+                     hba1c_mmol_per_mol
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0           -782
+ 5%            0             -2
+10%            0             -1       Obs          23,215,414
+25%            0             -1       Sum of Wgt.    23215414
+
+50%            0                      Mean           18.00517
+                        Largest       Std. Dev.      1816.044
+75%           37         107000
+90%           42         111000       Variance        3298014
+95%           47         759550       Skewness       4719.613
+99%           73        8688000       Kurtosis       2.26e+07
+
+                   hba1c_mmol_per_mol_date
+-------------------------------------------------------------
+no observations
+
+                      hba1c_percentage
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0             -2
+ 5%            0             -1
+10%            0             -1       Obs          23,215,414
+25%            0             -1       Sum of Wgt.    23215414
+
+50%            0                      Mean           1.546707
+                        Largest       Std. Dev.      3971.591
+75%            0            935
+90%          5.1         231855       Variance       1.58e+07
+95%          5.7         930709       Skewness       4800.652
+99%          7.6       1.91e+07       Kurtosis       2.31e+07
+
+                    hba1c_percentage_date
+-------------------------------------------------------------
+no observations
+
+                      cancer_haem_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1840
+ 5%    15jan1986      15jan1860
+10%    15sep1994      15dec1899       Obs             112,589
+25%    15apr2005      15dec1899       Sum of Wgt.     112,589
+
+50%    15jan2013                      Mean          08sep2008
+                        Largest       Std. Dev.      5739.008
+75%    15jul2017      15aug2020
+90%    15jun2019      15aug2020       Variance       3.29e+07
+95%    15jan2020      15aug2020       Skewness      -4.323818
+99%    15jul2020      15aug2020       Kurtosis       28.55276
+
+                     cancer_nonhaem_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15sep1970      15dec1840
+ 5%    15jan1991      15jan1860
+10%    15jul1997      15jan1860       Obs             937,881
+25%    15jan2006      15jan1860       Sum of Wgt.     937,881
+
+50%    15dec2012                      Mean          19oct2009
+                        Largest       Std. Dev.      4632.432
+75%    15jul2017      15aug2020
+90%    15jun2019      15aug2020       Variance       2.15e+07
+95%    15jan2020      15nov2020       Skewness      -4.540029
+99%    15jul2020      15dec2100       Kurtosis       36.23738
+
+               permanent_immunodeficiency_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1900
+ 5%    15may1993      15jan1900
+10%    15mar2000      15jan1900       Obs              53,881
+25%    15may2007      15jan1900       Sum of Wgt.      53,881
+
+50%    15mar2013                      Mean          21jun2009
+                        Largest       Std. Dev.      6017.775
+75%    15mar2017      15jan2020
+90%    15jan2019      15jan2020       Variance       3.62e+07
+95%    15aug2019      15jan2020       Skewness      -5.180735
+99%    15dec2019      15jan2020       Kurtosis        34.0119
+
+                        asplenia_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15dec1899
+ 5%    15jul1956      15dec1899
+10%    15jan1967      15dec1899       Obs              26,948
+25%    15jul1980      15dec1899       Sum of Wgt.      26,948
+
+50%    15jan1999                      Mean          15apr1993
+                        Largest       Std. Dev.      9048.886
+75%    15jan2012      15aug2020
+90%    15oct2017      15aug2020       Variance       8.19e+07
+95%    15apr2019      15aug2020       Skewness      -1.770908
+99%    15apr2020      15aug2020       Kurtosis       7.239077
+
+               temporary_immunodeficiency_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15feb2019      15feb2019
+ 5%    15feb2019      15feb2019
+10%    15mar2019      15feb2019       Obs               5,525
+25%    15jun2019      15feb2019       Sum of Wgt.       5,525
+
+50%    15sep2019                      Mean          29aug2019
+                        Largest       Std. Dev.      102.4209
+75%    15nov2019      15jan2020
+90%    15jan2020      15jan2020       Variance       10490.05
+95%    15jan2020      15jan2020       Skewness      -.4015883
+99%    15jan2020      15jan2020       Kurtosis        2.04132
+
+                 chronic_liver_disease_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15dec1840
+ 5%    15jan1992      15jan1860
+10%    15sep1999      15dec1899       Obs             113,254
+25%    15jun2007      15dec1899       Sum of Wgt.     113,254
+
+50%    15apr2014                      Mean          12oct2009
+                        Largest       Std. Dev.      6327.772
+75%    15jan2018      15aug2020
+90%    15jul2019      15aug2020       Variance       4.00e+07
+95%    15jan2020      15nov2020       Skewness      -4.919188
+99%    15jul2020      15oct2021       Kurtosis        30.8196
+
+                    stroke_dementia_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1899
+ 5%    15jan1995      15dec1899
+10%    15oct2000      15dec1899       Obs             438,916
+25%    15jan2008      15dec1899       Sum of Wgt.     438,916
+
+50%    15may2014                      Mean          02sep2010
+                        Largest       Std. Dev.      5472.694
+75%    15jan2018      15aug2020
+90%    15aug2019      15aug2020       Variance       3.00e+07
+95%    15feb2020      15sep2020       Skewness      -5.441459
+99%    15jul2020      15jul2096       Kurtosis       39.36103
+
+                      other_neuro_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1800
+ 5%    15jan1965      15jan1800
+10%    15jan1980      15jan1860       Obs             196,416
+25%    15oct1997      15dec1899       Sum of Wgt.     196,416
+
+50%    15mar2009                      Mean          25jun2002
+                        Largest       Std. Dev.      8101.244
+75%    15feb2016      15aug2020
+90%    15nov2018      15aug2020       Variance       6.56e+07
+95%    15sep2019      15aug2020       Skewness      -2.866158
+99%    15jun2020      15aug2020       Kurtosis       12.87438
+
+                          esrf_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15dec1899
+ 5%    15aug1986      15dec1899
+10%    15jul1995      15dec1899       Obs              27,203
+25%    15jan2006      15dec1899       Sum of Wgt.      27,203
+
+50%    15oct2013                      Mean          05aug2008
+                        Largest       Std. Dev.      6759.419
+75%    15jan2018      15aug2020
+90%    15aug2019      15aug2020       Variance       4.57e+07
+95%    15feb2020      15aug2020       Skewness      -4.357956
+99%    15jul2020      15aug2020       Kurtosis       25.18592
+
+                        dialysis_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15dec1899
+ 5%    15jan1990      15dec1899
+10%    15jan1998      15dec1899       Obs              22,090
+25%    15feb2007      15dec1899       Sum of Wgt.      22,090
+
+50%    15jul2014                      Mean          13sep2009
+                        Largest       Std. Dev.      6371.475
+75%    15may2018      15aug2020
+90%    15oct2019      15aug2020       Variance       4.06e+07
+95%    15mar2020      15aug2020       Skewness       -4.72037
+99%    15jul2020      15aug2020       Kurtosis       29.18346
+
+                   kidney_transplant_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15dec1899
+ 5%    15aug1987      15dec1899
+10%    15mar1994      15dec1899       Obs              15,289
+25%    15feb2004      15jan1900       Sum of Wgt.      15,289
+
+50%    15sep2011                      Mean          10dec2007
+                        Largest       Std. Dev.        5540.9
+75%    15jul2016      15aug2020
+90%    15dec2018      15aug2020       Variance       3.07e+07
+95%    15sep2019      15aug2020       Skewness       -4.45894
+99%    15may2020      15aug2020       Kurtosis       30.70887
+
+                    other_transplant_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1962      15jan1900
+ 5%    15nov1992      15jan1900
+10%    15jan1997      15jan1900       Obs               4,831
+25%    15jan2004      15jan1900       Sum of Wgt.       4,831
+
+50%    15sep2010                      Mean          31mar2008
+                        Largest       Std. Dev.      4855.804
+75%    15dec2015      15aug2020
+90%    15sep2018      15aug2020       Variance       2.36e+07
+95%    15aug2019      15aug2020       Skewness       -4.93652
+99%    15may2020      15aug2020       Kurtosis       39.02671
+
+                      hypertension_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1800
+ 5%    15jun1986      15jan1800
+10%    15jan1994      15jan1800       Obs           3,892,836
+25%    15dec2001      15jan1800       Sum of Wgt.   3,892,836
+
+50%    15feb2008                      Mean          26sep2004
+                        Largest       Std. Dev.      7191.209
+75%    15oct2014      15sep2037
+90%    15mar2018      15jun2055       Variance       5.17e+07
+95%    15may2019      15nov2056       Skewness      -4.123511
+99%    15mar2020      15feb2058       Kurtosis       22.12681
+
+                    ra_sle_psoriasis_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1800
+ 5%    15jan1972      15jan1800
+10%    15jan1985      15jan1840       Obs             960,121
+25%    15feb1998      15jan1840       Sum of Wgt.     960,121
+
+50%    15aug2007                      Mean          24aug2002
+                        Largest       Std. Dev.      7291.102
+75%    15apr2014      15aug2020
+90%    15jan2018      15aug2020       Variance       5.32e+07
+95%    15mar2019      15mar2082       Skewness      -3.109262
+99%    15mar2020      15mar3000       Kurtosis       22.84049
+
+                           asthma
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            0              0
+ 5%            0              0
+10%            0              0       Obs          23,215,414
+25%            0              0       Sum of Wgt.    23215414
+
+50%            0                      Mean           .1603978
+                        Largest       Std. Dev.      .4052269
+75%            0              2
+90%            1              2       Variance       .1642088
+95%            1              2       Skewness       2.492724
+99%            2              2       Kurtosis       8.705368
+
+                        diabetes_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    15jan1900      15jan1860
+ 5%    15apr1995      15jan1860
+10%    15jan2001      15jan1860       Obs           1,797,037
+25%    15nov2006      15jan1860       Sum of Wgt.   1,797,037
+
+50%    15may2013                      Mean          16feb2010
+                        Largest       Std. Dev.      5250.882
+75%    15jul2017      15feb2020
+90%    15feb2019      15feb2020       Variance       2.76e+07
+95%    15aug2019      15feb2020       Skewness       -5.49939
+99%    15dec2019      15feb2020       Kurtosis       41.15509
+
+                       covid_icu_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    13mar2020      01mar2020
+ 5%    20mar2020      02mar2020
+10%    24mar2020      02mar2020       Obs               3,172
+25%    30mar2020      07mar2020       Sum of Wgt.       3,172
+
+50%    07apr2020                      Mean          13apr2020
+                        Largest       Std. Dev.      23.58543
+75%    21apr2020      30jul2020
+90%    17may2020      04aug2020       Variance       556.2725
+95%    06jun2020      06aug2020       Skewness       1.681526
+99%    03jul2020      07aug2020       Kurtosis       6.037524
+
+                        died_date_ons
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    03feb2020      01feb2020
+ 5%    10feb2020      01feb2020
+10%    21feb2020      01feb2020       Obs             108,131
+25%    21mar2020      01feb2020       Sum of Wgt.     108,131
+
+50%    20apr2020                      Mean          24apr2020
+                        Largest       Std. Dev.      46.95695
+75%    30may2020      02aug2020
+90%    03jul2020      02aug2020       Variance       2204.955
+95%    16jul2020      02aug2020       Skewness       .1915078
+99%    26jul2020      02aug2020       Kurtosis       2.143378
+
+                    covid_admission_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    27feb2020      01feb2020
+ 5%    16mar2020      01feb2020
+10%    22mar2020      01feb2020       Obs              31,357
+25%    30mar2020      02feb2020       Sum of Wgt.      31,357
+
+50%    08apr2020                      Mean          11apr2020
+                        Largest       Std. Dev.      18.38969
+75%    23apr2020      31may2020
+90%    07may2020      31may2020       Variance       338.1806
+95%    14may2020      31may2020       Skewness       .1927998
+99%    24may2020      31may2020       Kurtosis       3.099588
+
+                     covid_tpp_probable
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%    11mar2020      01jan1900
+ 5%    28mar2020      01jan1900
+10%    03apr2020      01jan1900       Obs              80,874
+25%    20apr2020      01jan1900       Sum of Wgt.      80,874
+
+50%    11may2020                      Mean          27apr2020
+                        Largest       Std. Dev.      848.1295
+75%    17jun2020      27aug2020
+90%    31jul2020      27aug2020       Variance       719323.6
+95%    14aug2020      27aug2020       Skewness      -47.40114
+99%    24aug2020      27aug2020       Kurtosis       2369.888
+
+                covid_admission_primary_date
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%        21984          21947
+ 5%        21994          21949
+10%        21998          21951       Obs              21,337
+25%        22005          21954       Sum of Wgt.      21,337
+
+50%        22013                      Mean           22015.71
+                        Largest       Std. Dev.      16.23931
+75%        22025          22066
+90%        22039          22066       Variance       263.7153
+95%        22047          22066       Skewness       .5451313
+99%        22058          22066       Kurtosis       3.175816
+
+. 
+. 
+. /* CREATE VARIABLES===========================================================*/
+. 
+. /* DEMOGRAPHICS */ 
+. 
+. * Sex
+. gen male = 1 if sex == "M"
+(11,600,263 missing values generated)
+
+. replace male = 0 if sex == "F"
+(11,599,868 real changes made)
+
+. 
+. * Ethnicity 
+. replace ethnicity = .u if ethnicity == .
+(6,516,318 real changes made, 6,516,318 to missing)
+
+. 
+. label define ethnicity  1 "White"                                       ///
+>                                                 2 "Mixed"                                       ///
+>                                                 3 "Asian or Asian British"      ///
+>                                                 4 "Black"                                       ///
+>                                                 5 "Other"                                       ///
+>                                                 .u "Unknown"
+
+. 
+. label values ethnicity ethnicity
+
+. 
+. * STP 
+. rename stp stp_old
+
+. bysort stp_old: gen stp = 1 if _n==1
+(23,215,382 missing values generated)
+
+. replace stp = sum(stp)
+(23,215,413 real changes made)
+
+. drop stp_old
+
+. 
+. /*  IMD  */
+. * Group into 5 groups
+. rename imd imd_o
+
+. egen imd = cut(imd_o), group(5) icodes
+
+. 
+. * add one to create groups 1 - 5 
+. replace imd = imd + 1
+(23,215,414 real changes made)
+
+. 
+. * - 1 is missing, should be excluded from population 
+. replace imd = .u if imd_o == -1
+(250,698 real changes made, 250,698 to missing)
+
+. drop imd_o
+
+. 
+. * Reverse the order (so high is more deprived)
+. recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
+(imd: 18328663 changes made)
+
+. 
+. label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
+
+. label values imd imd 
+
+. 
+. /*  Age variables  */ 
+. 
+. * Create categorised age 
+. recode age 18/29.9999 = 1 /// 
+>                    30/39.9999 = 2 /// 
+>            40/49.9999 = 3 ///
+>                    50/59.9999 = 4 ///
+>                60/69.9999 = 5 ///
+>                    70/79.9999 = 6 ///
+>                    80/max = 7, gen(agegroup) 
+(18570015 differences between age and agegroup)
+
+. 
+. label define agegroup   1 "18-<30" ///
+>                                                 2 "30-<40" ///
+>                                                 3 "40-<50" ///
+>                                                 4 "50-<60" ///
+>                                                 5 "60-<70" ///
+>                                                 6 "70-<80" ///
+>                                                 7 "80+"
+
+.                                                 
+. label values agegroup agegroup
+
+. 
+. * Create binary age (for age stratification)
+. recode age min/65.999999999 = 0 ///
+>            66/max = 1, gen(age66)
+(23076345 differences between age and age66)
+
+. 
+. * Check there are no missing ages
+. assert age < .
+
+. assert agegroup < .
+
+. assert age66 < .
+
+. 
+. 
+. /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+. 
+. noi di "DROP if HH ID==0"
+DROP if HH ID==0
+
+. count if household_id==0
+  2,925,003
+
+. drop if household_id==0
+(2,925,003 observations deleted)
+
+. count
+  20,290,411
+
+. 
+. drop if care_home_type!="U"
+(97,138 observations deleted)
+
+. count
+  20,193,273
+
+. 
+. noi di "DROP HH>=10 persons:"
+DROP HH>=10 persons:
+
+. sum household_size, d
+
+                       household_size
+-------------------------------------------------------------
+      Percentiles      Smallest
+ 1%            1              1
+ 5%            1              1
+10%            1              1       Obs          20,193,273
+25%            2              1       Sum of Wgt.    20193273
+
+50%            3                      Mean           5.337728
+                        Largest       Std. Dev.      48.39804
+75%            4           2590
+90%            6           2590       Variance       2342.371
+95%            7           2590       Skewness       32.38689
+99%           12           2590       Kurtosis       1319.505
+
+. drop if household_size>=10
+(347,643 observations deleted)
+
+. count
+  19,845,630
+
+. 
+. noi di "DROP MISSING GENDER:"
+DROP MISSING GENDER:
+
+. recode male .=9
+(male: 350 changes made)
+
+. recode male .u=9
+(male: 0 changes made)
+
+. bysort household_id: egen male_drop=max(male)
+
+. drop if male_drop==9
+(998 observations deleted)
+
+. count
+  19,844,632
+
+. 
+. 
+. noi di "DROP AGE MISSING:"
+DROP AGE MISSING:
+
+. recode age .=9
+(age: 0 changes made)
+
+. recode age .u=9
+(age: 0 changes made)
+
+. bysort household_id: egen age_drop=max(age)
+
+. drop if age_drop==9
+(12,995 observations deleted)
+
+. count
+  19,831,637
+
+. 
+. noi di "DROP IMD MISSING"
+DROP IMD MISSING
+
+. recode imd .=9
+(imd: 0 changes made)
+
+. recode imd .u=9
+(imd: 232104 changes made)
+
+. bysort household_id: egen imd_drop=max(imd)
+
+. drop if imd_drop==9
+(257,794 observations deleted)
+
+. count
+  19,573,843
+
+. **************************** HOUSEHOLD VARS*******************************************
+. 
+. *No kids/kids under 12/up to 18
+. *Identify kids under 12, or kids under 18
+. gen nokids=1 if age<12
+(16,864,866 missing values generated)
+
+. recode nokids .=2 if age<18 
+(nokids: 1317613 changes made)
+
+. bysort household_id: egen min_kids=min(nokids) 
+(11088298 missing values generated)
+
+. gen kids_cat3=min_kids
+(11,088,298 missing values generated)
+
+. recode kids_cat3 .=0 
+(kids_cat3: 11088298 changes made)
+
+. lab define kids_cat3  0 "No kids" 1 "Kids under 12" 2 "Kids under 18"
+
+. lab val kids_cat3 kids_cat3
+
+. drop min_kids
+
+. 
+. *Dose-response exposure
+. recode nokids 2=.
+(nokids: 1317613 changes made)
+
+. bysort household_id: egen number_kids=count(nokids)
+
+. gen gp_number_kids=number_kids
+
+. recode gp_number_kids 3/max=3
+(gp_number_kids: 210297 changes made)
+
+. recode gp_number_kids 1=2 2=3 3=4
+(gp_number_kids: 6492674 changes made)
+
+. replace gp_number_kids=0 if kids_cat3==0 
+(0 real changes made)
+
+. replace gp_number_kids=1 if kids_cat3==2 
+(1,992,871 real changes made)
+
+. 
+. lab var gp_number_kids "Number kids under 12 years in hh"
+
+. drop nokids
+
+. lab define   gp_number_kids 0 none  1 "only >12 years" ///
+> 2 "1 child <12" ///
+> 3 "2 children <12" ///
+> 4 "3+ children <12"
+
+. lab val gp_number_kids gp_number_kids
+
+. 
+. tab kids_cat3 gp_number_kids, miss
+
+              |            Number kids under 12 years in hh
+    kids_cat3 |      none  only >12   1 child <  2 childre  3+ childr |     Total
+--------------+-------------------------------------------------------+----------
+      No kids |11,088,298          0          0          0          0 |11,088,298 
+Kids under 12 |         0          0  3,163,132  2,416,122    913,420 | 6,492,674 
+Kids under 18 |         0  1,992,871          0          0          0 | 1,992,871 
+--------------+-------------------------------------------------------+----------
+        Total |11,088,298  1,992,871  3,163,132  2,416,122    913,420 |19,573,843 
+
+.  
+. 
+. /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
+. drop if age<18
+(4,026,590 observations deleted)
+
+. 
+. *Total number adults in household (to check hh size)
+. bysort household_id: gen tot_adults_hh=_N
+
+. recode tot_adults_hh 3/max=3
+(tot_adults_hh: 2194282 changes made)
+
+. 
+. 
+. /* SET FU DATES===============================================================*/ 
+. * Censoring dates for each outcome (largely, last date outcome data available)
+. *****NEEDS UPDATING WHEN INFO AVAILABLE*******************
+. global onscoviddeathcensor      = "03/08/2020"
+
+. 
+. *Start dates
+. global indexdate                            = "01/02/2020"
+
+. 
+. 
+. 
+. 
+. 
+. 
+. 
+. * Note - outcome dates are handled separtely below 
+. 
+. * Some names too long for loops below, shorten
+. rename permanent_immunodeficiency_date  perm_immunodef_date
+
+. rename temporary_immunodeficiency_date  temp_immunodef_date
+
+. rename bmi_date_measured_date                   bmi_measured_date
+
+. rename dereg_date_date                                          dereg_date
+
+. 
+. /* CREATE BINARY VARIABLES====================================================*/
+. *  Make indicator variables for all conditions where relevant 
+. 
+. foreach var of varlist  chronic_respiratory_disease ///
+>                                                 chronic_cardiac_disease  ///
+>                                                 diabetes_date  ///
+>                                                 cancer_haem  ///
+>                                                 cancer_nonhaem  ///
+>                                                 perm_immunodef  ///
+>                                                 temp_immunodef  ///
+>                                                 dialysis                                        ///
+>                                                 kidney_transplant                       ///
+>                                                 other_transplant                        /// 
+>                                                 asplenia                        /// 
+>                                                 chronic_liver_disease  ///
+>                                                 other_neuro  ///
+>                                                 stroke_dementia                         ///
+>                                                 esrf  ///
+>                                                 hypertension  ///
+>                                                 ra_sle_psoriasis  ///
+>                                                 bmi_measured_date   ///
+>                                                 bp_sys_date_measured   ///
+>                                                 bp_dias_date_measured   ///
+>                                                 creatinine_date  ///
+>                                                 smoking_status_date ///
+>                                                 {
+  2.                                                 
+.         /* date ranges are applied in python, so presence of date indicates presence of 
+>           disease in the correct time frame */ 
+.         local newvar =  substr("`var'", 1, length("`var'") - 5)
+  3.         gen `newvar' = (`var'!=. )
+  4.         order `newvar', after(`var')
+  5.         
+. }
+
+. 
+. 
+. 
+. 
+. /*  Body Mass Index  */
+. * NB: watch for missingness
+. 
+. * Recode strange values 
+. replace bmi = . if bmi == 0 
+(3,046,385 real changes made, 3,046,385 to missing)
+
+. replace bmi = . if !inrange(bmi, 15, 50)
+(118,828 real changes made, 118,828 to missing)
+
+. 
+. * Restrict to within 10 years of index and aged > 16 
+. gen bmi_time = (date("$indexdate", "DMY") - bmi_measured_date)/365.25
+(2,992,539 missing values generated)
+
+. gen bmi_age = age - bmi_time
+(2,992,539 missing values generated)
+
+. 
+. replace bmi = . if bmi_age < 16 
+(41,436 real changes made, 41,436 to missing)
+
+. replace bmi = . if bmi_time > 10 & bmi_time != . 
+(0 real changes made)
+
+. 
+. * Set to missing if no date, and vice versa 
+. replace bmi = . if bmi_measured_date == . 
+(0 real changes made)
+
+. replace bmi_measured_date = . if bmi == . 
+(214,110 real changes made, 214,110 to missing)
+
+. replace bmi_measured = . if bmi == . 
+(3,206,649 real changes made, 3,206,649 to missing)
+
+. 
+. gen     bmicat = .
+(15,547,253 missing values generated)
+
+. recode  bmicat . = 1 if bmi < 18.5
+(bmicat: 283555 changes made)
+
+. recode  bmicat . = 2 if bmi < 25
+(bmicat: 4398879 changes made)
+
+. recode  bmicat . = 3 if bmi < 30
+(bmicat: 4243423 changes made)
+
+. recode  bmicat . = 4 if bmi < 35
+(bmicat: 2153755 changes made)
+
+. recode  bmicat . = 5 if bmi < 40
+(bmicat: 836982 changes made)
+
+. recode  bmicat . = 6 if bmi < .
+(bmicat: 424010 changes made)
+
+. replace bmicat = .u if bmi >= .
+(3,206,649 real changes made, 3,206,649 to missing)
+
+. 
+. label define bmicat 1 "Underweight (<18.5)"     ///
+>                                         2 "Normal (18.5-24.9)"          ///
+>                                         3 "Overweight (25-29.9)"        ///
+>                                         4 "Obese I (30-34.9)"           ///
+>                                         5 "Obese II (35-39.9)"          ///
+>                                         6 "Obese III (40+)"                     ///
+>                                         .u "Unknown (.u)"
+
+.                                         
+. label values bmicat bmicat
+
+. 
+. * Create less  granular categorisation
+. recode bmicat 1/3 .u = 1 4 = 2 5 = 3 6 = 4, gen(obese4cat)
+(15263698 differences between bmicat and obese4cat)
+
+. 
+. label define obese4cat  1 "No record of obesity"        ///
+>                                                 2 "Obese I (30-34.9)"           ///
+>                                                 3 "Obese II (35-39.9)"          ///
+>                                                 4 "Obese III (40+)"             
+
+. 
+. label values obese4cat obese4cat
+
+. order obese4cat, after(bmicat)
+
+. 
+. 
+. /*  Smoking  */
+. 
+. * Smoking 
+. label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unknown (.u)"
+
+. 
+. gen     smoke = 1  if smoking_status == "N"
+(8,426,946 missing values generated)
+
+. replace smoke = 2  if smoking_status == "E"
+(5,092,032 real changes made)
+
+. replace smoke = 3  if smoking_status == "S"
+(2,719,607 real changes made)
+
+. replace smoke = .u if smoking_status == "M"
+(615,307 real changes made, 615,307 to missing)
+
+. replace smoke = .u if smoking_status == "" 
+(0 real changes made)
+
+. 
+. label values smoke smoke
+
+. drop smoking_status
+
+. 
+. * Create non-missing 3-category variable for current smoking
+. * Assumes missing smoking is never smoking 
+. recode smoke .u = 1, gen(smoke_nomiss)
+(615307 differences between smoke and smoke_nomiss)
+
+. order smoke_nomiss, after(smoke)
+
+. label values smoke_nomiss smoke
+
+. 
+. /* CLINICAL COMORBIDITIES */ 
+. 
+. /*  Cancer */
+. label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
+
+. 
+. * Haematological malignancies
+. gen     cancer_haem_cat = 4 if inrange(cancer_haem_date, d(1/1/1900), d(1/2/2015))
+(15,490,940 missing values generated)
+
+. replace cancer_haem_cat = 3 if inrange(cancer_haem_date, d(1/2/2015), d(1/2/2019))
+(24,871 real changes made)
+
+. replace cancer_haem_cat = 2 if inrange(cancer_haem_date, d(1/2/2019), d(1/2/2020))
+(8,022 real changes made)
+
+. recode  cancer_haem_cat . = 1
+(cancer_haem_cat: 15458047 changes made)
+
+. label values cancer_haem_cat cancer
+
+. 
+. 
+. * All other cancers
+. gen     cancer_exhaem_cat = 4 if inrange(cancer_nonhaem_date,  d(1/1/1900), d(1/2/2015)) 
+(15,068,445 missing values generated)
+
+. replace cancer_exhaem_cat = 3 if inrange(cancer_nonhaem_date,  d(1/2/2015), d(1/2/2019))
+(206,616 real changes made)
+
+. replace cancer_exhaem_cat = 2 if inrange(cancer_nonhaem_date,  d(1/2/2019), d(1/2/2020)) 
+(70,502 real changes made)
+
+. recode  cancer_exhaem_cat . = 1
+(cancer_exhaem_cat: 14791327 changes made)
+
+. label values cancer_exhaem_cat cancer
+
+. 
+. 
+. /*  Immunosuppression  */
+. 
+. * Immunosuppressed:
+. * Permanent immunodeficiency ever, OR 
+. * Temporary immunodeficiency  last year
+. gen temp1  = 1 if perm_immunodef_date!=.
+(15,505,423 missing values generated)
+
+. gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
+
+. 
+. egen other_immuno = rowmax(temp1 temp2)
+
+. drop temp1 temp2 
+
+. order other_immuno, after(temp_immunodef)
+
+. 
+. /*  Blood pressure   */
+. 
+. * Categorise
+. gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
+(10,500,336 missing values generated)
+
+. replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
+(2,687,692 real changes made)
+
+. replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
+(7,117,058 real changes made)
+
+. replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
+(3,303,985 real changes made)
+
+. replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
+(1,563,886 real changes made, 1,563,886 to missing)
+
+. 
+. label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"    ///
+>                                         4 "High, stage II" .u "Unknown"
+
+. label values bpcat bpcat
+
+. 
+. recode bpcat .u=1, gen(bpcat_nomiss)
+(1563886 differences between bpcat and bpcat_nomiss)
+
+. label values bpcat_nomiss bpcat
+
+. 
+. * Create non-missing indicator of known high blood pressure
+. gen bphigh = (bpcat==4)
+
+. 
+. /*  Hypertension  */
+. 
+. gen htdiag_or_highbp = bphigh
+
+. recode htdiag_or_highbp 0 = 1 if hypertension==1 
+(htdiag_or_highbp: 1951209 changes made)
+
+. 
+. 
+. ************
+. *   eGFR   *
+. ************
+. 
+. * Set implausible creatinine values to missing (Note: zero changed to missing)
+. replace creatinine = . if !inrange(creatinine, 20, 3000) 
+(3,990,404 real changes made, 3,990,404 to missing)
+
+.         
+. * Divide by 88.4 (to convert umol/l to mg/dl)
+. gen SCr_adj = creatinine/88.4
+(3,990,404 missing values generated)
+
+. 
+. gen min=.
+(15,547,253 missing values generated)
+
+. replace min = SCr_adj/0.7 if male==0
+(6,308,702 real changes made)
+
+. replace min = SCr_adj/0.9 if male==1
+(5,248,147 real changes made)
+
+. replace min = min^-0.329  if male==0
+(6,308,702 real changes made)
+
+. replace min = min^-0.411  if male==1
+(5,248,147 real changes made)
+
+. replace min = 1 if min<1
+(7,604,923 real changes made)
+
+. 
+. gen max=.
+(15,547,253 missing values generated)
+
+. replace max=SCr_adj/0.7 if male==0
+(6,308,702 real changes made)
+
+. replace max=SCr_adj/0.9 if male==1
+(5,248,147 real changes made)
+
+. replace max=max^-1.209
+(11,556,849 real changes made)
+
+. replace max=1 if max>1
+(7,942,330 real changes made)
+
+. 
+. gen egfr=min*max*141
+(3,990,404 missing values generated)
+
+. replace egfr=egfr*(0.993^age)
+(11,556,849 real changes made)
+
+. replace egfr=egfr*1.018 if male==0
+(6,308,702 real changes made)
+
+. label var egfr "egfr calculated using CKD-EPI formula with no eth"
+
+. 
+. * Categorise into ckd stages
+. egen egfr_cat = cut(egfr), at(0, 15, 30, 45, 60, 5000)
+(3990404 missing values generated)
+
+. recode egfr_cat 0=5 15=4 30=3 45=2 60=0, generate(ckd)
+(11556849 differences between egfr_cat and ckd)
+
+. * 0 = "No CKD"  2 "stage 3a" 3 "stage 3b" 4 "stage 4" 5 "stage 5"
+. label define ckd 0 "No CKD" 1 "CKD"
+
+. label values ckd ckd
+
+. *label var ckd "CKD stage calc without eth"
+. 
+. * Convert into CKD group
+. *recode ckd 2/5=1, gen(chronic_kidney_disease)
+. *replace chronic_kidney_disease = 0 if creatinine==. 
+.         
+. recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
+(10899882 differences between ckd and reduced_kidney_function_cat)
+
+. replace reduced_kidney_function_cat = 1 if creatinine==. 
+(3,990,404 real changes made)
+
+. label define reduced_kidney_function_catlab ///
+>         1 "None" 2 "Stage 3a/3b egfr 30-60      " 3 "Stage 4/5 egfr<30"
+
+. label values reduced_kidney_function_cat reduced_kidney_function_catlab 
+
+. lab var  reduced "Reduced kidney function"
+
+. 
+. 
+. /*ESDR: dialysis or kidney transplant*/
+. gen esrd=1 if dialysis==1 | kidney_transplant==1
+(15,524,229 missing values generated)
+
+. recode esrd .=0
+(esrd: 15524229 changes made)
+
+. 
+. 
+. 
+. ***************************
+. /* DM / Hb1AC */
+. ***************************
+. 
+. 
+. /*  Diabetes severity  */
+. 
+. * Set zero or negative to missing
+. replace hba1c_percentage   = . if hba1c_percentage <= 0
+(13,431,280 real changes made, 13,431,280 to missing)
+
+. replace hba1c_mmol_per_mol = . if hba1c_mmol_per_mol <= 0
+(7,280,816 real changes made, 7,280,816 to missing)
+
+. 
+. /* Express  HbA1c as percentage  */ 
+. 
+. * Express all values as perecentage 
+. noi summ hba1c_percentage hba1c_mmol_per_mol 
+
+    Variable |        Obs        Mean    Std. Dev.       Min        Max
+-------------+---------------------------------------------------------
+hba1c_per~ge |  2,115,973    15.77219     13155.2        .01   1.91e+07
+hba1c_mmol~l |  8,266,437    42.19184     3040.11         .4    8688000
+
+. gen     hba1c_pct = hba1c_percentage 
+(13,431,280 missing values generated)
+
+. replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
+(8,266,435 real changes made)
+
+. 
+. * Valid % range between 0-20  /195 mmol/mol
+. replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
+(633 real changes made, 633 to missing)
+
+. replace hba1c_pct = round(hba1c_pct, 0.1)
+(8,266,507 real changes made)
+
+. 
+. 
+. /* Categorise hba1c and diabetes  */
+. /* Diabetes type */
+. gen dm_type=1 if diabetes_type=="T1DM"
+(15,466,219 missing values generated)
+
+. replace dm_type=2 if diabetes_type=="T2DM"
+(1,104,333 real changes made)
+
+. replace dm_type=3 if diabetes_type=="UNKNOWN_DM"
+(344,520 real changes made)
+
+. replace dm_type=0 if diabetes_type=="NO_DM"
+(14,017,366 real changes made)
+
+. 
+. safetab dm_type diabetes_type
+0
+
+           |                diabetes_type
+   dm_type |     NO_DM       T1DM       T2DM  UNKNOWN.. |     Total
+-----------+--------------------------------------------+----------
+         0 |14,017,366          0          0          0 |14,017,366 
+         1 |         0     81,034          0          0 |    81,034 
+         2 |         0          0  1,104,333          0 | 1,104,333 
+         3 |         0          0          0    344,520 |   344,520 
+-----------+--------------------------------------------+----------
+     Total |14,017,366     81,034  1,104,333    344,520 |15,547,253 
+
+. label define dm_type 0"No DM" 1"T1DM" 2"T2DM" 3"UNKNOWN_DM"
+
+. label values dm_type dm_type
+
+. 
+. *Open safely diabetes codes with exeter algorithm
+. gen dm_type_exeter_os=1 if diabetes_exeter_os=="T1DM_EX_OS"
+(15,476,246 missing values generated)
+
+. replace dm_type_exeter_os=2 if diabetes_exeter_os=="T2DM_EX_OS"
+(1,101,771 real changes made)
+
+. replace dm_type_exeter_os=0 if diabetes_exeter_os=="NO_DM"
+(14,374,475 real changes made)
+
+. label values  dm_type_exeter_os dm_type
+
+. 
+. * Group hba1c
+. gen     hba1ccat = 0 if hba1c_pct <  6.5
+(8,221,993 missing values generated)
+
+. replace hba1ccat = 1 if hba1c_pct >= 6.5  & hba1c_pct < 7.5
+(530,038 real changes made)
+
+. replace hba1ccat = 2 if hba1c_pct >= 7.5  & hba1c_pct < 8
+(140,392 real changes made)
+
+. replace hba1ccat = 3 if hba1c_pct >= 8    & hba1c_pct < 9
+(153,643 real changes made)
+
+. replace hba1ccat = 4 if hba1c_pct >= 9    & hba1c_pct !=.
+(176,843 real changes made)
+
+. label define hba1ccat 0 "<6.5%" 1">=6.5-7.4" 2">=7.5-7.9" 3">=8-8.9" 4">=9"
+
+. label values hba1ccat hba1ccat
+
+. safetab hba1ccat
+0
+
+   hba1ccat |      Freq.     Percent        Cum.
+------------+-----------------------------------
+      <6.5% |  7,325,260       87.98       87.98
+  >=6.5-7.4 |    530,038        6.37       94.34
+  >=7.5-7.9 |    140,392        1.69       96.03
+    >=8-8.9 |    153,643        1.85       97.88
+        >=9 |    176,843        2.12      100.00
+------------+-----------------------------------
+      Total |  8,326,176      100.00
+
+. 
+. gen hba1c75=0 if hba1c_pct<7.5
+(7,691,955 missing values generated)
+
+. replace hba1c75=1 if hba1c_pct>=7.5 & hba1c_pct!=.
+(470,878 real changes made)
+
+. label define hba1c75 0"<7.5" 1">=7.5"
+
+. safetab hba1c75, m
+8
+
+    hba1c75 |      Freq.     Percent        Cum.
+------------+-----------------------------------
+          0 |  7,855,298       50.53       50.53
+          1 |    470,878        3.03       53.55
+          . |  7,221,077       46.45      100.00
+------------+-----------------------------------
+      Total | 15,547,253      100.00
+
+. 
+. * Create diabetes, split by control/not
+. gen     diabcat = 1 if dm_type==0 | dm_type==.
+(1,529,887 missing values generated)
+
+. replace diabcat = 2 if dm_type==1 & inlist(hba1ccat, 0, 1)
+(20,972 real changes made)
+
+. replace diabcat = 3 if dm_type==1 & inlist(hba1ccat, 2, 3, 4)
+(58,625 real changes made)
+
+. replace diabcat = 4 if dm_type==2 & inlist(hba1ccat, 0, 1)
+(692,035 real changes made)
+
+. replace diabcat = 5 if dm_type==2 & inlist(hba1ccat, 2, 3, 4)
+(405,730 real changes made)
+
+. replace diabcat = 6 if dm_type==1 & hba1c_pct==. | dm_type==2 & hba1c_pct==.
+(8,005 real changes made)
+
+. 
+. 
+. label define diabcat    1 "No diabetes"                         ///
+>                                                 2 "T1DM, controlled"            ///
+>                                                 3 "T1DM, uncontrolled"          ///
+>                                                 4 "T2DM, controlled"            ///
+>                                                 5 "T2DM, uncontrolled"          ///
+>                                                 6 "Diabetes, no HbA1c"
+
+. label values diabcat diabcat
+
+. safetab diabcat, m
+8
+
+           diabcat |      Freq.     Percent        Cum.
+-------------------+-----------------------------------
+       No diabetes | 14,017,366       90.16       90.16
+  T1DM, controlled |     20,972        0.13       90.29
+T1DM, uncontrolled |     58,625        0.38       90.67
+  T2DM, controlled |    692,035        4.45       95.12
+T2DM, uncontrolled |    405,730        2.61       97.73
+Diabetes, no HbA1c |      8,005        0.05       97.78
+                 . |    344,520        2.22      100.00
+-------------------+-----------------------------------
+             Total | 15,547,253      100.00
+
+. *replace diabcat .=1
+. 
+. 
+. 
+. /*  Asthma  */
+. 
+. 
+. * Asthma  (coded: 0 No, 1 Yes no OCS, 2 Yes with OCS)
+. rename asthma asthmacat
+
+. recode asthmacat 0=1 1=2 2=3
+(asthmacat: 15547253 changes made)
+
+. label define asthmacat 1 "No" 2 "Yes, no OCS" 3 "Yes with OCS"
+
+. label values asthmacat asthmacat
+
+. 
+. gen asthma = (asthmacat==2|asthmacat==3)
+
+. 
+. /*  Probable shielding  */
+. gen shield=1 if esrd==1 | other_transplant==1 | asthmacat==2 | asthmacat==3 | ///
+> chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
+> asplenia==1 | other_immuno==1
+(11,855,798 missing values generated)
+
+. recode shield .=0
+(shield: 11855798 changes made)
+
+. 
+. recode positive_covid_test_ever .=0
+(positive_covid_test_ever: 0 changes made)
+
+. 
+. /* OUTCOME AND SURVIVAL TIME==================================================*/
+. 
+. /*  Cohort entry and censor dates  */
+. * Date of cohort entry, 1 Mar 2020
+. gen enter_date = date("$indexdate", "DMY")
+
+. gen covid_admissioncensor=d(01May2020)
+
+. * Date of study end (typically: last date of outcome data available)
+. **** NOTE!! NEEDS UPDATING!!!!
+. gen onscoviddeathcensor_date        = date("$onscoviddeathcensor",      "DMY")
+
+. gen tpp_infec_censor_date           = date("$tpp_infec_censor",         "DMY")
+(15,547,253 missing values generated)
+
+.         
+. * Format the dates
+. format  enter_date                                      ///
+>                 onscoviddeathcensor_date   %td
+
+.                         
+.                 
+.                         /****   Outcome definitions   ****/
+. 
+. * Date of Covid death in ONS
+. gen died_date_onscovid = died_date_ons if died_ons_covid_flag_any == 1
+(15,537,208 missing values generated)
+
+. gen died_date_onscovid_part1 = died_date_ons if died_ons_covid_flag_underlying == 1
+(15,538,066 missing values generated)
+
+. 
+. * Date of non-COVID death in ONS 
+. * If missing date of death resulting died_date will also be missing
+. gen died_date_onsnoncovid = died_date_ons if died_ons_covid_flag_any != 1 
+(15,483,427 missing values generated)
+
+. gen covid_icu_death_date=min(covid_icu_date, died_date_onscovid)
+(15,535,592 missing values generated)
+
+. 
+. *Date probable covid in TPP
+. rename covid_tpp_probable date_covid_tpp_prob
+
+. 
+. format died_date_ons %td
+
+. format died_date_onscovid %td 
+
+. format died_date_onsnoncovid %td
+
+. format covid_icu_death_date %td 
+
+. format died_date_onscovid_part1 %td
+
+. format covid_admission_primary_date %td
+
+. 
+. * Binary indicators for outcomes
+. gen covid_tpp_prob = (date_covid_tpp_prob < .)
+
+. gen non_covid_death = (died_date_onsnoncovid < .)
+
+. gen covid_death = (died_date_onscovid < .)
+
+. gen covid_icu = (covid_icu_date < .)
+
+. gen covid_death_icu = (covid_icu_death_date < .)
+
+. gen covidadmission = (covid_admission_primary_date < .)
+
+. gen covid_death_part1 = (died_date_onscovid_part1 < .)
+
+. 
+. 
+.                                         /**** Create survival times  ****/
+. * For looping later, name must be stime_binary_outcome_name
+. 
+. * Survival time = last followup date (first: end study, death, or that outcome)
+. *gen stime_onscoviddeath = min(onscoviddeathcensor_date,                                died_date_ons)
+. gen stime_covid_death_part1     = min(onscoviddeathcensor_date, died_date_onscovid_part1, died_date_ons, der
+> eg_date)
+
+. gen stime_covid_tpp_prob = min(onscoviddeathcensor_date, died_date_ons, date_covid_tpp_prob, dereg_date)
+
+. gen stime_non_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onsnoncovid, dereg_date)
+
+. gen stime_covid_death_icu = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, covid_icu_date,
+>  dereg_date)
+
+. gen stime_covid_death = min(onscoviddeathcensor_date, died_date_ons, died_date_onscovid, dereg_date)
+
+. gen stime_covid_icu = min(onscoviddeathcensor_date, died_date_ons, covid_icu_date, dereg_date)
+
+. gen stime_covidadmission        = min(covid_admissioncensor, covid_admission_primary_date, died_date_ons, de
+> reg_date)
+
+. 
+. * If outcome was after censoring occurred, set to zero
+. replace covid_tpp_prob = 0 if (date_covid_tpp_prob > onscoviddeathcensor_date)
+(5,206 real changes made)
+
+. replace non_covid_death = 0 if (died_date_onsnoncovid > onscoviddeathcensor_date)
+(0 real changes made)
+
+. replace covid_death_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
+([REDACTED] real changes made)
+
+. replace covid_death = 0 if (died_date_onscovid > onscoviddeathcensor_date)
+(0 real changes made)
+
+. replace covid_icu = 0 if (covid_icu_death_date > onscoviddeathcensor_date)
+([REDACTED] real changes made)
+
+. replace covidadmission  = 0 if (covid_admission_primary_date > covid_admissioncensor | covid_admission_prima
+> ry_date > died_date_ons) 
+(1,829 real changes made)
+
+. replace covid_death_part1 = 0 if (died_date_onscovid_part1 > onscoviddeathcensor_date)
+(0 real changes made)
+
+. 
+. * Format date variables
+. format  stime* %td 
+
+. 
+. 
+. /* LABEL VARIABLES============================================================*/
+. *  Label variables you are intending to keep, drop the rest 
+. 
+. *HH variable
+. label var kids_cat3 "Presence of children or young people in the household"
+
+. label var  number_kids "Number of children aged 1-<12 years in household"
+
+. label var  household_size "Number people in household"
+
+. label var  household_id "Household ID"
+
+. 
+. 
+. * Demographics
+. label var patient_id                            "Patient ID"
+
+. label var age                                           "Age (years)"
+
+. label var agegroup                                      "Grouped age"
+
+. label var age66                                         "66 years and older"
+
+. label var sex                                           "Sex"
+
+. label var male                                          "Male"
+
+. label var bmi                                           "Body Mass Index (BMI, kg/m2)"
+
+. label var bmicat                                        "Grouped BMI"
+
+. label var bmi_measured_date             "Body Mass Index (BMI, kg/m2), date measured"
+
+. label var obese4cat                                     "Evidence of obesity (4 categories)"
+
+. label var smoke                                         "Smoking status"
+
+. label var smoke_nomiss                          "Smoking status (missing set to non)"
+
+. label var imd                                           "Index of Multiple Deprivation (IMD)"
+
+. label var ethnicity                                     "Ethnicity"
+
+. label var stp                                           "Sustainability and Transformation Partnership"
+
+. lab var care_home_type                          "Care home type"
+
+. lab var tot_adults_hh                           "Total number adults in hh"
+
+. lab var positive_covid_test_ever        "Ever having had positive covid test"
+
+. 
+. * Comorbidities of interest 
+. label var asthma                                                "Asthma category"
+
+. label var egfr_cat                                              "Calculated eGFR"
+
+. label var hypertension                              "Diagnosed hypertension"
+
+. label var chronic_respiratory_disease   "Chronic Respiratory Diseases"
+
+. label var chronic_cardiac_disease               "Chronic Cardiac Diseases"
+
+. label var diabcat                                               "Diabetes"
+
+. label var cancer_haem_cat                                               "Haematological cancer"
+
+. label var cancer_exhaem_cat                                             "Non-haematological cancer"
+
+. label var kidney_transplant                                             "Kidney transplant"     
+
+. label var other_transplant                                              "Other solid organ transplant"
+
+. label var asplenia                                              "Asplenia"
+
+. label var other_immuno                                  "Immunosuppressed (combination algorithm)"
+
+. label var chronic_liver_disease                 "Chronic liver disease"
+
+. label var other_neuro                   "Neurological disease"                  
+
+. label var stroke_dementia                           "Stroke or dementia"                                    
+>                     
+
+. label var ra_sle_psoriasis                              "Autoimmune disease"
+
+. lab var egfr                                                    eGFR
+
+. lab var perm_immunodef                                  "Permanent immunosuppression"
+
+. lab var temp_immunodef                                  "Temporary immunosuppression"
+
+. lab var esrd                                                    "End-stage renal disease"
+
+. 
+. 
+. label var hypertension_date                                     "Diagnosed hypertension Date"
+
+. label var chronic_respiratory_disease_date      "Other Respiratory Diseases Date"
+
+. label var chronic_cardiac_disease_date          "Other Heart Diseases Date"
+
+. label var diabetes_date                                         "Diabetes Date"
+
+. label var cancer_haem_date                                      "Haem cancer Date"
+
+. label var cancer_nonhaem_date                           "Non-haem cancer Date"
+
+. label var chronic_liver_disease_date            "Chronic liver disease Date"
+
+. label var other_neuro_date              "Neurological disease  Date"
+
+. label var stroke_dementia_date                      "Stroke or dementia date"                               
+>                     
+
+. label var ra_sle_psoriasis_date                         "Autoimmune disease  Date"
+
+. lab var perm_immunodef_date                             "Permanent immunosuppression date"
+
+. lab var temp_immunodef_date                             "Temporary immunosuppression date"
+
+. label var kidney_transplant_date                                                "Kidney transplant"     
+
+. label var other_transplant_date                                         "Other solid organ transplant"
+
+. label var asplenia_date                                                 "Asplenia date"
+
+. lab var  bphigh "non-missing indicator of known high blood pressure"
+
+. lab var bpcat "Blood pressure four levels, non-missing"
+
+. lab var htdiag_or_highbp "High blood pressure or hypertension diagnosis"
+
+. lab var shield "Probable shielding"
+
+. 
+. * Outcomes and follow-up
+. label var enter_date                                    "Date of study entry"
+
+. label var onscoviddeathcensor_date              "Date of admin censoring for ONS deaths"
+
+. label var tpp_infec_censor_date                 "Date of admin censoring for covid TPP cases"
+
+. label var covid_icu_death_date                  "Date of admin censoring for covid death or ICU"
+
+. 
+. label var  covid_tpp_prob                               "Failure/censoring indicator for outcome: covid prob
+>  case"
+
+. label var  non_covid_death                              "Failure/censoring indicator for outcome: non-covid 
+> death"
+
+. label var  covid_death                              "Failure/censoring indicator for outcome: covid death"
+
+. label var  covid_icu                                "Failure/censoring indicator for outcome: covid icu"
+
+. label var  covid_death_icu                              "Failure/censoring indicator for outcome: covid icu/
+> death"
+
+. lab var covidadmission                                  "Failure/censoring indicator for outcome: covid SUS 
+> admission"
+
+. lab var covid_death_part1                               "Failure/censoring indicator for outcome: covid deat
+> h part1"
+
+. 
+. label var date_covid_tpp_prob                   "Date of covid TPP case (probable)"
+
+. label var died_date_onsnoncovid                 "Date of ONS non-COVID Death"
+
+. label var  died_date_onscovid                   "Date of ONS COVID Death"
+
+. lab var covid_icu_date                                  "Date admission to ICU for COVID" 
+
+. lab var covid_admission_primary_date                    "Date admission to hospital" 
+
+. label var  died_date_onscovid_part1                     "Date of ONS COVID Death part1"
+
+. 
+. * Survival times
+. label var  stime_covid_tpp_prob                         "Survival tme (date); outcome "
+
+. label var  stime_non_covid_death                        "Survival tme (date); outcome non_covid_death   "
+
+. label var  stime_covid_death_icu                        "Survival time (date); outcome covid death or icu"
+
+. label var  stime_covid_death                            "Survival time (date); outcome covid death"
+
+. label var  stime_covid_icu                                      "Survival time (date); outcome covid icu"
+
+. label var  stime_covidadmission                         "Survival time (date); outcome covid hosp admission"
+
+. label var  stime_covid_death_part1                              "Survival time (date); outcome covid death p
+> art1"
+
+. 
+. *Key DATES
+. label var   died_date_ons                               "Date death ONS"
+
+. label var  has_12_m_follow_up                   "Has 12 months follow-up"
+
+. lab var  dereg_date                                             "Date deregistration from practice"
+
+. 
+. 
+. 
+. 
+. /* TIDY DATA==================================================================*/
+. *  Drop variables that are not needed (those not labelled)
+. ds, not(varlabel)
+died_ons_c~y  bp_dias       smoki~s_date  hba1c_per~te  asthmacat     bmi_age       hba1ccat
+died_ons_c~g  bp_dias_da~e  diabetes_t~e  cancer_haem   diabetes      SCr_adj       hba1c75
+ethnicity_~e  bp_dias_da~d  diabetes_e~s  cancer_non~m  covid~n_date  min           covid_admi~r
+bmi_measured  creatinine    diabetes_e~r  esrf_date     male_drop     max
+bp_sys        crea~te_date  hba1c_mmol~l  esrf          age_drop      hba1c_pct
+bp_sys_dat~e  crea~ne_date  hba1c_mmol~e  dialysis_d~e  imd_drop      dm_type
+bp_sys_dat~d  smoki~e_date  hba1c_per~ge  dialysis      bmi_time      dm_type_ex~s
+
+. drop `r(varlist)'
+
+.         
+. 
+.         
+. 
+. /* APPLY INCLUSION/EXCLUIONS==================================================*/ 
+. 
+. *************TEMP DROP TO INVESTIGATE ASSOCIATIONS MORE EASILY******************
+. noi di "DROP AGE >110:"
+DROP AGE >110:
+
+. drop if age > 110 & age != .
+(13 observations deleted)
+
+. count
+  15,547,240
+
+. 
+. noi di "DROP IF DIED BEFORE INDEX"
+DROP IF DIED BEFORE INDEX
+
+. drop if died_date_ons <= date("$indexdate", "DMY")
+(334 observations deleted)
+
+. count
+  15,546,906
+
+. 
+. noi di "DROP IF COVID IN TPP BEFORE INDEX"
+DROP IF COVID IN TPP BEFORE INDEX
+
+. drop if date_covid_tpp_prob <= date("$indexdate", "DMY")
+(270 observations deleted)
+
+. count
+  15,546,636
+
+.         
+.         
+. ***************
+. *  Save data  *
+. ***************
+. sort patient_id
+
+. save $tempdir\analysis_dataset, replace
+(note: file tempdata\analysis_dataset.dta not found)
+file tempdata\analysis_dataset.dta saved
+
+. 
+. 
+. 
+. use  $tempdir\analysis_dataset, clear
+
+. keep if age<=65
+(3,490,197 observations deleted)
+
+. * Create restricted cubic splines for age
+. mkspline age = age, cubic nknots(4)
+
+. save $tempdir\analysis_dataset_ageband_0, replace
+(note: file tempdata\analysis_dataset_ageband_0.dta not found)
+file tempdata\analysis_dataset_ageband_0.dta saved
+
+. 
+. 
+. use  $tempdir\analysis_dataset, clear
+
+. keep if age>65
+(12,056,439 observations deleted)
+
+. * Create restricted cubic splines for age
+. mkspline age = age, cubic nknots(4)
+
+. save $tempdir\analysis_dataset_ageband_1, replace
+(note: file tempdata\analysis_dataset_ageband_1.dta not found)
+file tempdata\analysis_dataset_ageband_1.dta saved
+
+. 
+. 
+. 
+. forvalues x=0/1 {
+  2. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+  3. * Save a version set on NON ONS covid death outcome
+. stset stime_non_covid_death, fail(non_covid_death)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+  4. /*WEIGHTING - TO REDUCE TIME 
+> set seed 30459820
+> keep if _d==1|uniform()<.03
+> gen pw = 1
+> replace pw = (1/0.03) if _d==0
+> stset stime_non_covid_death [pweight = pw],  fail(non_covid_death)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)*/
+. save "$tempdir\cr_create_analysis_dataset_STSET_non_covid_death_ageband_`x'.dta", replace
+  5.         
+. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+  6. * Save a version set on covid death/icu  outcome
+. stset stime_covid_death_icu, fail(covid_death_icu)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+  7. save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", replace
+  8. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+  9. * Save a version set on covid icu  outcome only
+. stset stime_covid_icu, fail(covid_icu)                          ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 10. save "$tempdir\cr_create_analysis_dataset_STSET_covid_icu_ageband_`x'.dta", replace
+ 11. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 12. * Save a version set on covid death only
+. stset stime_covid_death, fail(covid_death)                              ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 13. save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_ageband_`x'.dta", replace
+ 14. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 15. * Save a version set on covid death only
+. stset stime_covid_death_part1, fail(covid_death_part1)                          ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 16. save "$tempdir\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_`x'.dta", replace
+ 17. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 18. * Save a version set on probable covid
+. stset stime_covid_tpp_prob, fail(covid_tpp_prob)                                ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 19. save "$tempdir\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_`x'.dta", replace        
+ 20. 
+. use $tempdir\analysis_dataset_ageband_`x', clear
+ 21. * Save a version set on hosp admission for covid
+. stset stime_covidadmission, fail(covidadmission)                                ///
+>         id(patient_id) enter(enter_date) origin(enter_date)
+ 22. save "$tempdir\cr_create_analysis_dataset_STSET_covidadmission_ageband_`x'.dta", replace        
+ 23. 
+. }
+
+                id:  patient_id
+     failure event:  non_covid_death != 0 & non_covid_death < .
+obs. time interval:  (stime_non_covid_death[_n-1], stime_non_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+     10,291  failures in single-failure-per-subject data
+ 2.2034e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_non_covid_death_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_non_covid_death_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+      2,718  failures in single-failure-per-subject data
+ 2.2033e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covid_icu != 0 & covid_icu < .
+obs. time interval:  (stime_covid_icu[_n-1], stime_covid_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+      1,816  failures in single-failure-per-subject data
+ 2.2033e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_icu_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_icu_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covid_death != 0 & covid_death < .
+obs. time interval:  (stime_covid_death[_n-1], stime_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+      1,462  failures in single-failure-per-subject data
+ 2.2034e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covid_death_part1 != 0 & covid_death_part1 < .
+obs. time interval:  (stime_covid_death_part1[_n-1], stime_covid_death_part1]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+      1,326  failures in single-failure-per-subject data
+ 2.2034e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covid_tpp_prob != 0 & covid_tpp_prob < .
+obs. time interval:  (stime_covid_tpp_prob[_n-1], stime_covid_tpp_prob]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+     37,333  failures in single-failure-per-subject data
+ 2.2006e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  covidadmission != 0 & covidadmission < .
+obs. time interval:  (stime_covidadmission[_n-1], stime_covidadmission]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+   12056439  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+   12056439  observations remaining, representing
+   12056439  subjects
+      5,854  failures in single-failure-per-subject data
+ 1.0808e+09  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =        90
+(note: file tempdata\cr_create_analysis_dataset_STSET_covidadmission_ageband_0.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covidadmission_ageband_0.dta saved
+
+                id:  patient_id
+     failure event:  non_covid_death != 0 & non_covid_death < .
+obs. time interval:  (stime_non_covid_death[_n-1], stime_non_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+     53,189  failures in single-failure-per-subject data
+  634385514  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_non_covid_death_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_non_covid_death_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covid_death_icu != 0 & covid_death_icu < .
+obs. time interval:  (stime_covid_death_icu[_n-1], stime_covid_death_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+      8,929  failures in single-failure-per-subject data
+  634344893  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covid_icu != 0 & covid_icu < .
+obs. time interval:  (stime_covid_icu[_n-1], stime_covid_icu]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+        871  failures in single-failure-per-subject data
+  634344893  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_icu_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_icu_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covid_death != 0 & covid_death < .
+obs. time interval:  (stime_covid_death[_n-1], stime_covid_death]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+      8,573  failures in single-failure-per-subject data
+  634385514  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covid_death_part1 != 0 & covid_death_part1 < .
+obs. time interval:  (stime_covid_death_part1[_n-1], stime_covid_death_part1]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+      7,854  failures in single-failure-per-subject data
+  634385514  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_death_part1_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covid_tpp_prob != 0 & covid_tpp_prob < .
+obs. time interval:  (stime_covid_tpp_prob[_n-1], stime_covid_tpp_prob]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+     15,828  failures in single-failure-per-subject data
+  633259316  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =       184
+(note: file tempdata\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covid_tpp_prob_ageband_1.dta saved
+
+                id:  patient_id
+     failure event:  covidadmission != 0 & covidadmission < .
+obs. time interval:  (stime_covidadmission[_n-1], stime_covidadmission]
+ enter on or after:  time enter_date
+ exit on or before:  failure
+    t for analysis:  (time-origin)
+            origin:  time enter_date
+
+------------------------------------------------------------------------------
+  3,490,197  total observations
+          0  exclusions
+------------------------------------------------------------------------------
+  3,490,197  observations remaining, representing
+  3,490,197  subjects
+      8,499  failures in single-failure-per-subject data
+  312068879  total analysis time at risk and under observation
+                                                at risk from t =         0
+                                     earliest observed entry t =         0
+                                          last observed exit t =        90
+(note: file tempdata\cr_create_analysis_dataset_STSET_covidadmission_ageband_1.dta not found)
+file tempdata\cr_create_analysis_dataset_STSET_covidadmission_ageband_1.dta saved
+
+. 
+. * Close log file 
+. log close
+      name:  <unnamed>
+       log:  E:\anna\school-age-children-and-covid\analysis\log\01_cr_analysis_dataset.log
+  log type:  text
+ closed on:   7 Sep 2020, 12:19:39
+--------------------------------------------------------------------------------------------------------------
