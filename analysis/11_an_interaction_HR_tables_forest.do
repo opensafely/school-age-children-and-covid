@@ -18,8 +18,10 @@ local outcome `1'
 cap prog drop outputHRsforvar
 prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
+file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") ///
+_tab ("outcome") _tab ("int_type") _tab ("int_level") ///
+_tab ("HR")  _tab ("lci")  _tab ("uci") _n
 forvalues x=0/1 {
-file write tablecontents_int ("age") ("`x'") _n
 forvalues i=`min'/`max'{
 foreach int_type in male cat_time shield {
 
@@ -28,7 +30,7 @@ forvalues int_level=0/1 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
-	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab _tab ("`int_level'") _tab
+	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
 	
 	foreach modeltype of any fulladj {
 	
@@ -50,12 +52,12 @@ local endwith "_tab"
 		if `noestimatesflag'==0{
 			if `int_level'==0 {
 			cap lincom `i'.`variable', eform
-			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			if `int_level'==1 {
 			cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
-			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			}
@@ -84,7 +86,7 @@ end
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 cap file close tablecontents_int
-file open tablecontents_int using ./output/an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
 
 tempfile HRestimates_int
 cap postutil clear
@@ -97,127 +99,3 @@ file write tablecontents_int _n
 file close tablecontents_int
 
 postclose HRestimates_int
-
-
-forvalues x=0/1 {
-
-use `HRestimates_int', clear
-keep if x=="`x'"
-drop if variable=="gp_number_kids"
-
-gen varorder = 1 
-local i=2
-foreach var of any 		kids_cat3  ///
-		 {
-replace varorder = `i' if variable=="`var'"
-local i=`i'+1
-}
-sort varorder level
-drop varorder
-
-gen obsorder=_n
-expand 2 if variable!=variable[_n-1], gen(expanded)
-for var hr lci uci: replace X = 1 if expanded==1
-
-sort obsorder
-drop obsorder
-replace level = 0 if expanded == 1
-replace level = 1 if expanded == 1 & (variable=="kids_cat3")
-
-replace level = 3 if expanded == 1 & variable=="gp_number_kids"
-
-gen varorder = 1 if variable!=variable[_n-1]
-replace varorder = sum(varorder)
-sort varorder level int_type
-
-
-drop expanded
-expand 2 if variable!=variable[_n-1], gen(expanded)
-replace level = -1 if expanded==1
-drop expanded
-
-expand 2 if level == -1, gen(expanded)
-replace level = -99 if expanded==1
-drop expanded
-
-expand 2 if level == 1 & int_type=="age66" & int_level==0, gen(expanded)
-replace level = 1.5 if expanded==1
-drop expanded
-drop if level==1.5 & int_type=="age66" & hr!=1
-
-for var hr lci uci pval : replace X=. if level<0
-
-
-sort varorder  level int_type int_level
-
-gen varx = 0.07
-gen levelx = 0.073
-gen intx=0.08
-gen lowerlimit = 0.15
-
-gen Name = variable if (level==-99)
-replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
-gen hrtitle="Hazard Ratio (95% CI)" if (level==-99)
-
-gen obsno=_n
-*Levels
-gen leveldesc = ""
-
-replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
-replace obsno=9.5 if obsno==6
-replace leveldesc = "Children/young people aged 11-<18 years" if obsno==9.5
-sort obsno
-
-*Inte labels
-gen intNAME=""
-replace intNAME="Age under 66 years" if int_type=="age66" & int_level==0
-replace intNAME="Age 66 years and above" if int_type=="age66" & int_level==1
-replace intNAME="Female" if int_type=="male" & int_level==0
-replace intNAME="Male" if int_type=="male" & int_level==1
-replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & int_level==0
-replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & int_level==1
-replace intNAME="Unlikely to be shielding" if int_type=="shield" & int_level==0
-replace intNAME="Probable shielding" if int_type=="shield" & int_level==1
-replace intNAME="" if Name!=""
-replace intNAME="" if leveldesc!=""
-
-drop if hr==1 & lci==1 &leveldesc==""
-
-foreach var in hr lci uci {
-replace  `var'=. if leveldesc=="Children/young people aged 11-<18 years"
-}
-
-gen obsorder=_n
-gsort -obsorder
-gen graphorder = _n
-sort obsorder
-gen disx=4
-
-gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
-replace displayhrci="" if hr==.
-list display 
-
-list obsorder obsno Name level leveldesc int_type hr   lci uci 
-
-gen bf_hrtitle = "{bf:" + hrtitle + "}" 
-gen bf_Name = "{bf:" + Name + "}" 
-gen bf_leveldesc = "{bf:" + leveldesc + "}" 
-
-
-scatter graphorder hr if lci>=.15, mcol(black)	msize(small)		///										///
-	|| rcap lci uci graphorder if lci>=.15, hor mcol(black)	lcol(black)			///
-	|| scatter graphorder varx , m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black) 	///
-	|| scatter graphorder levelx, m(i) mlab(bf_leveldesc) mlabsize(vsmall) mlabcol(black) 	///
-	|| scatter graphorder intx, m(i) mlab(intNAME) mlabsize(vsmall) mlabcol(black) 	///
-	|| scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
-	|| scatter graphorder disx, m(i) mlab(bf_hrtitle) mlabsize(vsmall) mlabcol(black) ///
-		xline(1,lp(dash)) 															///
-		xscale(log range(0.1 10)) xlab(0.5 1 2 , labsize(small)) ///
-		xtitle("           ", size(vsmall) ) ///
-		ylab(none) ytitle("")  yscale( lcolor(white))					/// 
-		graphregion(color(white))  legend(off)  ysize(4) ///
-		text(-0.5 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
-		text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
-
-graph export ./output/an_tablecontent_HRtable_HRforest_int_`outcome'_ageband_`x'.svg, as(svg) replace
-}

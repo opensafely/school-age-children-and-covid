@@ -1,0 +1,1226 @@
+{smcl}
+{com}{sf}{ul off}{txt}{.-}
+      name:  {res}<unnamed>
+       {txt}log:  {res}C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\time_interactions_lincom.smcl
+  {txt}log type:  {res}smcl
+ {txt}opened on:  {res}10 Sep 2020, 09:53:31
+{txt}
+{com}. 
+. forvalues x=0/1 {c -(}
+{txt}  2{com}. foreach outcome in  covid_death covid_icu   {c -(}
+{txt}  3{com}. 
+. estimates use  ./output/an_interaction_cox_models_`outcome'_kids_cat3_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'.ster
+{txt}  4{com}. di _n "`outcome' " _n "****************"
+{txt}  5{com}. lincom 1.kids_cat3 + 1.cat_time#1.kids_cat3, eform
+{txt}  6{com}. di "`outcome'" _n "****************"
+{txt}  7{com}. lincom 2.kids_cat3 + 1.cat_time#2.kids_cat3, eform
+{txt}  8{com}. {c )-}
+{txt}  9{com}. {c )-}
+{res}{err}file ./output/an_interaction_cox_models_covid_death_kids_cat3_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.ster not found
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. estimates use  an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
+{res}{err}file an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster not found
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. estimates use  ./output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
+{res}{err}file ./output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster not found
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. estimates use  /output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
+{res}{err}file /output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster not found
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. estimates use  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
+{res}{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. estimates use  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
+{res}{txt}
+{com}. lincom 1.kids_cat3 + 1.weeks#1.kids_cat3, eform
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}1.kids_cat3 + 1bn.weeks#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}     exp(b){col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 9.26e+08{col 26}{space 2} 8.19e+08{col 37}{space 1}   23.35{col 46}{space 3}0.000{col 54}{space 4} 1.64e+08{col 67}{space 3} 5.24e+09
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. return list
+
+{txt}scalars:
+                 r(ub) =  {res}5237400743.669588
+                 {txt}r(lb) =  {res}163649041.2672639
+                  {txt}r(p) =  {res}1.3439573167e-120
+                  {txt}r(z) =  {res}23.35107418194314
+              {txt}r(level) =  {res}95
+                 {txt}r(se) =  {res}818553598.9688745
+           {txt}r(estimate) =  {res}925794583.2818331
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. lincom 1.kids_cat3 + 1.weeks#1.kids_cat3
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}1.kids_cat3 + 1bn.weeks#1.kids_cat3 = 0{p_end}
+
+{txt}{hline 13}{c TT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{col 1}          _t{col 14}{c |}      Coef.{col 26}   Std. Err.{col 38}      z{col 46}   P>|z|{col 54}     [95% Con{col 67}f. Interval]
+{hline 13}{c +}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+{space 9}(1) {c |}{col 14}{res}{space 2} 20.64616{col 26}{space 2} .8841633{col 37}{space 1}   23.35{col 46}{space 3}0.000{col 54}{space 4} 18.91323{col 67}{space 3} 22.37909
+{txt}{hline 13}{c BT}{hline 11}{hline 11}{hline 9}{hline 8}{hline 13}{hline 12}
+
+{com}. return list
+
+{txt}scalars:
+                 r(ub) =  {res}22.37909117092575
+                 {txt}r(lb) =  {res}18.91323470046023
+                  {txt}r(p) =  {res}1.3439573167e-120
+                  {txt}r(z) =  {res}23.35107418194314
+              {txt}r(level) =  {res}95
+                 {txt}r(se) =  {res}.8841633055004471
+           {txt}r(estimate) =  {res}20.64616293569299
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\11_an_interaction_HR_tables_forest.do"
+{txt}
+{com}. *************************************************************************
+. *Purpose: Create content that is ready to paste into a pre-formatted Word 
+. * shell table containing HRs for interaction analyses.  Also output forest 
+. *plot of results as SVG file. 
+. *
+. *Requires: final analysis dataset (analysis_dataset.dta)
+. *
+. *Coding: HFORBES, based on file from Krishnan Bhaskaran
+. *
+. *Date drafted: 30th June 2020
+. *************************************************************************
+. 
+. local outcome `1' 
+{txt}
+{com}. 
+. 
+. ***********************************************************************************************************************
+. *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
+. cap prog drop outputHRsforvar
+{txt}
+{com}. prog define outputHRsforvar
+{txt}  1{com}. syntax, variable(string) min(real) max(real) outcome(string)
+{txt}  2{com}. file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") _tab ("outcome") _tab ("int_type") _tab ("int_level") _tab ("HR") _n
+{txt}  3{com}. forvalues x=0/1 {c -(}
+{txt}  4{com}. forvalues i=`min'/`max'{c -(}
+{txt}  5{com}. foreach int_type in male cat_time shield {c -(}
+{txt}  6{com}. 
+. forvalues int_level=0/1 {c -(}
+{txt}  7{com}. 
+. local endwith "_tab"
+{txt}  8{com}. 
+.         *put the varname and condition to left so that alignment can be checked vs shell
+.         file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
+{txt}  9{com}.         
+.         foreach modeltype of any fulladj {c -(}
+{txt} 10{com}.         
+.                 local noestimatesflag 0 /*reset*/
+{txt} 11{com}. 
+. *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
+.                 if "`modeltype'"=="fulladj" local endwith "_n"
+{txt} 12{com}. 
+.                 ***********************
+.                 *1) GET THE RIGHT ESTIMATES INTO MEMORY
+. 
+.                 if "`modeltype'"=="fulladj" {c -(}
+{txt} 13{com}.                                 cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'  
+{txt} 14{com}.                                 if _rc!=0 local noestimatesflag 1
+{txt} 15{com}.                                 {c )-}
+{txt} 16{com}.                 ***********************
+.                 *2) WRITE THE HRs TO THE OUTPUT FILE
+.                 
+.                 if `noestimatesflag'==0{c -(}
+{txt} 17{com}.                         if `int_level'==0 {c -(}
+{txt} 18{com}.                         cap lincom `i'.`variable', eform
+{txt} 19{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+{txt} 20{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 21{com}.                                 {c )-}
+{txt} 22{com}.                         if `int_level'==1 {c -(}
+{txt} 23{com}.                         cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
+{txt} 24{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+{txt} 25{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 26{com}.                                 {c )-}
+{txt} 27{com}.                         {c )-}
+{txt} 28{com}.                         else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith' 
+{txt} 29{com}.                         
+.                 *3) Save the estimates for plotting
+.                 if `noestimatesflag'==0{c -(}
+{txt} 30{com}.                         if "`modeltype'"=="fulladj" {c -(}
+{txt} 31{com}.                                 local hr = r(estimate)
+{txt} 32{com}.                                 local lb = r(lb)
+{txt} 33{com}.                                 local ub = r(ub)
+{txt} 34{com}.                                 cap gen `variable'=.
+{txt} 35{com}.                                 testparm i.`variable'
+{txt} 36{com}.                                 post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
+{txt} 37{com}.                                 drop `variable'
+{txt} 38{com}.                                 {c )-}
+{txt} 39{com}.                 {c )-}       
+{txt} 40{com}.                 {c )-} 
+{txt} 41{com}.                 {c )-} /*int_level*/
+{txt} 42{com}.                 {c )-} /*full adj*/
+{txt} 43{com}.                 
+. {c )-} /*variable levels*/
+{txt} 44{com}. {c )-} /*agebands*/
+{txt} 45{com}. end
+{txt}
+{com}. ***********************************************************************************************************************
+. 
+. *MAIN CODE TO PRODUCE TABLE CONTENTS
+. cap file close tablecontents_int
+{txt}
+{com}. file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+{txt}(note: file ./output/11_an_int_tab_contents_HRtable_.txt not found)
+
+{com}. 
+. tempfile HRestimates_int
+{txt}
+{com}. cap postutil clear
+{txt}
+{com}. postfile HRestimates_int str10 x str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
+{txt}
+{com}. 
+. *Primary exposure
+. outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
+{err}option {bf}outcome(){sf} required
+{txt}{search r(198), local:r(198);}
+
+end of do-file
+
+{search r(198), local:r(198);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu covid_death     {c -(}
+{txt}  2{com}.         do "11_an_interaction_HR_tables_forest.do"       `outcome'
+{txt}  3{com}. {c )-}
+{err}{p 0 4 2}
+file 11_an_interaction_HR_tables_forest.do
+not found
+{p_end}
+{txt}{search r(601), local:r(601);}
+
+end of do-file
+
+{search r(601), local:r(601);}
+
+{com}. do "C:\Users\ENCDHFOR\Desktop\school_kids_local_working_globals.do"
+{txt}
+{com}. *local working only
+. cd "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid"
+{res}C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. *Model do file
+. 
+. *When running in parallel locally use "C:\Program Files (x86)\Stata15\Stata-64.exe"
+. *When running on server use "c:\program files\stata16\statamp-64.exe"
+. 
+. 
+. *Import dataset into STATA
+. import delimited `c(pwd)'/output/input.csv, clear
+{res}{text}(57 vars, 10,000 obs)
+
+{com}. 
+. cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
+{res}C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis
+{txt}
+{com}. set more off 
+{txt}
+{com}. 
+. ***********************HOUSE-KEEPING*******************************************
+. * Create directories required 
+. capture mkdir output
+{txt}
+{com}. capture mkdir log
+{txt}
+{com}. capture mkdir tempdata
+{txt}
+{com}. 
+. 
+. * Set globals that will print in programs and direct output
+. global outdir     "output" 
+{txt}
+{com}. global logdir     "log"
+{txt}
+{com}. global tempdir    "tempdata"
+{txt}
+{com}. global demogadjlist  age1 age2 age3 i.male      `bmi' `smoking' `ethnicity'     i.imd i.tot_adults_hh
+{txt}
+{com}. global comordidadjlist  i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabcat                                               ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.cancer_haem_cat                               ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.esrd                                                  ///
+>                         i.other_transplant                              ///
+>                         i.asplenia                                              ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  
+{txt}
+{com}. 
+. ********************************************************************************
+. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu covid_death     {c -(}
+{txt}  2{com}.         do "11_an_interaction_HR_tables_forest.do"       `outcome'
+{txt}  3{com}. {c )-}
+{txt}
+{com}. *************************************************************************
+. *Purpose: Create content that is ready to paste into a pre-formatted Word 
+. * shell table containing HRs for interaction analyses.  Also output forest 
+. *plot of results as SVG file. 
+. *
+. *Requires: final analysis dataset (analysis_dataset.dta)
+. *
+. *Coding: HFORBES, based on file from Krishnan Bhaskaran
+. *
+. *Date drafted: 30th June 2020
+. *************************************************************************
+. 
+. local outcome `1' 
+{txt}
+{com}. 
+. 
+. ***********************************************************************************************************************
+. *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
+. cap prog drop outputHRsforvar
+{txt}
+{com}. prog define outputHRsforvar
+{txt}  1{com}. syntax, variable(string) min(real) max(real) outcome(string)
+{txt}  2{com}. file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") _tab ("outcome") _tab ("int_type") _tab ("int_level") _tab ("HR") _n
+{txt}  3{com}. forvalues x=0/1 {c -(}
+{txt}  4{com}. forvalues i=`min'/`max'{c -(}
+{txt}  5{com}. foreach int_type in male cat_time shield {c -(}
+{txt}  6{com}. 
+. forvalues int_level=0/1 {c -(}
+{txt}  7{com}. 
+. local endwith "_tab"
+{txt}  8{com}. 
+.         *put the varname and condition to left so that alignment can be checked vs shell
+.         file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
+{txt}  9{com}.         
+.         foreach modeltype of any fulladj {c -(}
+{txt} 10{com}.         
+.                 local noestimatesflag 0 /*reset*/
+{txt} 11{com}. 
+. *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
+.                 if "`modeltype'"=="fulladj" local endwith "_n"
+{txt} 12{com}. 
+.                 ***********************
+.                 *1) GET THE RIGHT ESTIMATES INTO MEMORY
+. 
+.                 if "`modeltype'"=="fulladj" {c -(}
+{txt} 13{com}.                                 cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'  
+{txt} 14{com}.                                 if _rc!=0 local noestimatesflag 1
+{txt} 15{com}.                                 {c )-}
+{txt} 16{com}.                 ***********************
+.                 *2) WRITE THE HRs TO THE OUTPUT FILE
+.                 
+.                 if `noestimatesflag'==0{c -(}
+{txt} 17{com}.                         if `int_level'==0 {c -(}
+{txt} 18{com}.                         cap lincom `i'.`variable', eform
+{txt} 19{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+{txt} 20{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 21{com}.                                 {c )-}
+{txt} 22{com}.                         if `int_level'==1 {c -(}
+{txt} 23{com}.                         cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
+{txt} 24{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") `endwith'
+{txt} 25{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 26{com}.                                 {c )-}
+{txt} 27{com}.                         {c )-}
+{txt} 28{com}.                         else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith' 
+{txt} 29{com}.                         
+.                 *3) Save the estimates for plotting
+.                 if `noestimatesflag'==0{c -(}
+{txt} 30{com}.                         if "`modeltype'"=="fulladj" {c -(}
+{txt} 31{com}.                                 local hr = r(estimate)
+{txt} 32{com}.                                 local lb = r(lb)
+{txt} 33{com}.                                 local ub = r(ub)
+{txt} 34{com}.                                 cap gen `variable'=.
+{txt} 35{com}.                                 testparm i.`variable'
+{txt} 36{com}.                                 post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
+{txt} 37{com}.                                 drop `variable'
+{txt} 38{com}.                                 {c )-}
+{txt} 39{com}.                 {c )-}       
+{txt} 40{com}.                 {c )-} 
+{txt} 41{com}.                 {c )-} /*int_level*/
+{txt} 42{com}.                 {c )-} /*full adj*/
+{txt} 43{com}.                 
+. {c )-} /*variable levels*/
+{txt} 44{com}. {c )-} /*agebands*/
+{txt} 45{com}. end
+{txt}
+{com}. ***********************************************************************************************************************
+. 
+. *MAIN CODE TO PRODUCE TABLE CONTENTS
+. cap file close tablecontents_int
+{txt}
+{com}. file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+{txt}
+{com}. 
+. tempfile HRestimates_int
+{txt}
+{com}. cap postutil clear
+{txt}
+{com}. postfile HRestimates_int str10 x str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
+{txt}
+{com}. 
+. *Primary exposure
+. outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+{txt}
+{com}. file write tablecontents_int _n
+{txt}
+{com}. 
+. file close tablecontents_int
+{txt}
+{com}. 
+. postclose HRestimates_int
+{txt}
+{com}. 
+. 
+. forvalues x=0/1 {c -(}
+{txt}  2{com}. 
+. use `HRestimates_int', clear
+{txt}  3{com}. keep if x=="`x'"
+{txt}  4{com}. stop 
+{txt}  5{com}. gen varorder = 1 
+{txt}  6{com}. local i=2
+{txt}  7{com}. foreach var of any              kids_cat3  ///
+>                  {c -(}
+{txt}  8{com}. replace varorder = `i' if variable=="`var'"
+{txt}  9{com}. local i=`i'+1
+{txt} 10{com}. {c )-}
+{txt} 11{com}. sort varorder level
+{txt} 12{com}. drop varorder
+{txt} 13{com}. 
+. gen obsorder=_n
+{txt} 14{com}. expand 2 if variable!=variable[_n-1], gen(expanded)
+{txt} 15{com}. for var hr lci uci: replace X = 1 if expanded==1
+{txt} 16{com}. 
+. sort obsorder
+{txt} 17{com}. drop obsorder
+{txt} 18{com}. replace level = 0 if expanded == 1
+{txt} 19{com}. replace level = 1 if expanded == 1 & (variable=="kids_cat3")
+{txt} 20{com}. 
+. replace level = 3 if expanded == 1 & variable=="gp_number_kids"
+{txt} 21{com}. 
+. gen varorder = 1 if variable!=variable[_n-1]
+{txt} 22{com}. replace varorder = sum(varorder)
+{txt} 23{com}. sort varorder level int_type
+{txt} 24{com}. 
+. 
+. drop expanded
+{txt} 25{com}. expand 2 if variable!=variable[_n-1], gen(expanded)
+{txt} 26{com}. replace level = -1 if expanded==1
+{txt} 27{com}. drop expanded
+{txt} 28{com}. 
+. expand 2 if level == -1, gen(expanded)
+{txt} 29{com}. replace level = -99 if expanded==1
+{txt} 30{com}. drop expanded
+{txt} 31{com}. 
+. expand 2 if level == 1 & int_type=="age66" & int_level==0, gen(expanded)
+{txt} 32{com}. replace level = 1.5 if expanded==1
+{txt} 33{com}. drop expanded
+{txt} 34{com}. drop if level==1.5 & int_type=="age66" & hr!=1
+{txt} 35{com}. 
+. for var hr lci uci pval : replace X=. if level<0
+{txt} 36{com}. 
+. 
+. sort varorder  level int_type int_level
+{txt} 37{com}. 
+. gen varx = 0.07
+{txt} 38{com}. gen levelx = 0.073
+{txt} 39{com}. gen intx=0.08
+{txt} 40{com}. gen lowerlimit = 0.15
+{txt} 41{com}. 
+. gen Name = variable if (level==-99)
+{txt} 42{com}. replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
+{txt} 43{com}. gen hrtitle="Hazard Ratio (95% CI)" if (level==-99)
+{txt} 44{com}. 
+. gen obsno=_n
+{txt} 45{com}. *Levels
+. gen leveldesc = ""
+{txt} 46{com}. 
+. replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
+{txt} 47{com}. replace obsno=9.5 if obsno==6
+{txt} 48{com}. replace leveldesc = "Children/young people aged 11-<18 years" if obsno==9.5
+{txt} 49{com}. sort obsno
+{txt} 50{com}. stop
+{txt} 51{com}. *Inte labels
+. gen intNAME=""
+{txt} 52{com}. replace intNAME="Age under 66 years" if int_type=="age66" & int_level==0
+{txt} 53{com}. replace intNAME="Age 66 years and above" if int_type=="age66" & int_level==1
+{txt} 54{com}. replace intNAME="Female" if int_type=="male" & int_level==0
+{txt} 55{com}. replace intNAME="Male" if int_type=="male" & int_level==1
+{txt} 56{com}. replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & int_level==0
+{txt} 57{com}. replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & int_level==1
+{txt} 58{com}. replace intNAME="Unlikely to be shielding" if int_type=="shield" & int_level==0
+{txt} 59{com}. replace intNAME="Probable shielding" if int_type=="shield" & int_level==1
+{txt} 60{com}. replace intNAME="" if Name!=""
+{txt} 61{com}. replace intNAME="" if leveldesc!=""
+{txt} 62{com}. 
+. drop if hr==1 & lci==1 &leveldesc==""
+{txt} 63{com}. 
+. foreach var in hr lci uci {c -(}
+{txt} 64{com}. replace  `var'=. if leveldesc=="Children/young people aged 11-<18 years"
+{txt} 65{com}. {c )-}
+{txt} 66{com}. 
+. gen obsorder=_n
+{txt} 67{com}. gsort -obsorder
+{txt} 68{com}. gen graphorder = _n
+{txt} 69{com}. sort obsorder
+{txt} 70{com}. gen disx=4
+{txt} 71{com}. 
+. gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
+{txt} 72{com}. replace displayhrci="" if hr==.
+{txt} 73{com}. list display 
+{txt} 74{com}. 
+. list obsorder obsno Name level leveldesc int_type hr   lci uci 
+{txt} 75{com}. 
+. gen bf_hrtitle = "{c -(}bf:" + hrtitle + "{c )-}" 
+{txt} 76{com}. gen bf_Name = "{c -(}bf:" + Name + "{c )-}" 
+{txt} 77{com}. gen bf_leveldesc = "{c -(}bf:" + leveldesc + "{c )-}" 
+{txt} 78{com}. 
+. 
+. scatter graphorder hr if lci>=.15, mcol(black)  msize(small)            ///                                                                             ///
+>         || rcap lci uci graphorder if lci>=.15, hor mcol(black) lcol(black)                     ///
+>         || scatter graphorder varx , m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black)         ///
+>         || scatter graphorder levelx, m(i) mlab(bf_leveldesc) mlabsize(vsmall) mlabcol(black)   ///
+>         || scatter graphorder intx, m(i) mlab(intNAME) mlabsize(vsmall) mlabcol(black)  ///
+>         || scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
+>         || scatter graphorder disx, m(i) mlab(bf_hrtitle) mlabsize(vsmall) mlabcol(black) ///
+>                 xline(1,lp(dash))                                                                                                                       ///
+>                 xscale(log range(0.1 10)) xlab(0.5 1 2 , labsize(small)) ///
+>                 xtitle("           ", size(vsmall) ) ///
+>                 ylab(none) ytitle("")  yscale( lcolor(white))                                   /// 
+>                 graphregion(color(white))  legend(off)  ysize(4) ///
+>                 text(-0.5 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
+>                 text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
+{txt} 79{com}. 
+. graph export ./output/11_an_int_`outcome'_ageband_`x'.svg, as(svg) replace
+{txt} 80{com}. {c )-}
+{txt}(12 observations deleted)
+{err}command {bf}stop{sf} is unrecognized
+{txt}{search r(199), local:r(199);}
+
+end of do-file
+{search r(199), local:r(199);}
+
+end of do-file
+
+{search r(199), local:r(199);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu covid_death     {c -(}
+{txt}  2{com}.         do "11_an_interaction_HR_tables_forest.do"       `outcome'
+{txt}  3{com}. {c )-}
+{txt}
+{com}. *************************************************************************
+. *Purpose: Create content that is ready to paste into a pre-formatted Word 
+. * shell table containing HRs for interaction analyses.  Also output forest 
+. *plot of results as SVG file. 
+. *
+. *Requires: final analysis dataset (analysis_dataset.dta)
+. *
+. *Coding: HFORBES, based on file from Krishnan Bhaskaran
+. *
+. *Date drafted: 30th June 2020
+. *************************************************************************
+. 
+. local outcome `1' 
+{txt}
+{com}. 
+. 
+. ***********************************************************************************************************************
+. *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
+. cap prog drop outputHRsforvar
+{txt}
+{com}. prog define outputHRsforvar
+{txt}  1{com}. syntax, variable(string) min(real) max(real) outcome(string)
+{txt}  2{com}. file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") ///
+> _tab ("outcome") _tab ("int_type") _tab ("int_level") ///
+> _tab ("HR")  _tab ("lci")  _tab ("uci") _n
+{txt}  3{com}. forvalues x=0/1 {c -(}
+{txt}  4{com}. forvalues i=`min'/`max'{c -(}
+{txt}  5{com}. foreach int_type in male cat_time shield {c -(}
+{txt}  6{com}. 
+. forvalues int_level=0/1 {c -(}
+{txt}  7{com}. 
+. local endwith "_tab"
+{txt}  8{com}. 
+.         *put the varname and condition to left so that alignment can be checked vs shell
+.         file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
+{txt}  9{com}.         
+.         foreach modeltype of any fulladj {c -(}
+{txt} 10{com}.         
+.                 local noestimatesflag 0 /*reset*/
+{txt} 11{com}. 
+. *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
+.                 if "`modeltype'"=="fulladj" local endwith "_n"
+{txt} 12{com}. 
+.                 ***********************
+.                 *1) GET THE RIGHT ESTIMATES INTO MEMORY
+. 
+.                 if "`modeltype'"=="fulladj" {c -(}
+{txt} 13{com}.                                 cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'  
+{txt} 14{com}.                                 if _rc!=0 local noestimatesflag 1
+{txt} 15{com}.                                 {c )-}
+{txt} 16{com}.                 ***********************
+.                 *2) WRITE THE HRs TO THE OUTPUT FILE
+.                 
+.                 if `noestimatesflag'==0{c -(}
+{txt} 17{com}.                         if `int_level'==0 {c -(}
+{txt} 18{com}.                         cap lincom `i'.`variable', eform
+{txt} 19{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
+{txt} 20{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 21{com}.                                 {c )-}
+{txt} 22{com}.                         if `int_level'==1 {c -(}
+{txt} 23{com}.                         cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
+{txt} 24{com}.                         if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
+{txt} 25{com}.                                 else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
+{txt} 26{com}.                                 {c )-}
+{txt} 27{com}.                         {c )-}
+{txt} 28{com}.                         else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith' 
+{txt} 29{com}.                         
+.                 *3) Save the estimates for plotting
+.                 if `noestimatesflag'==0{c -(}
+{txt} 30{com}.                         if "`modeltype'"=="fulladj" {c -(}
+{txt} 31{com}.                                 local hr = r(estimate)
+{txt} 32{com}.                                 local lb = r(lb)
+{txt} 33{com}.                                 local ub = r(ub)
+{txt} 34{com}.                                 cap gen `variable'=.
+{txt} 35{com}.                                 testparm i.`variable'
+{txt} 36{com}.                                 post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
+{txt} 37{com}.                                 drop `variable'
+{txt} 38{com}.                                 {c )-}
+{txt} 39{com}.                 {c )-}       
+{txt} 40{com}.                 {c )-} 
+{txt} 41{com}.                 {c )-} /*int_level*/
+{txt} 42{com}.                 {c )-} /*full adj*/
+{txt} 43{com}.                 
+. {c )-} /*variable levels*/
+{txt} 44{com}. {c )-} /*agebands*/
+{txt} 45{com}. end
+{txt}
+{com}. ***********************************************************************************************************************
+. 
+. *MAIN CODE TO PRODUCE TABLE CONTENTS
+. cap file close tablecontents_int
+{txt}
+{com}. file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+{txt}
+{com}. 
+. tempfile HRestimates_int
+{txt}
+{com}. cap postutil clear
+{txt}
+{com}. postfile HRestimates_int str10 x str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
+{txt}
+{com}. 
+. *Primary exposure
+. outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
+
+{p 0 7}{space 1}{text:( 1)}{space 1} {res}1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.28
+{txt}{col 10}Prob > chi2 =  {res}  0.5275
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    2.08
+{txt}{col 10}Prob > chi2 =  {res}  0.3532
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    3.32
+{txt}{col 10}Prob > chi2 =  {res}  0.1904
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.43
+{txt}{col 10}Prob > chi2 =  {res}  0.4885
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    1.03
+{txt}{col 10}Prob > chi2 =  {res}  0.5977
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+
+{p 0 7}{space 1}{text:( 1)}{space 1} 1.kids_cat3 = 0{p_end}
+{p 0 7}{space 1}{text:( 2)}{space 1} 2.kids_cat3 = 0{p_end}
+
+{txt}{col 12}chi2(  2) ={res}    0.61
+{txt}{col 10}Prob > chi2 =  {res}  0.7355
+{txt}
+{com}. file write tablecontents_int _n
+{txt}
+{com}. 
+. file close tablecontents_int
+{txt}
+{com}. 
+. postclose HRestimates_int
+{txt}
+{com}. 
+. 
+. forvalues x=0/1 {c -(}
+{txt}  2{com}. 
+. use `HRestimates_int', clear
+{txt}  3{com}. keep if x=="`x'"
+{txt}  4{com}. stop 
+{txt}  5{com}. gen varorder = 1 
+{txt}  6{com}. local i=2
+{txt}  7{com}. foreach var of any              kids_cat3  ///
+>                  {c -(}
+{txt}  8{com}. replace varorder = `i' if variable=="`var'"
+{txt}  9{com}. local i=`i'+1
+{txt} 10{com}. {c )-}
+{txt} 11{com}. sort varorder level
+{txt} 12{com}. drop varorder
+{txt} 13{com}. 
+. gen obsorder=_n
+{txt} 14{com}. expand 2 if variable!=variable[_n-1], gen(expanded)
+{txt} 15{com}. for var hr lci uci: replace X = 1 if expanded==1
+{txt} 16{com}. 
+. sort obsorder
+{txt} 17{com}. drop obsorder
+{txt} 18{com}. replace level = 0 if expanded == 1
+{txt} 19{com}. replace level = 1 if expanded == 1 & (variable=="kids_cat3")
+{txt} 20{com}. 
+. replace level = 3 if expanded == 1 & variable=="gp_number_kids"
+{txt} 21{com}. 
+. gen varorder = 1 if variable!=variable[_n-1]
+{txt} 22{com}. replace varorder = sum(varorder)
+{txt} 23{com}. sort varorder level int_type
+{txt} 24{com}. 
+. 
+. drop expanded
+{txt} 25{com}. expand 2 if variable!=variable[_n-1], gen(expanded)
+{txt} 26{com}. replace level = -1 if expanded==1
+{txt} 27{com}. drop expanded
+{txt} 28{com}. 
+. expand 2 if level == -1, gen(expanded)
+{txt} 29{com}. replace level = -99 if expanded==1
+{txt} 30{com}. drop expanded
+{txt} 31{com}. 
+. expand 2 if level == 1 & int_type=="age66" & int_level==0, gen(expanded)
+{txt} 32{com}. replace level = 1.5 if expanded==1
+{txt} 33{com}. drop expanded
+{txt} 34{com}. drop if level==1.5 & int_type=="age66" & hr!=1
+{txt} 35{com}. 
+. for var hr lci uci pval : replace X=. if level<0
+{txt} 36{com}. 
+. 
+. sort varorder  level int_type int_level
+{txt} 37{com}. 
+. gen varx = 0.07
+{txt} 38{com}. gen levelx = 0.073
+{txt} 39{com}. gen intx=0.08
+{txt} 40{com}. gen lowerlimit = 0.15
+{txt} 41{com}. 
+. gen Name = variable if (level==-99)
+{txt} 42{com}. replace Name = "Presence of children or young people in household" if Name=="kids_cat3"
+{txt} 43{com}. gen hrtitle="Hazard Ratio (95% CI)" if (level==-99)
+{txt} 44{com}. 
+. gen obsno=_n
+{txt} 45{com}. *Levels
+. gen leveldesc = ""
+{txt} 46{com}. 
+. replace leveldesc = "Children under 12 years" if variable=="kids_cat3" & level==-1
+{txt} 47{com}. replace obsno=9.5 if obsno==6
+{txt} 48{com}. replace leveldesc = "Children/young people aged 11-<18 years" if obsno==9.5
+{txt} 49{com}. sort obsno
+{txt} 50{com}. stop
+{txt} 51{com}. *Inte labels
+. gen intNAME=""
+{txt} 52{com}. replace intNAME="Age under 66 years" if int_type=="age66" & int_level==0
+{txt} 53{com}. replace intNAME="Age 66 years and above" if int_type=="age66" & int_level==1
+{txt} 54{com}. replace intNAME="Female" if int_type=="male" & int_level==0
+{txt} 55{com}. replace intNAME="Male" if int_type=="male" & int_level==1
+{txt} 56{com}. replace intNAME="Time before 3rd April 2020" if int_type=="cat_time" & int_level==0
+{txt} 57{com}. replace intNAME="Time on/after 3rd April 2020" if int_type=="cat_time" & int_level==1
+{txt} 58{com}. replace intNAME="Unlikely to be shielding" if int_type=="shield" & int_level==0
+{txt} 59{com}. replace intNAME="Probable shielding" if int_type=="shield" & int_level==1
+{txt} 60{com}. replace intNAME="" if Name!=""
+{txt} 61{com}. replace intNAME="" if leveldesc!=""
+{txt} 62{com}. 
+. drop if hr==1 & lci==1 &leveldesc==""
+{txt} 63{com}. 
+. foreach var in hr lci uci {c -(}
+{txt} 64{com}. replace  `var'=. if leveldesc=="Children/young people aged 11-<18 years"
+{txt} 65{com}. {c )-}
+{txt} 66{com}. 
+. gen obsorder=_n
+{txt} 67{com}. gsort -obsorder
+{txt} 68{com}. gen graphorder = _n
+{txt} 69{com}. sort obsorder
+{txt} 70{com}. gen disx=4
+{txt} 71{com}. 
+. gen displayhrci = string(hr, "%3.2f") + " (" + string(lci, "%3.2f") + "-" + string(uci, "%3.2f") + ")"
+{txt} 72{com}. replace displayhrci="" if hr==.
+{txt} 73{com}. list display 
+{txt} 74{com}. 
+. list obsorder obsno Name level leveldesc int_type hr   lci uci 
+{txt} 75{com}. 
+. gen bf_hrtitle = "{c -(}bf:" + hrtitle + "{c )-}" 
+{txt} 76{com}. gen bf_Name = "{c -(}bf:" + Name + "{c )-}" 
+{txt} 77{com}. gen bf_leveldesc = "{c -(}bf:" + leveldesc + "{c )-}" 
+{txt} 78{com}. 
+. 
+. scatter graphorder hr if lci>=.15, mcol(black)  msize(small)            ///                                                                             ///
+>         || rcap lci uci graphorder if lci>=.15, hor mcol(black) lcol(black)                     ///
+>         || scatter graphorder varx , m(i) mlab(bf_Name) mlabsize(vsmall) mlabcol(black)         ///
+>         || scatter graphorder levelx, m(i) mlab(bf_leveldesc) mlabsize(vsmall) mlabcol(black)   ///
+>         || scatter graphorder intx, m(i) mlab(intNAME) mlabsize(vsmall) mlabcol(black)  ///
+>         || scatter graphorder disx, m(i) mlab(displayhrci) mlabsize(vsmall) mlabcol(black) ///
+>         || scatter graphorder disx, m(i) mlab(bf_hrtitle) mlabsize(vsmall) mlabcol(black) ///
+>                 xline(1,lp(dash))                                                                                                                       ///
+>                 xscale(log range(0.1 10)) xlab(0.5 1 2 , labsize(small)) ///
+>                 xtitle("           ", size(vsmall) ) ///
+>                 ylab(none) ytitle("")  yscale( lcolor(white))                                   /// 
+>                 graphregion(color(white))  legend(off)  ysize(4) ///
+>                 text(-0.5 0.2 "Lower risk in those living with children", place(e) size(vsmall)) ///
+>                 text(-0.5 1.5 "Higher risk in those living with children", place(e) size(vsmall))
+{txt} 79{com}. 
+. graph export ./output/11_an_int_`outcome'_ageband_`x'.svg, as(svg) replace
+{txt} 80{com}. {c )-}
+{txt}(12 observations deleted)
+{err}command {bf}stop{sf} is unrecognized
+{txt}{search r(199), local:r(199);}
+
+end of do-file
+{search r(199), local:r(199);}
+
+end of do-file
+
+{search r(199), local:r(199);}
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. *EXPLORATORY ANALYSIS: prop hazards investigation
+. foreach outcome of any   non_covid_death  {c -(}
+{txt}  2{com}. winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"   do "16_exploratory_analysis.do" `outcome'
+{txt}  3{com}. {c )-}
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. *EXPLORATORY ANALYSIS: prop hazards investigation
+. foreach outcome of any   non_covid_death  {c -(}
+{txt}  2{com}. winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"   do "16_exploratory_analysis.do" `outcome'
+{txt}  3{com}. {c )-}
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\AppData\Local\Temp\STD4344_000000.tmp"
+{txt}
+{com}. *EXPLORATORY ANALYSIS: prop hazards investigation
+. foreach outcome of any   non_covid_death  {c -(}
+{txt}  2{com}. winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"   do "16_exploratory_analysis.do" `outcome'
+{txt}  3{com}. {c )-}
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\Desktop\school_kids_local_working_globals.do"
+{txt}
+{com}. *local working only
+. cd "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid"
+{res}C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid
+{txt}
+{com}. 
+{txt}end of do-file
+
+{com}. do "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\model.do"
+{txt}
+{com}. *Model do file
+. 
+. *When running in parallel locally use "C:\Program Files (x86)\Stata15\Stata-64.exe"
+. *When running on server use "c:\program files\stata16\statamp-64.exe"
+. 
+. 
+. *Import dataset into STATA
+. import delimited `c(pwd)'/output/input.csv, clear
+{res}{text}(57 vars, 10,000 obs)
+
+{com}. 
+. cd  `c(pwd)'/analysis /*sets working directory to workspace folder*/
+{res}C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis
+{txt}
+{com}. set more off 
+{txt}
+{com}. 
+. ***********************HOUSE-KEEPING*******************************************
+. * Create directories required 
+. capture mkdir output
+{txt}
+{com}. capture mkdir log
+{txt}
+{com}. capture mkdir tempdata
+{txt}
+{com}. 
+. 
+. * Set globals that will print in programs and direct output
+. global outdir     "output" 
+{txt}
+{com}. global logdir     "log"
+{txt}
+{com}. global tempdir    "tempdata"
+{txt}
+{com}. global demogadjlist  age1 age2 age3 i.male      `bmi' `smoking' `ethnicity'     i.imd i.tot_adults_hh
+{txt}
+{com}. global comordidadjlist  i.htdiag_or_highbp                              ///
+>                         i.chronic_respiratory_disease   ///
+>                         i.asthma                                                ///
+>                         i.chronic_cardiac_disease               ///
+>                         i.diabcat                                               ///
+>                         i.cancer_exhaem_cat                             ///
+>                         i.cancer_haem_cat                               ///
+>                         i.chronic_liver_disease                 ///
+>                         i.stroke_dementia                               ///
+>                         i.other_neuro                                   ///
+>                         i.reduced_kidney_function_cat   ///
+>                         i.esrd                                                  ///
+>                         i.other_transplant                              ///
+>                         i.asplenia                                              ///
+>                         i.ra_sle_psoriasis                      ///
+>                         i.other_immuno                                  
+{txt}
+{com}. 
+. ********************************************************************************
+. 
+. 
+. *  Pre-analysis data manipulation  *
+. do "01_cr_analysis_dataset.do"
+{txt}
+{com}. /*==============================================================================
+> DO FILE NAME:                   01_cr_analysis_dataset
+> PROJECT:                                Exposure children and COVID risk
+> DATE:                                   25th June 2020 
+> AUTHOR:                                 Harriet Forbes adapted from A Wong, A Schultze, C Rentsch,
+>                                                  K Baskharan, E Williamson                                                                              
+> DESCRIPTION OF FILE:    program 01, data management for project  
+>                                                 reformat variables 
+>                                                 categorise variables
+>                                                 label variables 
+>                                                 apply exclusion criteria
+> DATASETS USED:                  data in memory (from analysis/input.csv)
+> DATASETS CREATED:               none
+> OTHER OUTPUT:                   logfiles, printed to folder analysis/$logdir
+>                                                         
+> ==============================================================================*/
+. 
+. * Open a log file
+. cap log close
+{smcl}
+{com}{sf}{ul off}

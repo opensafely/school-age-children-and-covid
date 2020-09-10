@@ -147,6 +147,8 @@ tabulatevariable, variable(ra_sle_psoriasis) start(1) end(1) outcome(kids_cat3)
 tabulatevariable, variable(other_immuno) start(1) end(1) outcome(kids_cat3)
 *SHEILDING
 tabulatevariable, variable(shield) start(1) end(1) outcome(kids_cat3)
+*anycomorbidity
+tabulatevariable, variable(anycomorb) start(1) end(1) outcome(kids_cat3)
 
 file close tablecontent
 
