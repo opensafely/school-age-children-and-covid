@@ -28,7 +28,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male	i.obese4cat i.smoke_nomiss i.imd i.tot_adults_hh
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -52,10 +52,8 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth.ster
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agegroup_bmicat_noeth.ster
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCeth.ster
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_agespline_bmicat_CCnoeth.ster
+cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.ster
+cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_cat_time_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
 
 
 

@@ -581,9 +581,49 @@ chronic_respiratory_disease==1 | cancer_haem==1 | cancer_nonhaem==1 | ///
 asplenia==1 | other_immuno==1
 recode shield .=0
 
-recode positive_covid_test_ever .=0
+/*Any comorbidity*/
+
+gen anycomorb=1 if chronic_respiratory_disease==1 | ///
+                    asthmacat==2 | asthmacat==3 | ///
+					chronic_cardiac_disease==1  | ///
+					diabcat==2 | diabcat==3 | diabcat==4 | diabcat==5 | diabcat==6 | ///
+					cancer_haem==1 | cancer_nonhaem==1 | ///
+					esrd==1 | ///
+					chronic_liver_disease==1 | ///
+					stroke_dementia==1 | ///
+					other_neuro==1 | ///
+					other_transplant==1 | ///
+					asplenia==1 | ///
+					ra_sle_psoriasis==1 | ///
+					other_immuno==1 
+recode anycomorb .=0
+tab anyco
+
+* Comorbidities of interest 
+label var asthma						"Asthma category"
+label var egfr_cat						"Calculated eGFR"
+label var hypertension				    "Diagnosed hypertension"
+label var chronic_respiratory_disease 	"Chronic Respiratory Diseases"
+label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
+label var diabcat						"Diabetes"
+label var cancer_haem_cat						"Haematological cancer"
+label var cancer_exhaem_cat						"Non-haematological cancer"
+label var kidney_transplant						"Kidney transplant"	
+label var other_transplant 	 					"Other solid organ transplant"
+label var asplenia 						"Asplenia"
+label var other_immuno					"Immunosuppressed (combination algorithm)"
+label var chronic_liver_disease 		"Chronic liver disease"
+label var other_neuro 			"Neurological disease"			
+label var stroke_dementia 			    "Stroke or dementia"							
+label var ra_sle_psoriasis				"Autoimmune disease"
+lab var egfr							eGFR
+lab var perm_immunodef  				"Permanent immunosuppression"
+lab var temp_immunodef  				"Temporary immunosuppression"
+lab var esrd 							"End-stage renal disease"
+
 
 /* OUTCOME AND SURVIVAL TIME==================================================*/
+recode positive_covid_test_ever .=0
 
 /*  Cohort entry and censor dates  */
 * Date of cohort entry, 1 Mar 2020
@@ -743,11 +783,15 @@ label var  covid_death_icu				"Failure/censoring indicator for outcome: covid ic
 lab var covidadmission 					"Failure/censoring indicator for outcome: covid SUS admission"
 lab var covid_death_part1				"Failure/censoring indicator for outcome: covid death part1"
 
-label var date_covid_tpp_prob			"Date of covid TPP case (probable)"
-label var died_date_onsnoncovid	 		"Date of ONS non-COVID Death"
-label var  died_date_onscovid			"Date of ONS COVID Death"
-lab var covid_icu_date					"Date admission to ICU for COVID" 
-lab var covid_admission_primary_date			"Date admission to hospital" 
+rename died_date_onsnoncovid date_non_covid_death
+rename died_date_onscovid date_covid_death
+rename covid_icu_date date_covid_icu
+rename covid_admission_primary_date date_covidadmission
+label var date_covid_tpp_prob			"Date of probable COVID-19 clinical infection"
+label var date_non_covid_death	 		"Date of ONS non-COVID-19 Death"
+label var  date_covid_death			"Date of ONS COVID-19 Death"
+lab var date_covid_icu					"Date of admission to ICU for COVID-19" 
+lab var date_covidadmission			"Date of admission to hospital for COVID-19" 
 label var  died_date_onscovid_part1			"Date of ONS COVID Death part1"
 
 * Survival times

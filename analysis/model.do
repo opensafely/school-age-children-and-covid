@@ -91,6 +91,15 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
 	}
+	
+	***SENSE ANALYSES
+foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense4.do" `outcome'
+winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense5.do" `outcome'
+}
 
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
@@ -110,16 +119,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_ana
 }
 
 
-***SENSE ANALYSES
-foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death {
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense4.do" `outcome'
-winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense5.do" `outcome'
-}
 
-/*
 *INTERACTIONS
 *Sex
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
@@ -133,22 +133,19 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
-*/
-
 *Weeks
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_weeks" `outcome'	
 }
 
 
-/*EXPLORATORY ANALYSIS: prop hazards investigation
-foreach outcome of any   non_covid_death  {
+*EXPLORATORY ANALYSIS: restricting to single adult hh
+foreach outcome of any   non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  {
 winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.do" `outcome'
-}*/
+}
 
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
-*       															*
 *********************************************************************	
 /*
 cd ..
@@ -202,10 +199,12 @@ forvalues i = 1/60 {
 }
 *pause Stata for 24 hours: 1/8640 whilst testing on server, on full data
 
-*Tabulate results
+/*Tabulate results
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 	do "08_an_tablecontent_HRtable.do" `outcome'
-}
+}*/
+
+
 *put results in figure
 do "15_anHRfigure_all_outcomes.do"
 
