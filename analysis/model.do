@@ -53,21 +53,21 @@ do "02_an_data_checks.do"
 *IF PARALLEL WORKING - FOLLOWING CAN BE RUN IN ANY ORDER/IN PARALLEL*
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
-/*
+
 winexec "c:\program files\stata16\statamp-64.exe" do "03a_an_descriptive_tables.do"
 winexec "c:\program files\stata16\statamp-64.exe" do "03b_an_descriptive_table_1.do" 
 
 winexec "c:\program files\stata16\statamp-64.exe" do "04a_an_descriptive_tables.do"
-*/
+
 foreach outcome of any   non_covid_death  covid_tpp_prob covidadmission covid_icu covid_death    {
 winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2.do" `outcome'
 	}
-/*	
-winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
-*/
+
+*winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
 
 
-/*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
+
+*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
@@ -81,7 +81,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SE
 *MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission covid_death_part1  {
 winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-}*/
+}
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
@@ -147,7 +147,7 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.d
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *********************************************************************	
-/*
+
 cd ..
 import delimited `c(pwd)'/output/input_worms.csv, clear
 
@@ -186,7 +186,7 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07a_an_multivariabl
 winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
-*/
+
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
@@ -199,20 +199,20 @@ forvalues i = 1/60 {
 }
 *pause Stata for 24 hours: 1/8640 whilst testing on server, on full data
 
-/*Tabulate results
+*Tabulate results
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 	do "08_an_tablecontent_HRtable.do" `outcome'
-}*/
+}
 
 
 *put results in figure
 do "15_anHRfigure_all_outcomes.do"
 
-/*
+
 foreach outcome of any worms  {
 	do "WORMS_08_an_tablecontent_HRtable.do" `outcome'
 }
-*/
+
 
 foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu covid_death     {
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
@@ -220,13 +220,13 @@ foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu 
 
 do "11a_an_interaction_HR_tables_forest_WEEKS.do"
 
-/*
+
 foreach outcome of any  covid_tpp_prob covidadmission covid_icu covid_death   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
-*/
 
-/*
+
+
 ***SENSE ANALYSIS
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death    {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
