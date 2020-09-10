@@ -66,8 +66,8 @@ winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2
 winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
 */
 
-/*
-*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
+
+/*UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
@@ -78,14 +78,14 @@ winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SE
 
 
 ************************************************************
-	*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
+*MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission covid_death_part1  {
 winexec "c:\program files\stata16\statamp-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
-}
+}*/
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  covid_death_part1 {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
-*/
+
 
 **MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
