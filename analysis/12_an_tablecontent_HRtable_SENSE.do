@@ -20,7 +20,7 @@ syntax, variable(string) min(real) max(real) outcome(string)
 forvalues x=0/1 {
 file write tablecontents_sense ("age") ("`x'") _n
 foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
-file write tablecontents_sense ("sense=") ("`sense'") _n
+file write tablecontents_sense _n ("sense=") ("`sense'") _n
 forvalues i=1/2 {
 local endwith "_tab"
 
