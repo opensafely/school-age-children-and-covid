@@ -226,7 +226,7 @@ foreach outcome of any  covid_tpp_prob covidadmission covid_icu covid_death   {
 }
 */
 
-
+/*
 ***SENSE ANALYSIS
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death    {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
