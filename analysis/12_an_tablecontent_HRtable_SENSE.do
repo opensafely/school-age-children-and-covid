@@ -99,7 +99,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" {
-		cap estimates use  ./output/an_sense_`outcome'_`exposure_type'_`sense'_ageband_`x'
+		estimates use  ./output/an_sense_`outcome'_`exposure_type'_`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		

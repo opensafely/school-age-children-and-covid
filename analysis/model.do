@@ -92,7 +92,7 @@ foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
 	}
 
-forvalues i = 1/60 {
+forvalues i = 1/100 {
     di `i'
     sleep 10000
 }	
@@ -207,7 +207,7 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariabl
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/60 {
+forvalues i = 1/100 {
     di `i'
     sleep 10000
 }
