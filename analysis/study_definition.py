@@ -75,7 +75,7 @@ study = StudyDefinition(
                           covid_identification_in_primary_care_case_codes_seq),
         return_first_date_in_period=True,
         include_day=True,
-        return_expectations={"date": {"earliest": "2020-02-01"}},
+        return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.8},
     ), 
    
     covid_admission_date=patients.admitted_to_hospital(
