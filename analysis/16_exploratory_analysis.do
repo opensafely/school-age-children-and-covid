@@ -57,7 +57,7 @@ prog define basemodel
 	syntax , exposure(string)  age(string) [ethnicity(real 0) interaction(string)] 
 timer clear
 timer on 1
-stcox 	`exposure'  								///
+cap stcox 	`exposure'  								///
 			$demogadjlist							///
 			$comordidadjlist						///
 			`interaction'							///

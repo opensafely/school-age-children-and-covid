@@ -103,7 +103,7 @@ foreach exposure_type in kids_cat3  {
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_age_underlying_timescale_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_age_underlying_timescale_ageband_`x', replace
 *estat concordance /*c-statistic*/
 	/*  Proportional Hazards test  */
 	* Based on Schoenfeld residuals

@@ -145,5 +145,3 @@ file close tablecontent
 
 }
 
-
-exit, clear STATA

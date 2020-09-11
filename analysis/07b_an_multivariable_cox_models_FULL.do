@@ -101,7 +101,7 @@ foreach exposure_type in 	kids_cat3  {
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
+estimates save "./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x'", replace
 *estat concordance /*c-statistic*/
 	/*  Proportional Hazards test  */
 	* Based on Schoenfeld residuals
@@ -123,7 +123,7 @@ foreach exposure_type in kids_cat3   {
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_12mo_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_noeth_12mo_ageband_`x', replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"

@@ -747,7 +747,7 @@ lab var egfr							eGFR
 lab var perm_immunodef  				"Permanent immunosuppression"
 lab var temp_immunodef  				"Temporary immunosuppression"
 lab var esrd 							"End-stage renal disease"
-
+lab var anycomorb						"Any comorbidity"
 
 label var hypertension_date			   		"Diagnosed hypertension Date"
 label var chronic_respiratory_disease_date 	"Other Respiratory Diseases Date"

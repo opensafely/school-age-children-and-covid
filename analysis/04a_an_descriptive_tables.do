@@ -170,5 +170,3 @@ sts list , at(0 80) by(agegroup male) fail
 * Close the log file
 log close
 
-
-exit, clear STATA

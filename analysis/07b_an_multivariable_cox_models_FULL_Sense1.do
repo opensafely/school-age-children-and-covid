@@ -77,7 +77,6 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 foreach exposure_type in 	kids_cat3  {
 
-
 *Complete case ethnicity model
 	capture stcox 	i.`exposure_type'			///
 			$demogadjlist				///
@@ -85,7 +84,7 @@ foreach exposure_type in 	kids_cat3  {
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCeth_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"

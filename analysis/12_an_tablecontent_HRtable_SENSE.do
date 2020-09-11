@@ -12,6 +12,7 @@
 
 local outcome `1' 
 
+
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -19,8 +20,8 @@ prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues x=0/1 {
 file write tablecontents_sense ("age") ("`x'") _n
-foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
-file write tablecontents_sense ("sense=") ("`sense'") _n
+foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale time_int {
+file write tablecontents_sense _n ("sense=") ("`sense'") _n
 forvalues i=1/2 {
 local endwith "_tab"
 
@@ -46,7 +47,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
+	    cap estimates use  ./output/an_sense_`outcome'_`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -73,7 +74,7 @@ local endwith "_tab"
 		
 } /*variable levels*/
 
-forvalues i=2/3 {
+/*forvalues i=2/3 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
@@ -98,7 +99,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
+		cap estimates use  ./output/an_sense_`outcome'_`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -128,6 +129,7 @@ local endwith "_tab"
 		} /*min adj, full adj*/
 		
 } /*variable levels*/
+*/
 } /*age levels*/
 } /*sense levels*/
 
