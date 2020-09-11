@@ -19,7 +19,10 @@ lincom 2.kids_cat3 + 1.cat_time#2.kids_cat3, eform
 log close
 
 
-estimates use  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_interaction_cox_models_covid_tpp_prob_kids_cat3_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
-lincom 1.kids_cat3 + 1.weeks#1.kids_cat3
-return list
+estimates use  C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output/an_sense_covid_tpp_prob_multiple_imputation_ageband_0.ster
+local hr = exp( el(e(b_mi),1,2) )
+			di `hr'
+			local lb = exp( el(e(b_mi),1,2)  - 1.96*  sqrt(el(e(V_mi),2,2))  )
+			di `lb'
+			local ub = exp( el(e(b_mi),1,2)  + 1.96*  sqrt(el(e(V_mi),2,2))  )
 

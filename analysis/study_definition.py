@@ -60,6 +60,7 @@ study = StudyDefinition(
         include_day=True,
         return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.8},
     ),
+    
     covid_icu_date=patients.admitted_to_icu(
         on_or_after="2020-02-01",
         include_day=True,
@@ -67,6 +68,7 @@ study = StudyDefinition(
         find_first_match_in_period=True,
         return_expectations={"date": {"earliest": "2020-02-01"}, "incidence" : 0.8},
     ),
+
    covid_tpp_probable=patients.with_these_clinical_events(
         combine_codelists(covid_identification_in_primary_care_case_codes_clinical,
                           covid_identification_in_primary_care_case_codes_test,
@@ -82,7 +84,7 @@ study = StudyDefinition(
         on_or_after="2020-02-01",
         find_first_match_in_period=True,  
         date_format="YYYY-MM-DD",  
-        return_expectations={"date": {"earliest": "2020-03-01"}},
+        return_expectations={"date": {"earliest": "2020-03-01"}, "incidence" : 0.95},
    ),
 	covid_admission_primary_diagnosis=patients.admitted_to_hospital(
         returning="primary_diagnosis",
@@ -90,8 +92,7 @@ study = StudyDefinition(
         on_or_after="2020-02-01",
         find_first_match_in_period=True,  
         date_format="YYYY-MM-DD", 
-        return_expectations={
-            "date": {"earliest": "2020-03-01"},
+        return_expectations={"date": {"earliest": "2020-03-01"},"incidence" : 0.95,
             "category": {"ratios": {"U071":0.5, "U072":0.5}},
         },
     ),

@@ -12,6 +12,7 @@
 
 local outcome `1' 
 
+
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -46,7 +47,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
+	 estimates use  ./output/an_sense_`outcome'_`exposure_type'`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -98,7 +99,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_`sense'_ageband_`x' 
+		cap estimates use  ./output/an_sense_`outcome'_`exposure_type'_`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		

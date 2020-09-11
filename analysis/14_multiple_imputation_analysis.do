@@ -76,7 +76,7 @@ mi estimate, hr:  stcox 	i.kids_cat3 	 ///
 			$comordidadjlist				///	
 			, strata(stp) vce(cluster household_id)  
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_multiple_imputation_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_multiple_imputation_ageband_`x', replace
 }
 
 log close

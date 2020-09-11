@@ -96,6 +96,8 @@ forvalues i = 1/60 {
     di `i'
     sleep 10000
 }	
+
+
 ***SENSE ANALYSES - 9 hours (45 hours)
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense1.do" `outcome'

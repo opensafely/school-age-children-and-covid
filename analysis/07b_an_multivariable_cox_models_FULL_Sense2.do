@@ -84,7 +84,7 @@ foreach exposure_type in 	kids_cat3  {
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_CCeth_bmi_smok_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCeth_bmi_smok_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHN BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
