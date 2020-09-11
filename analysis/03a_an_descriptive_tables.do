@@ -158,6 +158,5 @@ safetab `var' gp_number_kids, col row
 * Close the log file
 log close
 
-exit, clear STATA
 
 

@@ -54,17 +54,18 @@ do "02_an_data_checks.do"
 *       PROVIDING THE ABOVE CR_ FILE HAS BEEN RUN FIRST				*
 *********************************************************************
 
-winexec "c:\program files\stata16\statamp-64.exe" do "03a_an_descriptive_tables.do"
-winexec "c:\program files\stata16\statamp-64.exe" do "03b_an_descriptive_table_1.do" 
+do "03a_an_descriptive_tables.do"
+do "03b_an_descriptive_table_1.do" 
 
-winexec "c:\program files\stata16\statamp-64.exe" do "04a_an_descriptive_tables.do"
+do "04a_an_descriptive_tables.do"
 
-foreach outcome of any   non_covid_death  covid_tpp_prob covidadmission covid_icu covid_death    {
-winexec "c:\program files\stata16\statamp-64.exe" do "04b_an_descriptive_table_2.do" `outcome'
-	}
+do "04b_an_descriptive_table_2.do" non_covid_death
+do "04b_an_descriptive_table_2.do" covid_tpp_prob
+do "04b_an_descriptive_table_2.do" covidadmission
+do "04b_an_descriptive_table_2.do" covid_icu
+do "04b_an_descriptive_table_2.do" covid_death
 
 *winexec "c:\program files\stata16\statamp-64.exe" do "05_an_descriptive_plots.do"
-
 
 
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
@@ -76,6 +77,12 @@ winexec "c:\program files\stata16\statamp-64.exe" do "06a_univariate_analysis_SE
 		kids_cat3 
 }
 
+*Pause for 4 hours
+forvalues i = 1/10 {
+    di `i'
+    sleep 10000
+}
+*pause Stata for 4 hours: 1/1440 whilst testing on server, on full data
 
 ************************************************************
 *MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
@@ -86,17 +93,12 @@ foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu cov
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }	
 
-
-**MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
-foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
-winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
-	}
-
-forvalues i = 1/100 {
+*Pause for 4 hours
+forvalues i = 1/10 {
     di `i'
     sleep 10000
-}	
-
+}
+*pause Stata for 4 hours: 1/1440 whilst testing on server, on full data
 
 ***SENSE ANALYSES - 9 hours (45 hours)
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
@@ -105,33 +107,63 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense2.do" `outcome'
 }
+
+*Pause for 6 hours
+forvalues i = 1/10 {
+    di `i'
+    sleep 10000
+}
+*pause Stata for 6 hours: 1/2160 whilst testing on server, on full data
+
+
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense3.do" `outcome'
 }
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense4.do" `outcome'
 }
+
+*Pause for 6 hours
+forvalues i = 1/10 {
+    di `i'
+    sleep 10000
+}
+*pause Stata for 6 hours: 1/2160 whilst testing on server, on full data
+
+
+
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_models_FULL_Sense5.do" `outcome'
 }
 
+*EXPLORATORY ANALYSIS: restricting to single adult hh
+foreach outcome of any   non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  {
+winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.do" `outcome'
+}
 ************************************************************
 *PARALLEL WORKING - THESE MUST BE RUN AFTER THE 
 *MAIN AN_UNIVARIATE.. AND AN_MULTIVARIATE... 
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/60 {
-    di `i'
-    sleep 10000
-}
-*pause Stata for 4 hours: 1/1440 whilst testing on server, on full data
 
+
+/**MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
+foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
+winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
+	} 
+	
 **MULTIPLE IMPUTAION: run (~20 hours each outcome - 80 hours)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_analysis.do" `outcome'
-}
+}*/
 
+*Pause for 6 hours
+forvalues i = 1/10 {
+    di `i'
+    sleep 10000
+}
+*pause Stata for 6 hours: 1/2160 whilst testing on server, on full data
 
 
 *INTERACTIONS (7 hours each - 140)
@@ -143,6 +175,15 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_shield" `outcome'	
 }
+
+*Pause for 6 hours
+forvalues i = 1/10 {
+    di `i'
+    sleep 10000
+}
+*pause Stata for 6 hours: 1/2160 whilst testing on server, on full data
+
+
 *Time
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
@@ -153,10 +194,7 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 }
 
 
-*EXPLORATORY ANALYSIS: restricting to single adult hh
-foreach outcome of any   non_covid_death covid_tpp_prob covid_death covid_icu covidadmission  {
-winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.do" `outcome'
-}
+
 
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
@@ -207,11 +245,12 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "WORMS_07b_an_multivariabl
 *and AN_SENS... DO FILES HAVE FINISHED
 *(THESE ARE VERY QUICK)*
 ************************************************************
-forvalues i = 1/100 {
+*Pause for 2 hours
+forvalues i = 1/5 {
     di `i'
     sleep 10000
 }
-*pause Stata for 24 hours: 1/8640 whilst testing on server, on full data
+*pause Stata for 2 hours: 1/720 whilst testing on server, on full data
 
 *Tabulate results
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
@@ -239,8 +278,6 @@ do "11a_an_interaction_HR_tables_forest_WEEKS.do"
 foreach outcome of any  covid_tpp_prob covidadmission covid_icu covid_death   {
 	do "09_an_agesplinevisualisation.do" `outcome'
 }
-
-
 
 ***SENSE ANALYSIS
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death    {

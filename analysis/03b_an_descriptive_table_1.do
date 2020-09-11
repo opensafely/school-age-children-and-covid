@@ -153,5 +153,3 @@ tabulatevariable, variable(anycomorb) start(1) end(1) outcome(kids_cat3)
 file close tablecontent
 
 }
-
-exit, clear STATA
