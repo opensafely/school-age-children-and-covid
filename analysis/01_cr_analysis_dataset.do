@@ -774,6 +774,7 @@ label var enter_date					"Date of study entry"
 label var onscoviddeathcensor_date 		"Date of admin censoring for ONS deaths"
 label var tpp_infec_censor_date 		"Date of admin censoring for covid TPP cases"
 label var covid_icu_death_date			"Date of admin censoring for covid death or ICU"
+label var covid_admissioncensor 		"Date of admin censoring for SUS data"
 
 label var  covid_tpp_prob				"Failure/censoring indicator for outcome: covid prob case"
 label var  non_covid_death				"Failure/censoring indicator for outcome: non-covid death"

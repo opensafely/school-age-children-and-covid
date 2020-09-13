@@ -52,9 +52,10 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_0.ster
-cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_weeks_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_1.ster
-
+foreach week in 0 1 2 3 4 5 6 7 {
+cap erase ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_0
+cap erase ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_1
+}
 
 cap log close
 log using "$logdir\10_an_interaction_cox_models_weeks_`outcome'", text replace
@@ -67,7 +68,7 @@ prog define basemodel
 	else local ethnicity
 timer clear
 timer on 1
-stcox 	`exposure'  								///
+cap stcox 	`exposure'  								///
 			$demogadjlist							///
 			$comordidadjlist						///
 			`interaction'							///
@@ -77,81 +78,49 @@ timer list
 end
 *************************************************************************************
 
-
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
-*Split data by week following start of pandemic: weeks 1 to 6 and remaining time
+/*SPLITTING TAKES TOO MUCH MEMORY - STRATIFY INSTEAD
+Split data by week following start of pandemic: weeks 1 to 6 and remaining time
 stsplit weeks, at(0 63 (7) 105 200)
 tab weeks
 recode weeks 63=1 70=2 77=3 84=4 91=5 98=6 105=7
 recode `outcome' .=0 
 tab weeks
-tab weeks `outcome'
- 
+tab weeks `outcome'*/
 
+foreach week in 0 1 2 3 4 5 6 7 {
+cap drop new_enter new_exit
 
+gen new_enter=d(03april2020) + (`week'*7)
+gen new_exit=(new_enter)+6
+format new_enter new_exit %td
+sum new_enter new_exit, format
 
-foreach int_type in weeks  {
+drop stime*
+if "`outcome'"=="covidadmission" {
+gen stime_`outcome'	= min(covid_admissioncensor, date_covidadmission, died_date_ons, dereg_date, new_exit)
+}
+if "`outcome'"!="covidadmission" {
+gen stime_`outcome' = min(onscoviddeathcensor_date, died_date_ons, date_`outcome', dereg_date, new_exit)
+}
 
-*Age interaction for 3-level exposure vars
-foreach exposure_type in kids_cat3  {
+stset stime_`outcome', fail(`outcome') 				///
+	id(patient_id) enter(new_enter) origin(new_enter)
 
 *Age spline model (not adj ethnicity, no interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
+basemodel, exposure("i.kids_cat3") age("age1 age2 age3")  
 
 *Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.`exposure_type'") age("age1 age2 age3") interaction(1.`int_type'#1.`exposure_type' 1.`int_type'#2.`exposure_type' ///
-2.`int_type'#1.`exposure_type' 2.`int_type'#2.`exposure_type' 3.`int_type'#1.`exposure_type' 3.`int_type'#2.`exposure_type' ///
-4.`int_type'#1.`exposure_type' 4.`int_type'#2.`exposure_type' 5.`int_type'#1.`exposure_type' 5.`int_type'#2.`exposure_type' ///
-6.`int_type'#1.`exposure_type' 6.`int_type'#2.`exposure_type' 7.`int_type'#1.`exposure_type' 7.`int_type'#2.`exposure_type')
+basemodel, exposure("i.kids_cat3") age("age1 age2 age3")
 if _rc==0 {
-testparm 1.`int_type'#i.`exposure_type'
 
-
-di _n "Up to April 3rd (3 weeks post lockdown)" _n "****************"
-lincom 1.`exposure_type', eform
-lincom 2.`exposure_type', eform
-
-di _n "Week 1" _n "****************"
-lincom 1.`exposure_type' + 1.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 1.`int_type'#2.`exposure_type', eform
-
-di _n "Week=2" _n "****************"
-lincom 1.`exposure_type' + 2.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 2.`int_type'#2.`exposure_type', eform
-
-di _n "Week=3" _n "****************"
-lincom 1.`exposure_type' + 3.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 3.`int_type'#2.`exposure_type', eform
-
-
-di _n "Week=4" _n "****************"
-lincom 1.`exposure_type' + 4.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 4.`int_type'#2.`exposure_type', eform
-
-
-di _n "Week=5" _n "****************"
-lincom 1.`exposure_type' + 5.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 5.`int_type'#2.`exposure_type', eform
-
-
-di _n "Week=6"  _n "****************"
-lincom 1.`exposure_type' + 6.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 6.`int_type'#2.`exposure_type', eform
-
-di _n "Remaining weeks" _n "****************"
-lincom 1.`exposure_type' + 7.`int_type'#1.`exposure_type', eform
-lincom 2.`exposure_type' + 7.`int_type'#2.`exposure_type', eform
-
-
-estimates save ./output/an_interaction_cox_models_`outcome'_`exposure_type'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x', replace
+estimates save ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_`x', replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
-
-}
 
 }
 

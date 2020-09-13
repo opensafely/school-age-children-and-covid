@@ -147,17 +147,6 @@ winexec "c:\program files\stata16\statamp-64.exe" 	do "16_exploratory_analysis.d
 *(THESE ARE VERY QUICK)*
 ************************************************************
 
-
-/**MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
-foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
-winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
-	} 
-	
-**MULTIPLE IMPUTAION: run (~20 hours each outcome - 80 hours)
-foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
-winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_analysis.do" `outcome'
-}*/
-
 *Pause for 6 hours
 forvalues i = 1/10 {
     di `i'
@@ -188,10 +177,7 @@ forvalues i = 1/10 {
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_time" `outcome'	
 }
-*Weeks
-foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
-winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_weeks" `outcome'	
-}
+
 
 
 
@@ -271,7 +257,6 @@ foreach outcome of any  non_covid_death covid_tpp_prob covidadmission covid_icu 
 	do "11_an_interaction_HR_tables_forest.do" 	 `outcome'
 }
 
-do "11a_an_interaction_HR_tables_forest_WEEKS.do"
 
 *do "FOREST_interactions.do"
 
@@ -284,6 +269,22 @@ foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death    {
 	do "12_an_tablecontent_HRtable_SENSE.do" `outcome'
 	}
 
-	
+***Additional analyses to run if we have time	
 
+*re-run 01 do file (first time only) as need covid admission censor date to be saved. 
 	
+*Weeks
+foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
+winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_weeks" `outcome'	
+}
+do "11a_an_interaction_HR_tables_forest_WEEKS.do"
+	
+**MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
+foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
+winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
+	} 
+	
+**MULTIPLE IMPUTAION: run (~20 hours each outcome - 80 hours)
+foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
+winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_analysis.do" `outcome'
+}
