@@ -277,13 +277,24 @@ foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death    {
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_models_weeks" `outcome'	
 }
+forvalues i = 1/20 {
+    di `i'
+    sleep 10000
+}
 do "11a_an_interaction_HR_tables_forest_WEEKS.do"
+	
+	
+	
+	
 	
 **MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
 	} 
-	
+forvalues i = 1/20 {
+    di `i'
+    sleep 10000
+}	
 **MULTIPLE IMPUTAION: run (~20 hours each outcome - 80 hours)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
 winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_analysis.do" `outcome'
