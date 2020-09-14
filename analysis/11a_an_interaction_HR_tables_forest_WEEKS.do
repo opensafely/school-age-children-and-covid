@@ -40,7 +40,7 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 
 		if "`modeltype'"=="fulladj" {
-				estimates use ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_`x'
+				cap estimates use ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		***********************
