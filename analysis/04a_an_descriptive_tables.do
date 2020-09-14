@@ -141,15 +141,6 @@ foreach outvar of varlist covid_tpp_prob covid_death_icu non_covid_death {
 
 
 ********************************************
-*  Cumulative incidence of ONS COVID DEATH*
-********************************************
-
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_death_icu_ageband_`x'.dta", clear
-
-sts list , at(0 80) by(agegroup male) fail
-
-
-********************************************
 *  Cumulative incidence of ONS NON COVID DEATH*
 ********************************************
 

@@ -93,13 +93,15 @@ tab weeks
 tab weeks `outcome'*/
 
 
-gen new_exit=d(02april2020)
+gen new_exit=d(03april2020)
 format new_exit %td
 sum new_exit, format
 drop stime*
 gen stime_`outcome'	= min(date_`outcome', died_date_ons, dereg_date, new_exit)
-
-stset stime_`outcome', fail(`outcome') 				///
+* If outcome was after censoring occurred, set to zero
+gen `outcome'_0 = `outcome'
+replace `outcome'_0 = 0 if (date_`outcome' > stime_`outcome')
+stset stime_`outcome', fail(`outcome'_0) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 
 *Age spline model (not adj ethnicity, interaction)
@@ -114,22 +116,17 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 foreach week in 1 2 3 4 5 6 7 {
 cap drop new_enter 
+gen new_enter=new_exit
 cap drop new_exit
-
-gen new_enter=d(03april2020) + (`week'*7) -7
-gen new_exit=(new_enter)+6
+gen new_exit=(new_enter)+7
 format new_enter new_exit %td
 sum new_enter new_exit, format
-
 drop stime*
-if "`outcome'"=="covidadmission" {
-gen stime_`outcome'	= min(covid_admissioncensor, date_covidadmission, died_date_ons, dereg_date, new_exit)
-}
-if "`outcome'"!="covidadmission" {
 gen stime_`outcome' = min(onscoviddeathcensor_date, died_date_ons, date_`outcome', dereg_date, new_exit)
-}
-
-stset stime_`outcome', fail(`outcome') 				///
+* If outcome was after censoring occurred, set to zero
+gen `outcome'_`week' = `outcome'
+replace `outcome'_`week' = 0 if (date_`outcome' > stime_`outcome')
+stset stime_`outcome', fail(`outcome'_`week') 				///
 	id(patient_id) enter(new_enter) origin(new_enter)
 
 *Age spline model (not adj ethnicity, interaction)
@@ -148,8 +145,9 @@ format new_enter %td
 sum new_enter, format
 drop stime*
 gen stime_`outcome'	= min(date_`outcome', died_date_ons, dereg_date)
-
-stset stime_`outcome', fail(`outcome') 				///
+gen `outcome'_8 = `outcome'
+replace `outcome'_8 = 0 if (date_`outcome' > stime_`outcome')
+stset stime_`outcome', fail(`outcome'_8) 				///
 	id(patient_id) enter(new_enter) origin(new_enter)
 
 *Age spline model (not adj ethnicity, interaction)

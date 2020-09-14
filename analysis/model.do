@@ -180,8 +180,6 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"  do "10_an_interaction_cox
 
 
 
-
-
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *********************************************************************	
