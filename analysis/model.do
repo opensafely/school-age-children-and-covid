@@ -155,7 +155,7 @@ forvalues i = 1/10 {
 *pause Stata for 6 hours: 1/2160 whilst testing on server, on full data
 
 
-*INTERACTIONS (7 hours each - 140)
+*INTERACTIONS (8 hours each - 80 hours (3 days) if run consectively)
 *Sex
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe"  do "10_an_interaction_cox_models_sex" `outcome'	
