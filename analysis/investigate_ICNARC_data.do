@@ -13,9 +13,9 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using $logdir\investigate_ICNARC_data, replace t
+log using $logdir/investigate_ICNARC_data, replace t
 
-use $tempdir\analysis_dataset, clear
+use $tempdir/analysis_dataset, clear
 
 sum covid_icu_date, d f
 

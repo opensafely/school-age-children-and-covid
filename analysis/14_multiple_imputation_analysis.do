@@ -39,12 +39,12 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\14_multiple_imputation_analysis_`outcome'", text replace
+log using "$logdir/14_multiple_imputation_analysis_`outcome'", text replace
 
 
 
 forvalues x=0/1 {
-use "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 /*
 *Age and sex adjusted

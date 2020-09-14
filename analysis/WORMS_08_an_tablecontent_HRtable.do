@@ -27,7 +27,7 @@ local endwith "_tab"
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
 	
-	use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+	use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 	*put total N, PYFU and Rate in table
 	cou if `variable' == `i' & _d == 1
 	local event = r(N)

@@ -57,7 +57,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_weeks_MAI
 
 
 cap log close
-log using "$logdir\10_an_interaction_cox_models_weeks_`outcome'", text replace
+log using "$logdir/10_an_interaction_cox_models_weeks_`outcome'", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -81,7 +81,7 @@ end
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *Split data by week following start of pandemic: weeks 1 to 6 and remaining time
 stsplit weeks, at(0 63 (7) 105 200)

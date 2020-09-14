@@ -27,7 +27,7 @@
 ********************************************************************************
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 ****************************
 *  KM plot by age and sex  *
@@ -93,7 +93,7 @@ erase male.gph
 *********************
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 
 ****************************
@@ -157,7 +157,7 @@ erase female.gph
 erase male.gph
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 
 ****************************
