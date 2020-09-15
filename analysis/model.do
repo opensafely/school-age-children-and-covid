@@ -12,15 +12,15 @@ set more off
 
 ***********************HOUSE-KEEPING*******************************************
 * Create directories required 
-capture mkdir output
-capture mkdir log
-capture mkdir tempdata
-
-
-* Set globals that will print in programs and direct output
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
+capture mkdir "$outdir"
+capture mkdir "$logdir"
+capture mkdir "$tempdir"
+
+
+* Set globals that will print in programs and direct output
 global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
