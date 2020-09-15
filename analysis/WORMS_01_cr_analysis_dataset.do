@@ -19,6 +19,8 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 cap log close
 log using $logdir/WORMS_01_cr_analysis_dataset, replace t
 
+import delimited "output/input_worms.csv", clear
+
 /* CONVERT STRINGS TO DATE====================================================*/
 /* Comorb dates dates are given with month only, so adding day 
 15 to enable  them to be processed as dates 											  */

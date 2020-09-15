@@ -19,9 +19,6 @@ capture mkdir "$outdir"
 capture mkdir "$logdir"
 capture mkdir "$tempdir"
 
-*Import dataset into STATA
-import delimited "$outdir/input.csv", clear
-
 ********************************************************************************
 
 *  Pre-analysis data manipulation  *
@@ -181,8 +178,6 @@ winexec "c:/program files/stata16/statamp-64.exe"  do "$codedir/10_an_interactio
 *********************************************************************
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *********************************************************************	
-
-import delimited "$outdir/input_worms.csv", clear
 
 set more off 
 
