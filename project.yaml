@@ -1,0 +1,86 @@
+version: '1.0'
+actions:
+
+  generate_cohort:
+    run: cohortextractor:latest generate_cohort --study-definition study_definition
+    outputs:
+      highly_sensitive:
+        cohort: output/input.csv
+
+  01_cr_analysis_dataset:
+    needs: [generate_cohort]
+    run: stata-mp:latest analysis/01_cr_analysis_dataset.do
+    outputs:
+      moderately_sensitive:
+        log: log/01_cr_analysis_dataset.log
+      highly_sensitive:
+        data: "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta"
+
+  02_an_data_checks:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/02_an_data_checks.do
+    outputs:
+      moderately_sensitive:
+        log: log/02_an_data_checks.log
+
+  03a_an_descriptive_tables:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/03a_an_descriptive_tables.do
+    outputs:
+      moderately_sensitive:
+        log: log/03a_an_descriptive_tables.log
+
+  03b_an_descriptive_tables:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/03b_an_descriptive_tables.do
+    outputs:
+      moderately_sensitive:
+        log: log/03b_an_descriptive_tables.log
+        data: "output/03b_an_descriptive_table_1_kids_cat3_ageband*.txt"
+
+  04a_an_descriptive_tables:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04a_an_descriptive_tables.do
+    outputs:
+      moderately_sensitive:
+        log: log/04a_an_descriptive_tables.log
+
+  04b_an_descriptive_table_2_non_covid_death:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04b_an_descriptive_table_2.do non_covid_death
+    outputs:
+      moderately_sensitive:
+        log: log/04b_an_descriptive_table_2.log
+        data: "output/04b_an_descriptive_table_2_non_covid_death_ageband*.txt"
+
+  04b_an_descriptive_table_2_covid_tpp_prob:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04b_an_descriptive_table_2.do covid_tpp_prob
+    outputs:
+      moderately_sensitive:
+        log: log/04b_an_descriptive_table_2.log
+        data: "output/04b_an_descriptive_table_2_covid_tpp_prob_ageband*.txt"
+
+  04b_an_descriptive_table_2_covid_death:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04b_an_descriptive_table_2.do covid_death
+    outputs:
+      moderately_sensitive:
+        log: log/04b_an_descriptive_table_2.log
+        data: "output/04b_an_descriptive_table_2_covid_death_ageband*.txt"
+
+  04b_an_descriptive_table_2_covid_icu:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04b_an_descriptive_table_2.do covid_icu
+    outputs:
+      moderately_sensitive:
+        log: log/04b_an_descriptive_table_2.log
+        data: "output/04b_an_descriptive_table_2_covid_icu_ageband*.txt"
+
+  04b_an_descriptive_table_2_covidadmission:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/04b_an_descriptive_table_2.do covidadmission
+    outputs:
+      moderately_sensitive:
+        log: log/04b_an_descriptive_table_2.log
+        data: "output/04b_an_descriptive_table_2_covidadmission_ageband*.txt"
