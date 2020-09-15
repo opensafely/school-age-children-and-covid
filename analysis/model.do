@@ -4,22 +4,23 @@
 *When running on server use "c:/program files/stata16/statamp-64.exe"
 
 
-*Import dataset into STATA
-import delimited `c(pwd)'/output/input.csv, clear
-
-set more off 
-
 ***********************HOUSE-KEEPING*******************************************
 
-* Create directories required 
+set more off
+
+* Set globals
 global codedir "`c(pwd)'/analysis"
 global outdir  	  "`c(pwd)'/output"
 global logdir     "`c(pwd)'/log"
 global tempdir    "`c(pwd)'/tempdata"
+
+* Create directories required
 capture mkdir "$outdir"
 capture mkdir "$logdir"
 capture mkdir "$tempdir"
 
+*Import dataset into STATA
+import delimited "$outdir/input.csv", clear
 
 * Set globals that will print in programs and direct output
 global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
@@ -200,7 +201,7 @@ winexec "c:/program files/stata16/statamp-64.exe"  do "$codedir/10_an_interactio
 *		WORMS ANALYSIS CONTROL OUTCOME REQUIRES NEW STUDY POP		*
 *********************************************************************	
 
-import delimited `c(pwd)'/output/input_worms.csv, clear
+import delimited "$outdir/input_worms.csv", clear
 
 set more off 
 
