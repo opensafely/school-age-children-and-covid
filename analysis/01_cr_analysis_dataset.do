@@ -14,6 +14,9 @@ DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 							
 ==============================================================================*/
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 cap log close
