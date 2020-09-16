@@ -1,0 +1,26 @@
+age	exposure	exposure level	outcome	int_type	int_level	HR	lci	uci
+0	kids_cat3	1	covid_icu	male	0	0.89	0.70	1.14	
+0	kids_cat3	1	covid_icu	male	1	1.29	1.10	1.52	
+0	kids_cat3	1	covid_icu	cat_time	0	1.17	0.96	1.44	
+0	kids_cat3	1	covid_icu	cat_time	1	1.14	0.96	1.36	
+0	kids_cat3	1	covid_icu	shield	0	1.11	0.95	1.31	
+0	kids_cat3	1	covid_icu	shield	1	1.25	0.99	1.59	
+0	kids_cat3	2	covid_icu	male	0	1.01	0.76	1.35	
+0	kids_cat3	2	covid_icu	male	1	1.29	1.06	1.56	
+0	kids_cat3	2	covid_icu	cat_time	0	1.29	1.01	1.64	
+0	kids_cat3	2	covid_icu	cat_time	1	1.12	0.91	1.39	
+0	kids_cat3	2	covid_icu	shield	0	1.17	0.97	1.42	
+0	kids_cat3	2	covid_icu	shield	1	1.23	0.93	1.64	
+1	kids_cat3	1	covid_icu	male	0	1.50	0.78	2.87	
+1	kids_cat3	1	covid_icu	male	1	1.09	0.67	1.77	
+1	kids_cat3	1	covid_icu	cat_time	0	0.96	0.52	1.77	
+1	kids_cat3	1	covid_icu	cat_time	1	1.46	0.88	2.40	
+1	kids_cat3	1	covid_icu	shield	0	1.23	0.75	1.99	
+1	kids_cat3	1	covid_icu	shield	1	1.18	0.62	2.24	
+1	kids_cat3	2	covid_icu	male	0	1.34	0.49	3.64	
+1	kids_cat3	2	covid_icu	male	1	1.40	0.77	2.58	
+1	kids_cat3	2	covid_icu	cat_time	0	0.93	0.38	2.26	
+1	kids_cat3	2	covid_icu	cat_time	1	1.83	0.96	3.47	
+1	kids_cat3	2	covid_icu	shield	0	1.20	0.59	2.43	
+1	kids_cat3	2	covid_icu	shield	1	1.68	0.78	3.60	
+

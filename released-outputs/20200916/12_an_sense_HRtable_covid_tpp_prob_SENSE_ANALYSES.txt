@@ -1,0 +1,51 @@
+age0
+
+sense=CCeth_bmi_smok
+kids_cat3	1	1.01 (0.98-1.05)7364186
+kids_cat3	2	1.09 (1.04-1.14)7364186
+
+sense=CCeth
+kids_cat3	1	1.03 (0.99-1.06)9004061
+kids_cat3	2	1.08 (1.04-1.13)9004061
+
+sense=CCnoeth_bmi_smok
+kids_cat3	1	1.12 (1.08-1.15)8923306
+kids_cat3	2	1.15 (1.10-1.20)8923306
+
+sense=noeth_12mo
+kids_cat3	1	1.18 (1.15-1.22)11038873
+kids_cat3	2	1.16 (1.12-1.21)11038873
+
+sense=age_underlying_timescale
+kids_cat3	1	1.17 (1.14-1.20)11872324
+kids_cat3	2	1.17 (1.12-1.21)11872324
+
+sense=time_int
+kids_cat3	1	1.15 (1.12-1.19)35458188
+kids_cat3	2	1.17 (1.13-1.22)35458188
+age1
+
+sense=CCeth_bmi_smok
+kids_cat3	1	1.09 (0.96-1.24)2305277
+kids_cat3	2	0.91 (0.76-1.10)2305277
+
+sense=CCeth
+kids_cat3	1	1.08 (0.95-1.22)2444497
+kids_cat3	2	0.92 (0.77-1.10)2444497
+
+sense=CCnoeth_bmi_smok
+kids_cat3	1	1.20 (1.07-1.34)3023012
+kids_cat3	2	0.96 (0.81-1.14)3023012
+
+sense=noeth_12mo
+kids_cat3	1	1.17 (1.05-1.31)3253154
+kids_cat3	2	0.96 (0.81-1.13)3253154
+
+sense=age_underlying_timescale
+kids_cat3	1	1.13 (1.01-1.26)3329816
+kids_cat3	2	0.96 (0.82-1.13)3329816
+
+sense=time_int
+kids_cat3	1	1.33 (1.20-1.47)10390453
+kids_cat3	2	1.08 (0.93-1.26)10390453
+
