@@ -1,0 +1,26 @@
+age	exposure	exposure level	outcome	int_type	int_level	HR	lci	uci
+0	kids_cat3	1	covid_death	male	0	0.75	0.55	1.02	
+0	kids_cat3	1	covid_death	male	1	0.92	0.74	1.15	
+0	kids_cat3	1	covid_death	cat_time	0	0.76	0.51	1.13	
+0	kids_cat3	1	covid_death	cat_time	1	0.89	0.73	1.09	
+0	kids_cat3	1	covid_death	shield	0	0.78	0.62	0.98	
+0	kids_cat3	1	covid_death	shield	1	1.03	0.78	1.36	
+0	kids_cat3	2	covid_death	male	0	0.65	0.44	0.97	
+0	kids_cat3	2	covid_death	male	1	1.15	0.90	1.46	
+0	kids_cat3	2	covid_death	cat_time	0	0.87	0.54	1.39	
+0	kids_cat3	2	covid_death	cat_time	1	0.99	0.78	1.25	
+0	kids_cat3	2	covid_death	shield	0	0.93	0.72	1.21	
+0	kids_cat3	2	covid_death	shield	1	1.01	0.72	1.42	
+1	kids_cat3	1	covid_death	male	0	1.13	0.88	1.46	
+1	kids_cat3	1	covid_death	male	1	0.83	0.66	1.04	
+1	kids_cat3	1	covid_death	cat_time	0	1.02	0.72	1.43	
+1	kids_cat3	1	covid_death	cat_time	1	0.92	0.76	1.12	
+1	kids_cat3	1	covid_death	shield	0	0.96	0.76	1.20	
+1	kids_cat3	1	covid_death	shield	1	0.92	0.72	1.18	
+1	kids_cat3	2	covid_death	male	0	0.88	0.61	1.27	
+1	kids_cat3	2	covid_death	male	1	0.88	0.65	1.19	
+1	kids_cat3	2	covid_death	cat_time	0	0.74	0.43	1.29	
+1	kids_cat3	2	covid_death	cat_time	1	0.92	0.70	1.19	
+1	kids_cat3	2	covid_death	shield	0	0.77	0.55	1.08	
+1	kids_cat3	2	covid_death	shield	1	1.00	0.73	1.38	
+
