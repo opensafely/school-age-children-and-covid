@@ -15,6 +15,7 @@ actions:
         log: log/01_cr_analysis_dataset.log
       highly_sensitive:
         data: "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta"
+        ageband_data: "tempdata/analysis_dataset_ageband_*.dta"
 
   02_an_data_checks:
     needs: [01_cr_analysis_dataset]
@@ -30,12 +31,12 @@ actions:
       moderately_sensitive:
         log: log/03a_an_descriptive_tables.log
 
-  03b_an_descriptive_tables:
+  03b_an_descriptive_table_1:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/03b_an_descriptive_tables.do
+    run: stata-mp:latest analysis/03b_an_descriptive_table_1.do
     outputs:
       moderately_sensitive:
-        log: log/03b_an_descriptive_tables.log
+        log: log/03b_an_descriptive_table_1.log
         data: "output/03b_an_descriptive_table_1_kids_cat3_ageband*.txt"
 
   04a_an_descriptive_tables:

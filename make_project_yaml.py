@@ -2,7 +2,9 @@
 import textwrap
 
 
-def add_action(script_name, needs, output=None, arg=None, output_is_non_sensitive=False):
+def add_action(
+    script_name, needs, output=None, arg=None, output_is_non_sensitive=False
+):
     action_name = script_name
     extra_args = ""
     if arg:
@@ -13,7 +15,8 @@ def add_action(script_name, needs, output=None, arg=None, output_is_non_sensitiv
             output_spec = "\n        highly_sensitive:"
         else:
             output_spec = ""
-        output_spec = f'{output_spec}\n          data: "{output}"'
+        for k, v in output.items():
+            output_spec += f'\n          {k}: "{v}"'
     else:
         output_spec = ""
     action = f"""
@@ -55,7 +58,10 @@ actions = [
 add_action(
     "01_cr_analysis_dataset",
     needs="generate_cohort",
-    output="tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta",
+    output={
+        "data": "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta",
+        "ageband_data": "tempdata/analysis_dataset_ageband_*.dta",
+    },
 )
 
 add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
@@ -63,9 +69,9 @@ add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
 add_action("03a_an_descriptive_tables", needs="01_cr_analysis_dataset")
 
 add_action(
-    "03b_an_descriptive_tables",
+    "03b_an_descriptive_table_1",
     needs="01_cr_analysis_dataset",
-    output="output/03b_an_descriptive_table_1_kids_cat3_ageband*.txt",
+    output={"data": "output/03b_an_descriptive_table_1_kids_cat3_ageband*.txt"},
     output_is_non_sensitive=True,
 )
 
@@ -78,7 +84,7 @@ for outcome in outcomes:
         "04b_an_descriptive_table_2",
         needs="01_cr_analysis_dataset",
         arg=outcome,
-        output=f"output/04b_an_descriptive_table_2_{outcome}_ageband*.txt",
+        output={"data": f"output/04b_an_descriptive_table_2_{outcome}_ageband*.txt"},
         output_is_non_sensitive=True,
     )
 
