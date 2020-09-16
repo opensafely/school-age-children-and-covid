@@ -58,7 +58,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_1
 }
 
 cap log close
-log using "$logdir\10_an_interaction_cox_models_weeks_`outcome'", text replace
+log using "$logdir\10a_an_interaction_cox_models_weeks_covidad", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -83,15 +83,16 @@ forvalues x=0/1 {
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
-/*SPLITTING TAKES TOO MUCH MEMORY - STRATIFY INSTEAD
-Split data by week following start of pandemic: weeks 1 to 6 and remaining time
+*SPLITTING TAKES TOO MUCH MEMORY - STRATIFY INSTEAD
+/*Split data by week following start of pandemic: weeks 1 to 6 and remaining time
 stsplit weeks, at(0 63 (7) 105 200)
 tab weeks
 recode weeks 63=1 70=2 77=3 84=4 91=5 98=6 105=7
-recode `outcome' .=0 
+recode covidadmission .=0 
 tab weeks
-tab weeks `outcome'*/
+tab weeks covidadmission*/
 
+use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 gen new_exit=d(03april2020)
 format new_exit %td
@@ -114,16 +115,16 @@ else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
 
 
 
-foreach week in 1 2 3 4 5 6 7 {
+foreach week in 1 2 3 4 {
 cap drop new_enter 
 gen new_enter=new_exit
 cap drop new_exit
 gen new_exit=(new_enter)+7
 format new_enter new_exit %td
 sum new_enter new_exit, format
+
 drop stime*
-gen stime_`outcome' = min(onscoviddeathcensor_date, died_date_ons, date_`outcome', dereg_date, new_exit)
-* If outcome was after censoring occurred, set to zero
+gen stime_`outcome'	= min(covid_admissioncensor, date_covidadmission, died_date_ons, dereg_date, new_exit)
 gen `outcome'_`week' = `outcome'
 replace `outcome'_`week' = 0 if (date_`outcome' > stime_`outcome')
 stset stime_`outcome', fail(`outcome'_`week') 				///
@@ -136,31 +137,10 @@ if _rc==0 {
 estimates save ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_`x', replace
 }
 else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
-
 }
-
-cap drop new_enter
-gen new_enter=d(22may2020)
-format new_enter %td
-sum new_enter, format
-drop stime*
-gen stime_`outcome'	= min(date_`outcome', died_date_ons, dereg_date)
-gen `outcome'_8 = `outcome'
-replace `outcome'_8 = 0 if (date_`outcome' > stime_`outcome')
-stset stime_`outcome', fail(`outcome'_8) 				///
-	id(patient_id) enter(new_enter) origin(new_enter)
-
-*Age spline model (not adj ethnicity, interaction)
-basemodel, exposure("i.kids_cat3") age("age1 age2 age3")
-if _rc==0 {
-estimates save ./output/an_interaction_cox_models_`outcome'_week8_ageband_`x', replace
 }
-else di "WARNING GROUP MODEL DID NOT FIT (OUTCOME `outcome')"
-
-}
-
 log close
 
-exit, clear STATA
+
 
 
