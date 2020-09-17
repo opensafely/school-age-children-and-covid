@@ -45,6 +45,7 @@ global comordidadjlist  i.htdiag_or_highbp				///
 *  Pre-analysis data manipulation  *
 do "01_cr_analysis_dataset.do"
 
+/*
 /*  Checks  */
 do "02_an_data_checks.do"
 
@@ -282,18 +283,19 @@ forvalues i = 1/20 {
 }
 do "11a_an_interaction_HR_tables_forest_WEEKS.do"
 
+	*/
+***Additional analyses to check ethnicity adjusted results
+
+*checks main results similar for ethnicity adjusted analysis
+do "17_exploratory_analysis" 
 	
 	
-	
-**MULTIPLE IMPUTAION: create the datasets (~3 hours each outcome)
+**MULTIPLE IMPUTATION: create the datasets (~3 hours each outcome)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
-winexec "c:\program files\stata16\statamp-64.exe" do "13_multiple_imputation_dataset.do" `outcome'
+do "13_multiple_imputation_dataset.do" `outcome'
 	} 
-forvalues i = 1/20 {
-    di `i'
-    sleep 10000
-}	
+
 **MULTIPLE IMPUTAION: run (~20 hours each outcome - 80 hours)
 foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death  {
-winexec "c:\program files\stata16\statamp-64.exe" do "14_multiple_imputation_analysis.do" `outcome'
+do "14_multiple_imputation_analysis.do" `outcome'
 }

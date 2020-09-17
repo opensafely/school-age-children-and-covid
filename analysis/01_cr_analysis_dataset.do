@@ -560,7 +560,7 @@ label define diabcat 	1 "No diabetes" 			///
 						6 "Diabetes, no HbA1c"
 label values diabcat diabcat
 safetab diabcat, m
-*replace diabcat .=1
+recode diabcat .=1
 
 
 

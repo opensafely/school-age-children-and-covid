@@ -87,5 +87,3 @@ save "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", rep
 log close
 
 
-
-exit, clear STATA
