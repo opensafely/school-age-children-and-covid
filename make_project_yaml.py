@@ -3,13 +3,19 @@ import textwrap
 
 
 def add_action(
-    script_name, needs, output=None, arg=None, output_is_non_sensitive=False
+    script_name,
+    needs,
+    output=None,
+    args=None,
+    output_is_non_sensitive=False,
+    logfile=None,
 ):
     action_name = script_name
     extra_args = ""
-    if arg:
-        action_name = f"{script_name}_{arg}"
-        extra_args = f" {arg}"
+    if args:
+        first_arg = args.split()[0]
+        action_name = f"{script_name}_{first_arg}"
+        extra_args = f" {args}"
     if output:
         if not output_is_non_sensitive:
             output_spec = "\n        highly_sensitive:"
@@ -19,13 +25,15 @@ def add_action(
             output_spec += f'\n          {k}: "{v}"'
     else:
         output_spec = ""
+    if logfile is None:
+        logfile = f"log/{action_name}.log"
     action = f"""
     {action_name}:
       needs: [{needs}]
       run: stata-mp:latest analysis/{script_name}.do{extra_args}
       outputs:
         moderately_sensitive:
-          log: log/{script_name}.log{output_spec}
+          log: {logfile}{output_spec}
     """
     actions.append(action)
 
@@ -78,15 +86,86 @@ add_action(
 add_action("04a_an_descriptive_tables", needs="01_cr_analysis_dataset")
 
 outcomes = "non_covid_death covid_tpp_prob covid_death covid_icu covidadmission".split()
-outcomes_any = ["any"] + outcomes
 for outcome in outcomes:
     add_action(
         "04b_an_descriptive_table_2",
         needs="01_cr_analysis_dataset",
-        arg=outcome,
+        args=outcome,
         output={"data": f"output/04b_an_descriptive_table_2_{outcome}_ageband*.txt"},
         output_is_non_sensitive=True,
+        logfile="04b_an_descriptive_table_2.log",
     )
+
+outcomes_any = ["any"] + outcomes
+for outcome in outcomes_any:
+    add_action(
+        "06_univariate_analysis",
+        needs="01_cr_analysis_dataset",
+        args=f"{outcome} kids_cat3 gp_number_kids",
+        output={
+            "data": f"output/an_univariable_cox_models_{outcome}_AGESEX_*_ageband_*.ster"
+        },
+        output_is_non_sensitive=True,
+    )
+    add_action(
+        "06a_univariate_analysis_SENSE_12mo",
+        needs="01_cr_analysis_dataset",
+        args=f"{outcome} kids_cat3",
+        output={
+            "data": f"output/an_univariable_cox_models_{outcome}_AGESEX_*_12mo_ageband_*.ster"
+        },
+        output_is_non_sensitive=True,
+        logfile=f"log/06a_univariate_analysis_SENSE_12mo{outcome}.log",
+    )
+    add_action(
+        "07a_an_multivariable_cox_models_demogADJ",
+        needs="01_cr_analysis_dataset",
+        args=outcome,
+        output={
+            "data": f"output/an_multivariate_cox_models_{outcome}_*_DEMOGADJ_*_ageband_*.ster"
+        },
+        output_is_non_sensitive=True,
+        logfile=f"log/07a_an_multivariable_cox_models_{outcome}.log",
+    )
+    add_action(
+        "07b_an_multivariable_cox_models_FULL",
+        needs="01_cr_analysis_dataset",
+        args=outcome,
+        output={
+            "data": f"output/an_multivariate_cox_models_{outcome}_*_MAINFULLYADJMODEL_*_ageband_*.ster",
+            "other_data": f"output/an_sense_{outcome}_*_ageband_*.ster",
+        },
+        output_is_non_sensitive=True,
+        logfile=f"log/07b_an_multivariable_cox_models_{outcome}.log",
+    )
+    for i in range(1, 6):
+        logfile = None
+        if i in (4, 5):
+            logfile = f"log/07b_an_multivariable_cox_models_{outcome}_Sense{i}_*.log"
+        add_action(
+            f"07b_an_multivariable_cox_models_FULL_Sense{i}",
+            needs="01_cr_analysis_dataset",
+            args=outcome,
+            output={"data": f"output/an_sense_{outcome}_*_ageband_*.ster"},
+            output_is_non_sensitive=True,
+            logfile=logfile,
+        )
+    add_action(
+        "16_exploratory_analysis",
+        needs="01_cr_analysis_dataset",
+        args=outcome,
+        output_is_non_sensitive=True,
+    )
+    for key in ["sex", "shield", "time", "weeks"]:
+        add_action(
+            f"10_an_interaction_cox_models_{key}",
+            needs="01_cr_analysis_dataset",
+            args=outcome,
+            output={
+                "data": f"output/an_interaction_cox_models_{outcome}_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
+            },
+            output_is_non_sensitive=True,
+        )
 
 
 print(format_project_yaml(actions))
