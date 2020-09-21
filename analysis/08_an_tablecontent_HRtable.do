@@ -47,12 +47,12 @@ local endwith "_tab"
 	
 	
 	*models
-	foreach modeltype of any minadj demogadj fulladj {
+	foreach modeltype of any minadj demogadj fulladj plus_ethadj {
 	
 		local noestimatesflag 0 /*reset*/
 
 *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
-		if "`modeltype'"=="fulladj" local endwith "_n"
+		if "`modeltype'"=="plus_ethadj" local endwith "_n"
 
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
@@ -66,9 +66,13 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x'  
-				if _rc!=0 local noestimatesflag 1
-				}
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x'  
+			if _rc!=0 local noestimatesflag 1
+			}
+		if "`modeltype'"=="plus_ethadj" {
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_plus_eth_ageband_`x'  
+			if _rc!=0 local noestimatesflag 1
+			}
 		
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
@@ -82,7 +86,7 @@ local endwith "_tab"
 			
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
-			if "`modeltype'"=="fulladj" {
+			if "`modeltype'"=="plus_ethadj" {
 				local hr = r(estimate)
 				local lb = r(lb)
 				local ub = r(ub)

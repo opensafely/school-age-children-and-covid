@@ -26,25 +26,25 @@ local endwith "_tab"
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents_all_outcomes("`variable'") _tab ("`i'") _tab
 	
-	foreach modeltype of any fulladj {
+	foreach modeltype of any plus_ethadj {
 	
 		local noestimatesflag 0 /*reset*/
 
 *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
-		if "`modeltype'"=="fulladj" local endwith "_n"
+		if "`modeltype'"=="plus_ethadj" local endwith "_n"
 
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 	
-		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x' 
+		if "`modeltype'"=="plus_ethadj" {
+				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_plus_eth_ageband_`x' 
 				if _rc!=0 local noestimatesflag 1
 				}
 		
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
 		
-		if `noestimatesflag'==0 & "`modeltype'"=="fulladj"  {
+		if `noestimatesflag'==0 & "`modeltype'"=="plus_ethadj"  {
 			cap lincom `i'.`variable', eform
 			if _rc==0 file write tablecontents_all_outcomes %4.2f (r(estimate)) (" (") %4.2f (r(lb)) ("-") %4.2f (r(ub)) (")") (e(N))  `endwith'
 				else file write tablecontents_all_outcomes %4.2f ("ERR IN MODEL") `endwith'
@@ -52,7 +52,7 @@ local endwith "_tab"
 			
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
-			if "`modeltype'"=="fulladj"   {
+			if "`modeltype'"=="plus_ethadj"   {
 				local hr = r(estimate)
 				local lb = r(lb)
 				local ub = r(ub)

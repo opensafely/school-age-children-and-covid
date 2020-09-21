@@ -12,7 +12,6 @@
 
 local outcome `1' 
 
-
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -20,7 +19,7 @@ prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues x=0/1 {
 file write tablecontents_sense ("age") ("`x'") _n
-foreach sense in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale time_int {
+foreach sense in CCeth_bmi_smok CCeth_not_adj_eth plus_eth_12mo age_underlying_timescale time_int multiple_imputation {
 file write tablecontents_sense _n ("sense=") ("`sense'") _n
 forvalues i=1/2 {
 local endwith "_tab"
@@ -37,15 +36,7 @@ local endwith "_tab"
 
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
-		
-		/*if "`modeltype'"=="minadj" & "`variable'"!="agegroup" & "`variable'"!="male" {
-			cap estimates use ./output/an_univariable_cox_models_`outcome'_AGESEX_`variable'_ageband_`x'
-			if _rc!=0 local noestimatesflag 1
-			}
-		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_`sense'_ageband_`x'
-			if _rc!=0 local noestimatesflag 1
-			}*/
+
 		if "`modeltype'"=="fulladj" {
 	    cap estimates use  ./output/an_sense_`outcome'_`sense'_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
@@ -74,7 +65,7 @@ local endwith "_tab"
 		
 } /*variable levels*/
 
-/*forvalues i=2/3 {
+forvalues i=2/3 {
 local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
@@ -129,7 +120,7 @@ local endwith "_tab"
 		} /*min adj, full adj*/
 		
 } /*variable levels*/
-*/
+
 } /*age levels*/
 } /*sense levels*/
 
@@ -204,18 +195,17 @@ replace leveldesc = "Children/young people aged 11-<18 years" if i==2
 
 gen Name = sense if hr==1
 
-foreach type in CCeth_bmi_smok CCeth CCnoeth_bmi_smok noeth_12mo age_underlying_timescale multiple_imputation time_int {
+foreach type in CCeth_bmi_smok CCeth_not_adj_eth plus_eth_12mo age_underlying_timescale time_int multiple_imputation {
 sum N if sense=="`type'"
 local number_`type'=r(mean)
 di `number_`type''
 }
 
 
-replace Name = "Additionally adjusting for ethnicity (N=`number_CCeth')" if Name=="CCeth"
-replace Name = "Additionally adjusting for ethnicity, BMI and smoking, where data is complete  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
-replace Name = "Restricted to participants with complete data on BMI and smoking  (N=`number_CCnoeth_bmi_smok')" if Name=="CCnoeth_bmi_smok"
+replace Name = "Restricted to those with complete data on ethnicity, not adjusting for ethnicity (N=`number_CCeth_not_adj_eth')" if Name=="CCeth_not_adj_eth"
+replace Name = "Additionally adjusting for BMI and smoking, where data is complete  (N=`number_CCeth_bmi_smok')" if Name=="CCeth_bmi_smok"
 replace Name = "Age used as the underlying timescale in the cox model  (N=`number_age_underlying_timescale')" if Name=="age_underlying_timescale"
-replace Name = "Participants with at least 12 months registration at GP  (N=`number_noeth_12mo')" if Name=="noeth_12mo"
+replace Name = "Participants with at least 12 months registration at GP  (N=`number_plus_eth_12mo')" if Name=="plus_eth_12mo"
 replace Name = "Non-PH fitted (N=`number_time_int')" if Name=="time_int"
 replace Name = "Using multiple imputation to handle missing ethnicity data  (N=`number_multiple_imputation')" if Name=="multiple_imputation"
 

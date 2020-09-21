@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense1.do
+*	Do-file:		07d_an_multivariable_cox_models_FULL_Sense1.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -16,7 +16,7 @@
 *
 *	Purpose:		This do-file performs multivariable (fully adjusted) 
 *					Cox models for a sense analysis including only those with complete 
-*					ethnicity data
+*					ethnicity data, but not adjusting for ethnicity
 *  
 ********************************************************************************
 *	
@@ -28,7 +28,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	i.ethnicity i.obese4cat i.smoke_nomiss	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male i.obese4cat i.smoke_nomiss	i.imd i.tot_adults_hh
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -61,7 +61,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense1_`outcome'", text replace
+log using "$logdir\07d_an_multivariable_cox_models_FULL_Sense1_`outcome'", text replace
 
 
 
@@ -74,7 +74,7 @@ log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense1_`outcome'", text 
 forvalues x=0/1 {
 
 use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
-
+keep if ethnicity!=.u
 foreach exposure_type in 	kids_cat3  {
 
 *Complete case ethnicity model
@@ -84,7 +84,7 @@ foreach exposure_type in 	kids_cat3  {
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_sense_`outcome'_CCeth_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCeth_not_adj_eth_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC ETHNICITY MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')"

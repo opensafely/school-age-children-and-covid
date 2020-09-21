@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models.do
+*	Do-file:		07c_an_multivariable_cox_models_FULL_plusethnicity.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -10,7 +10,7 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file:  an_multivariable_cox_models.log
+*	Other output:	Log file:  07b_an_multivariable_cox_models_FULL_plusethnicity.log
 *
 ********************************************************************************
 *
@@ -27,7 +27,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	i.ethnicity	i.imd i.tot_adults_hh
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -60,17 +60,14 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_`outcome'", text replace
+log using "$logdir\07c_an_multivariable_cox_models_plus_ethnicity_`outcome'", text replace
 
 
 *************************************************************************************
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basecoxmodel
 prog define basecoxmodel
-	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
-
-	if `ethnicity'==1 local ethnicity "i.ethnicity"
-	else local ethnicity
+	syntax , exposure(string) age(string) bmi(string) smoking(string)
 timer clear
 timer on 1
 	capture stcox 	`exposure' 				///
@@ -95,21 +92,21 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 
 
-foreach exposure_type in kids_cat3  {
+foreach exposure_type in 	kids_cat3  {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save "./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x'", replace
+estimates save "./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_plus_eth_ageband_`x'", replace
 *estat concordance /*c-statistic*/
-	/*  Proportional Hazards test 
+	/*  Proportional Hazards test  
 	* Based on Schoenfeld residuals
 	timer clear 
 	timer on 1
 	if e(N_fail)>0 estat phtest, d
 	timer off 1
-	timer list */
+	timer list*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
@@ -120,10 +117,10 @@ keep if has_12_m_follow_up == 1
 foreach exposure_type in kids_cat3   {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_sense_`outcome'_noeth_12mo_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_plus_eth_12mo_ageband_`x', replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
@@ -135,10 +132,10 @@ else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
  
  foreach exposure_type in	gp_number_kids {
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_plus_eth_ageband_`x', replace
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 }
