@@ -27,9 +27,15 @@ def add_action(
         output_spec = ""
     if logfile is None:
         logfile = f"log/{action_name}.log"
+    if not isinstance(needs, list):
+        needs = [needs]
+    if len(needs) <= 2:
+        needs_str = "[{}]".format(", ".join(needs))
+    else:
+        needs_str = "\n        - ".join([""] + needs)
     action = f"""
     {action_name}:
-      needs: [{needs}]
+      needs: {needs_str}
       run: stata-mp:latest analysis/{script_name}.do{extra_args}
       outputs:
         moderately_sensitive:
@@ -156,7 +162,8 @@ for outcome in outcomes_any:
         args=outcome,
         output_is_non_sensitive=True,
     )
-    for key in ["sex", "shield", "time", "weeks"]:
+    interaction_keys = ["sex", "shield", "time", "weeks"]
+    for key in interaction_keys:
         add_action(
             f"10_an_interaction_cox_models_{key}",
             needs="01_cr_analysis_dataset",
@@ -167,5 +174,80 @@ for outcome in outcomes_any:
             output_is_non_sensitive=True,
         )
 
+for outcome in outcomes_any:
+    add_action(
+        "08_an_tablecontent_HRtable",
+        needs=[
+            "01_cr_analysis_dataset",
+            f"06_univariate_analysis_{outcome}",
+            f"07a_an_multivariable_cox_models_demogADJ_{outcome}",
+            f"07b_an_multivariable_cox_models_FULL_{outcome}",
+        ],
+        args=outcome,
+        output={"data": f"output/an_tablecontents_HRtable_{outcome}.txt"},
+        output_is_non_sensitive=True,
+    )
+
+add_action(
+    "15_anHRfigure_all_outcomes",
+    needs=[f"07b_an_multivariable_cox_models_FULL_{outcome}" for outcome in outcomes],
+    args=outcome,
+    output={
+        "data": "output/15_an_tablecontents_HRtable_all_outcomes_ANALYSES.txt",
+        "figure": "output/15_an_HRforest_all_outcomes_ageband_*.svg",
+    },
+    output_is_non_sensitive=True,
+)
+
+for outcome in outcomes_any:
+    add_action(
+        "11_an_interaction_HR_tables_forest",
+        needs=[
+            f"10_an_interaction_cox_models_{key}_{outcome}" for key in interaction_keys
+        ],
+        args=outcome,
+        output={"data": f"output/11_an_int_tab_contents_HRtable_{outcome}.txt"},
+        output_is_non_sensitive=True,
+    )
+
+add_action(
+    "11a_an_interaction_HR_tables_forest_WEEKS",
+    needs=[
+        f"10_an_interaction_cox_models_{key}_{outcome}"
+        for key in interaction_keys
+        for outcome in outcomes
+    ],
+    args=outcome,
+    output={
+        "data": "output/an_int_tab_contents_HRtable_WEEKS.txt",
+        "figure": "output/an_tablecontent_HRtable_HRforest_int_*_ageband_*.svg",
+    },
+    output_is_non_sensitive=True,
+)
+
+for outcome in outcomes_any:
+    add_action(
+        "09_an_agesplinevisualisation",
+        needs=[
+            "01_cr_analysis_dataset",
+            f"07b_an_multivariable_cox_models_FULL_{outcome}",
+        ],
+        args=outcome,
+        output={"figure": f"output/an_agesplinevisualisation_{outcome}_ageband_*.svg"},
+        output_is_non_sensitive=True,
+    )
+    add_action(
+        "12_an_tablecontent_HRtable_SENSE",
+        needs=[
+            f"07b_an_multivariable_cox_models_FULL_Sense{i}_{outcome}"
+            for i in range(1, 6)
+        ],
+        args=outcome,
+        output={
+            "data": f"output/12_an_sense_HRtable_{outcome}_SENSE_ANALYSES.txt",
+            "figure": f"output/12_an_HRforest_SENSE_{outcome}_ageband_*.svg",
+        },
+        output_is_non_sensitive=True,
+    )
 
 print(format_project_yaml(actions))
