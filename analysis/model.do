@@ -84,7 +84,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07b_an_multivariable_cox_m
 ************************************************************
 
 *Pause for 8 hours
-forvalues i = 1/5 {
+forvalues i = 1/10 {
     di `i'
     sleep 10000
 }
@@ -103,7 +103,7 @@ winexec "c:\program files\stata16\statamp-64.exe" do "07d_an_multivariable_cox_m
 ************************************************************
 
 *Pause for 8 hours
-forvalues i = 1/5 {
+forvalues i = 1/10 {
     di `i'
     sleep 10000
 }
@@ -123,7 +123,7 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 
 ************************************************************
 *Pause for 8 hours
-forvalues i = 1/5 {
+forvalues i = 1/10 {
     di `i'
     sleep 10000
 }
@@ -142,7 +142,7 @@ winexec "c:\program files\stata16\statamp-64.exe"  do "10_an_interaction_cox_mod
 
 ************************************************************
 *Pause for 8 hours
-forvalues i = 1/5 {
+forvalues i = 1/10 {
     di `i'
     sleep 10000
 }
