@@ -17,13 +17,6 @@ actions:
         data: "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta"
         ageband_data: "tempdata/analysis_dataset_ageband_*.dta"
 
-  02_an_data_checks:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/02_an_data_checks.do
-    outputs:
-      moderately_sensitive:
-        log: log/02_an_data_checks.log
-
   03a_an_descriptive_tables:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/03a_an_descriptive_tables.do
@@ -85,118 +78,6 @@ actions:
       moderately_sensitive:
         log: 04b_an_descriptive_table_2.log
         data: "output/04b_an_descriptive_table_2_covidadmission_ageband*.txt"
-
-  06_univariate_analysis_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/06_univariate_analysis.do any kids_cat3 gp_number_kids
-    outputs:
-      moderately_sensitive:
-        log: log/06_univariate_analysis_any.log
-        data: "output/an_univariable_cox_models_any_AGESEX_*_ageband_*.ster"
-
-  06a_univariate_analysis_SENSE_12mo_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/06a_univariate_analysis_SENSE_12mo.do any kids_cat3
-    outputs:
-      moderately_sensitive:
-        log: log/06a_univariate_analysis_SENSE_12moany.log
-        data: "output/an_univariable_cox_models_any_AGESEX_*_12mo_ageband_*.ster"
-
-  07a_an_multivariable_cox_models_demogADJ_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07a_an_multivariable_cox_models_demogADJ.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07a_an_multivariable_cox_models_any.log
-        data: "output/an_multivariate_cox_models_any_*_DEMOGADJ_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_any.log
-        data: "output/an_multivariate_cox_models_any_*_MAINFULLYADJMODEL_*_ageband_*.ster"
-        other_data: "output/an_sense_any_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_Sense1_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_any.log
-        data: "output/an_sense_any_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_Sense2_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_any.log
-        data: "output/an_sense_any_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_Sense3_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_any.log
-        data: "output/an_sense_any_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_Sense4_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_any_Sense4_*.log
-        data: "output/an_sense_any_*_ageband_*.ster"
-
-  07b_an_multivariable_cox_models_FULL_Sense5_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do any
-    outputs:
-      moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_any_Sense5_*.log
-        data: "output/an_sense_any_*_ageband_*.ster"
-
-  16_exploratory_analysis_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/16_exploratory_analysis.do any
-    outputs:
-      moderately_sensitive:
-        log: log/16_exploratory_analysis_any.log
-
-  10_an_interaction_cox_models_sex_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/10_an_interaction_cox_models_sex.do any
-    outputs:
-      moderately_sensitive:
-        log: log/10_an_interaction_cox_models_sex_any.log
-        data: "output/an_interaction_cox_models_any_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
-
-  10_an_interaction_cox_models_shield_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/10_an_interaction_cox_models_shield.do any
-    outputs:
-      moderately_sensitive:
-        log: log/10_an_interaction_cox_models_shield_any.log
-        data: "output/an_interaction_cox_models_any_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
-
-  10_an_interaction_cox_models_time_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/10_an_interaction_cox_models_time.do any
-    outputs:
-      moderately_sensitive:
-        log: log/10_an_interaction_cox_models_time_any.log
-        data: "output/an_interaction_cox_models_any_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
-
-  10_an_interaction_cox_models_weeks_any:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/10_an_interaction_cox_models_weeks.do any
-    outputs:
-      moderately_sensitive:
-        log: log/10_an_interaction_cox_models_weeks_any.log
-        data: "output/an_interaction_cox_models_any_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
 
   06_univariate_analysis_non_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -758,18 +639,6 @@ actions:
         log: log/10_an_interaction_cox_models_weeks_covidadmission.log
         data: "output/an_interaction_cox_models_covidadmission_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
 
-  08_an_tablecontent_HRtable_any:
-    needs: 
-      - 01_cr_analysis_dataset
-      - 06_univariate_analysis_any
-      - 07a_an_multivariable_cox_models_demogADJ_any
-      - 07b_an_multivariable_cox_models_FULL_any
-    run: stata-mp:latest analysis/08_an_tablecontent_HRtable.do any
-    outputs:
-      moderately_sensitive:
-        log: log/08_an_tablecontent_HRtable_any.log
-        data: "output/an_tablecontents_HRtable_any.txt"
-
   08_an_tablecontent_HRtable_non_covid_death:
     needs: 
       - 01_cr_analysis_dataset
@@ -843,18 +712,6 @@ actions:
         log: 15_anHRfigure_all_outcomes.log
         data: "output/15_an_tablecontents_HRtable_all_outcomes_ANALYSES.txt"
         figure: "output/15_an_HRforest_all_outcomes_ageband_*.svg"
-
-  11_an_interaction_HR_tables_forest_any:
-    needs: 
-      - 10_an_interaction_cox_models_sex_any
-      - 10_an_interaction_cox_models_shield_any
-      - 10_an_interaction_cox_models_time_any
-      - 10_an_interaction_cox_models_weeks_any
-    run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do any
-    outputs:
-      moderately_sensitive:
-        log: 11_an_interaction_HR_tables_forest.log
-        data: "output/11_an_int_tab_contents_HRtable_any.txt"
 
   11_an_interaction_HR_tables_forest_non_covid_death:
     needs: 
@@ -943,28 +800,6 @@ actions:
       moderately_sensitive:
         log: 11a_an_interaction_HR_tables_forest_WEEKS.log
         data: "output/an_int_tab_contents_HRtable_WEEKS.txt"
-
-  09_an_agesplinevisualisation_any:
-    needs: [01_cr_analysis_dataset, 07b_an_multivariable_cox_models_FULL_any]
-    run: stata-mp:latest analysis/09_an_agesplinevisualisation.do any
-    outputs:
-      moderately_sensitive:
-        log: 09_an_agesplinevisualisation.log
-        figure: "output/an_agesplinevisualisation_any_ageband_*.svg"
-
-  12_an_tablecontent_HRtable_SENSE_any:
-    needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_any
-      - 07b_an_multivariable_cox_models_FULL_Sense2_any
-      - 07b_an_multivariable_cox_models_FULL_Sense3_any
-      - 07b_an_multivariable_cox_models_FULL_Sense4_any
-      - 07b_an_multivariable_cox_models_FULL_Sense5_any
-    run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do any
-    outputs:
-      moderately_sensitive:
-        log: 12_an_tablecontent_HRtable_SENSE.log
-        data: "output/12_an_sense_HRtable_any_SENSE_ANALYSES.txt"
-        figure: "output/12_an_HRforest_SENSE_any_ageband_*.svg"
 
   09_an_agesplinevisualisation_non_covid_death:
     needs: [01_cr_analysis_dataset, 07b_an_multivariable_cox_models_FULL_non_covid_death]
@@ -1078,7 +913,6 @@ actions:
 
   run_all:
     needs:
-      - 02_an_data_checks
       - 03a_an_descriptive_tables
       - 03b_an_descriptive_table_1
       - 04a_an_descriptive_tables
@@ -1087,39 +921,33 @@ actions:
       - 04b_an_descriptive_table_2_covid_tpp_prob
       - 04b_an_descriptive_table_2_covidadmission
       - 04b_an_descriptive_table_2_non_covid_death
-      - 06a_univariate_analysis_SENSE_12mo_any
       - 06a_univariate_analysis_SENSE_12mo_covid_death
       - 06a_univariate_analysis_SENSE_12mo_covid_icu
       - 06a_univariate_analysis_SENSE_12mo_covid_tpp_prob
       - 06a_univariate_analysis_SENSE_12mo_covidadmission
       - 06a_univariate_analysis_SENSE_12mo_non_covid_death
-      - 08_an_tablecontent_HRtable_any
       - 08_an_tablecontent_HRtable_covid_death
       - 08_an_tablecontent_HRtable_covid_icu
       - 08_an_tablecontent_HRtable_covid_tpp_prob
       - 08_an_tablecontent_HRtable_covidadmission
       - 08_an_tablecontent_HRtable_non_covid_death
-      - 09_an_agesplinevisualisation_any
       - 09_an_agesplinevisualisation_covid_death
       - 09_an_agesplinevisualisation_covid_icu
       - 09_an_agesplinevisualisation_covid_tpp_prob
       - 09_an_agesplinevisualisation_covidadmission
       - 09_an_agesplinevisualisation_non_covid_death
-      - 11_an_interaction_HR_tables_forest_any
       - 11_an_interaction_HR_tables_forest_covid_death
       - 11_an_interaction_HR_tables_forest_covid_icu
       - 11_an_interaction_HR_tables_forest_covid_tpp_prob
       - 11_an_interaction_HR_tables_forest_covidadmission
       - 11_an_interaction_HR_tables_forest_non_covid_death
       - 11a_an_interaction_HR_tables_forest_WEEKS_covidadmission
-      - 12_an_tablecontent_HRtable_SENSE_any
       - 12_an_tablecontent_HRtable_SENSE_covid_death
       - 12_an_tablecontent_HRtable_SENSE_covid_icu
       - 12_an_tablecontent_HRtable_SENSE_covid_tpp_prob
       - 12_an_tablecontent_HRtable_SENSE_covidadmission
       - 12_an_tablecontent_HRtable_SENSE_non_covid_death
       - 15_anHRfigure_all_outcomes_covidadmission
-      - 16_exploratory_analysis_any
       - 16_exploratory_analysis_covid_death
       - 16_exploratory_analysis_covid_icu
       - 16_exploratory_analysis_covid_tpp_prob

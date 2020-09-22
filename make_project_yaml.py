@@ -82,7 +82,11 @@ add_action(
     },
 )
 
-add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
+# This script requires the `datacheck.ado` library which is vendored in but
+# doesn't get loaded for reasons which I think Seb determined but which I can't
+# remember
+#
+# add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
 
 add_action("03a_an_descriptive_tables", needs="01_cr_analysis_dataset")
 
@@ -106,7 +110,20 @@ for outcome in outcomes:
         logfile="04b_an_descriptive_table_2.log",
     )
 
-outcomes_any = ["any"] + outcomes
+# Various scripts are called with the outcome argument "any" from the main
+# model.do file but can't in fact handle being called with this outcome. This
+# is because they try to load the corresponding analysis dataset for the
+# outcome, but there is no analysis dataset for the outcome "any". Affected
+# scripts can be identified by the pattern:
+#
+#   rg 'cr_create_analysis_dataset_STSET_.outcome._ageband' analysis/
+#
+# Anna was going to look into this, but for now I've just removed the "any"
+# outcome.
+#
+# outcomes_any = ["any"] + outcomes
+outcomes_any = outcomes
+
 for outcome in outcomes_any:
     add_action(
         "06_univariate_analysis",
