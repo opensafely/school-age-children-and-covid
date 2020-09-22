@@ -943,7 +943,6 @@ actions:
       moderately_sensitive:
         log: 11a_an_interaction_HR_tables_forest_WEEKS.log
         data: "output/an_int_tab_contents_HRtable_WEEKS.txt"
-        figure: "output/an_tablecontent_HRtable_HRforest_int_*_ageband_*.svg"
 
   09_an_agesplinevisualisation_any:
     needs: [01_cr_analysis_dataset, 07b_an_multivariable_cox_models_FULL_any]

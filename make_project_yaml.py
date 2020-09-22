@@ -226,7 +226,6 @@ add_action(
     args=outcome,
     output={
         "data": "output/an_int_tab_contents_HRtable_WEEKS.txt",
-        "figure": "output/an_tablecontent_HRtable_HRforest_int_*_ageband_*.svg",
     },
     output_is_non_sensitive=True,
     logfile="11a_an_interaction_HR_tables_forest_WEEKS.log",
