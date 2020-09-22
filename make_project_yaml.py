@@ -33,6 +33,9 @@ def add_action(
         needs_str = "[{}]".format(", ".join(needs))
     else:
         needs_str = "\n        - ".join([""] + needs)
+    leaf_action_names.add(action_name)
+    for other_action in needs:
+        leaf_action_names.discard(other_action)
     action = f"""
     {action_name}:
       needs: {needs_str}
@@ -67,6 +70,7 @@ actions = [
           cohort: output/input.csv
     """,
 ]
+leaf_action_names = set()
 
 
 add_action(
@@ -249,5 +253,22 @@ for outcome in outcomes_any:
         },
         output_is_non_sensitive=True,
     )
+
+all_actions_str = "\n        - ".join(sorted(leaf_action_names))
+actions.append(
+    f"""
+    run_all:
+      needs:
+        - {all_actions_str}
+      # In order to be valid this action needs to define a run commmand and
+      # some output. We don't really care what these are but the below seems to
+      # do the trick.
+      run: cohortextractor:latest --version
+      outputs:
+        moderately_sensitive:
+          whatever: project.yaml
+    """,
+)
+
 
 print(format_project_yaml(actions))

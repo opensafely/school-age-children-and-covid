@@ -1076,3 +1076,60 @@ actions:
         log: log/12_an_tablecontent_HRtable_SENSE_covidadmission.log
         data: "output/12_an_sense_HRtable_covidadmission_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_covidadmission_ageband_*.svg"
+
+  run_all:
+    needs:
+      - 02_an_data_checks
+      - 03a_an_descriptive_tables
+      - 03b_an_descriptive_table_1
+      - 04a_an_descriptive_tables
+      - 04b_an_descriptive_table_2_covid_death
+      - 04b_an_descriptive_table_2_covid_icu
+      - 04b_an_descriptive_table_2_covid_tpp_prob
+      - 04b_an_descriptive_table_2_covidadmission
+      - 04b_an_descriptive_table_2_non_covid_death
+      - 06a_univariate_analysis_SENSE_12mo_any
+      - 06a_univariate_analysis_SENSE_12mo_covid_death
+      - 06a_univariate_analysis_SENSE_12mo_covid_icu
+      - 06a_univariate_analysis_SENSE_12mo_covid_tpp_prob
+      - 06a_univariate_analysis_SENSE_12mo_covidadmission
+      - 06a_univariate_analysis_SENSE_12mo_non_covid_death
+      - 08_an_tablecontent_HRtable_any
+      - 08_an_tablecontent_HRtable_covid_death
+      - 08_an_tablecontent_HRtable_covid_icu
+      - 08_an_tablecontent_HRtable_covid_tpp_prob
+      - 08_an_tablecontent_HRtable_covidadmission
+      - 08_an_tablecontent_HRtable_non_covid_death
+      - 09_an_agesplinevisualisation_any
+      - 09_an_agesplinevisualisation_covid_death
+      - 09_an_agesplinevisualisation_covid_icu
+      - 09_an_agesplinevisualisation_covid_tpp_prob
+      - 09_an_agesplinevisualisation_covidadmission
+      - 09_an_agesplinevisualisation_non_covid_death
+      - 11_an_interaction_HR_tables_forest_any
+      - 11_an_interaction_HR_tables_forest_covid_death
+      - 11_an_interaction_HR_tables_forest_covid_icu
+      - 11_an_interaction_HR_tables_forest_covid_tpp_prob
+      - 11_an_interaction_HR_tables_forest_covidadmission
+      - 11_an_interaction_HR_tables_forest_non_covid_death
+      - 11a_an_interaction_HR_tables_forest_WEEKS_covidadmission
+      - 12_an_tablecontent_HRtable_SENSE_any
+      - 12_an_tablecontent_HRtable_SENSE_covid_death
+      - 12_an_tablecontent_HRtable_SENSE_covid_icu
+      - 12_an_tablecontent_HRtable_SENSE_covid_tpp_prob
+      - 12_an_tablecontent_HRtable_SENSE_covidadmission
+      - 12_an_tablecontent_HRtable_SENSE_non_covid_death
+      - 15_anHRfigure_all_outcomes_covidadmission
+      - 16_exploratory_analysis_any
+      - 16_exploratory_analysis_covid_death
+      - 16_exploratory_analysis_covid_icu
+      - 16_exploratory_analysis_covid_tpp_prob
+      - 16_exploratory_analysis_covidadmission
+      - 16_exploratory_analysis_non_covid_death
+    # In order to be valid this action needs to define a run commmand and
+    # some output. We don't really care what these are but the below seems to
+    # do the trick.
+    run: cohortextractor:latest --version
+    outputs:
+      moderately_sensitive:
+        whatever: project.yaml
