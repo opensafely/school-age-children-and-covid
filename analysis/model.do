@@ -21,23 +21,6 @@ capture mkdir tempdata
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
-global comordidadjlist  i.htdiag_or_highbp				///
-			i.chronic_respiratory_disease 	///
-			i.asthma						///
-			i.chronic_cardiac_disease 		///
-			i.diabcat						///
-			i.cancer_exhaem_cat	 			///
-			i.cancer_haem_cat  				///
-			i.chronic_liver_disease 		///
-			i.stroke_dementia		 		///
-			i.other_neuro					///
-			i.reduced_kidney_function_cat	///
-			i.esrd							///
-			i.other_transplant 				///
-			i.asplenia 						///
-			i.ra_sle_psoriasis  			///
-			i.other_immuno					
 
 ********************************************************************************
 
@@ -74,9 +57,11 @@ foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu cov
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
-winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
-		kids_cat3 
 }
+
+*Only outputting fully adjusted results for sense analyses
+*winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06a_univariate_analysis_SENSE_12mo"  `outcome' ///
+*		kids_cat3 
 ************************************************************
 
 *Pause for 4 hours
@@ -87,6 +72,7 @@ forvalues i = 1/10 {
 *pause Stata for 4 hours: 1/1440 whilst testing on server, on full data
 
 ************************************************************
+
 *MULTIVARIATE MODELS (this fits the models needed for fully adj col of Table 2)
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07a_an_multivariable_cox_models_demogADJ.do" `outcome'
@@ -94,6 +80,7 @@ winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07a_an_multivariable_c
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07b_an_multivariable_cox_models_FULL.do" `outcome'
 }
+
 ************************************************************
 
 *Pause for 8 hours
@@ -104,6 +91,7 @@ forvalues i = 1/10 {
 *pause Stata for 8 hours: 1/2880 whilst testing on server, on full data
 
 ************************************************************
+
 *MULTIVARIATE MODELS with ethnicity added	
 foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
 winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "07c_an_multivariable_cox_models_FULL_plusethnicity.do" `outcome'
@@ -262,7 +250,7 @@ do "11a_an_interaction_HR_tables_forest_WEEKS.do"
 /*
 foreach outcome of any  covid_tpp_prob covidadmission covid_icu covid_death   {
 	do "09_an_agesplinevisualisation.do" `outcome'
-}*/
+}
 
 
 ***SENSE ANALYSIS

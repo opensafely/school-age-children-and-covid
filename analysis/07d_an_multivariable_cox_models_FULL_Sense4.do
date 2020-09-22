@@ -27,7 +27,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	i.ethnicity	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male i.obese4cat i.smoke_nomiss i.imd i.tot_adults_hh i.ethnicity
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -62,16 +62,12 @@ log using "$logdir\07d_an_multivariable_cox_models_`outcome'_Sense4_agetimescale
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basecoxmodel
 prog define basecoxmodel
-	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
-
-	if `ethnicity'==1 local ethnicity "i.ethnicity"
-	else local ethnicity
+	syntax , exposure(string) age(string)
 timer clear
 timer on 1
 	capture stcox 	`exposure'			///
 			$demogadjlist 				///
-			$comordidadjlist 			///
-			`if'						///
+			$comordidadjlist 		///
 			, strata(stp) vce(cluster household_id)
 timer off 1
 timer list
@@ -100,7 +96,7 @@ streset, origin(dob) scale(365.25)
 foreach exposure_type in kids_cat3  {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")
 if _rc==0{
 estimates
 estimates save ./output/an_sense_`outcome'_age_underlying_timescale_ageband_`x', replace
