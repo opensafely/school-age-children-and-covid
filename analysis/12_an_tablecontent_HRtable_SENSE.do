@@ -84,7 +84,7 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}*/
 		if "`modeltype'"=="fulladj" & "`sense'"=="AAmain"  {
-		estimates use  ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_ageband_`x'
+		cap estimates use  ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		
@@ -93,7 +93,7 @@ local endwith "_tab"
 		
 		
 		if `noestimatesflag'==0 & "`modeltype'"=="fulladj" & "`sense'"=="AAmain" {
-			lincom `i'.`variable', eform
+			cap lincom `i'.`variable', eform
 			if _rc==0 file write tablecontents_sense ("`variable'") _tab ("`i'") _tab %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab (e(N_sub))  `endwith'
 				else file write tablecontents_sense %4.2f ("ERR IN MODEL") `endwith'
 			}
