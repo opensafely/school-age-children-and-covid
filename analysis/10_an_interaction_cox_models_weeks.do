@@ -68,7 +68,7 @@ prog define basemodel
 	else local ethnicity
 timer clear
 timer on 1
-stcox 	`exposure'  								///
+cap stcox 	`exposure'  								///
 			$demogadjlist							///
 			$comordidadjlist						///
 			`interaction'							///
