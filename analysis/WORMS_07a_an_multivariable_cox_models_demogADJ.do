@@ -52,7 +52,7 @@ log using "$logdir\WORMS_07a_an_multivariable_cox_models_demogADJ_`outcome'", te
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basecoxmodel
 prog define basecoxmodel
-	syntax , exposure(string) age(string) [ethnicity(real 0) if(string)] bmi(string) smoking(string)
+	syntax , exposure(string) age(string) [ethnicity(real 1) if(string)] bmi(string) smoking(string)
 
 	if `ethnicity'==1 local ethnicity "i.ethnicity"
 	else local ethnicity
@@ -83,7 +83,7 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 foreach exposure_type in kids_cat3 gp_number_kids {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_ageband_`x', replace

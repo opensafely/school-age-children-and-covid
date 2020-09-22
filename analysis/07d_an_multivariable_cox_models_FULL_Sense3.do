@@ -28,7 +28,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male i.bmicat i.smoke	i.imd i.tot_adults_hh 
+global demogadjlist  age1 age2 age3 i.male i.bmicat i.smoke	i.imd i.tot_adults_hh i.ethnicity
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -82,7 +82,7 @@ stcox 	i.`exposure_type'			///
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_sense_`outcome'_CCnoeth_bmi_smok_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCeth_bmi_smok_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 

@@ -47,12 +47,12 @@ local endwith "_tab"
 	
 	
 	*models
-	foreach modeltype of any minadj demogadj fulladj plus_ethadj {
+	foreach modeltype of any minadj demogadj fulladj  {
 	
 		local noestimatesflag 0 /*reset*/
 
 *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
-		if "`modeltype'"=="plus_ethadj" local endwith "_n"
+		if "`modeltype'"=="fulladj" local endwith "_n"
 
 		***********************
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
@@ -62,15 +62,11 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth_ageband_`x'
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x'  
-			if _rc!=0 local noestimatesflag 1
-			}
-		if "`modeltype'"=="plus_ethadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_plus_eth_ageband_`x'  
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_ageband_`x'  
 			if _rc!=0 local noestimatesflag 1
 			}
 		
@@ -86,7 +82,7 @@ local endwith "_tab"
 			
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
-			if "`modeltype'"=="plus_ethadj" {
+			if "`modeltype'"=="fulladj" {
 				local hr = r(estimate)
 				local lb = r(lb)
 				local ub = r(ub)

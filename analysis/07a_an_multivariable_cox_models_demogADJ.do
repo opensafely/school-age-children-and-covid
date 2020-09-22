@@ -27,7 +27,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male i.obese4cat i.smoke_nomiss i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male i.obese4cat i.smoke_nomiss i.imd i.tot_adults_hh i.ethnicity
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -52,10 +52,10 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_noeth_ageband_0
-cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_noeth_ageband_1
-cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_DEMOGADJ_noeth_ageband_0
-cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_DEMOGADJ_noeth_ageband_1
+cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_ageband_0
+cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_DEMOGADJ_ageband_1
+cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_DEMOGADJ_ageband_0
+cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_DEMOGADJ_ageband_1
 
 
 * Open a log file
@@ -94,7 +94,7 @@ foreach exposure_type in kids_cat3  ///
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  
 if _rc==0{
 estimates
-estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_noeth_ageband_`x', replace
+estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEMOGADJ_ageband_`x', replace
 *estat concordance /*c-statistic*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
