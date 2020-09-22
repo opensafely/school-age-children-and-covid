@@ -201,6 +201,7 @@ add_action(
         "figure": "output/15_an_HRforest_all_outcomes_ageband_*.svg",
     },
     output_is_non_sensitive=True,
+    logfile="15_anHRfigure_all_outcomes.log",
 )
 
 for outcome in outcomes_any:
@@ -212,6 +213,7 @@ for outcome in outcomes_any:
         args=outcome,
         output={"data": f"output/11_an_int_tab_contents_HRtable_{outcome}.txt"},
         output_is_non_sensitive=True,
+        logfile="11_an_interaction_HR_tables_forest.log"
     )
 
 add_action(
@@ -227,6 +229,7 @@ add_action(
         "figure": "output/an_tablecontent_HRtable_HRforest_int_*_ageband_*.svg",
     },
     output_is_non_sensitive=True,
+    logfile="11a_an_interaction_HR_tables_forest_WEEKS.log",
 )
 
 for outcome in outcomes_any:
@@ -239,6 +242,7 @@ for outcome in outcomes_any:
         args=outcome,
         output={"figure": f"output/an_agesplinevisualisation_{outcome}_ageband_*.svg"},
         output_is_non_sensitive=True,
+        logfile="09_an_agesplinevisualisation.log"
     )
     add_action(
         "12_an_tablecontent_HRtable_SENSE",
@@ -252,6 +256,7 @@ for outcome in outcomes_any:
             "figure": f"output/12_an_HRforest_SENSE_{outcome}_ageband_*.svg",
         },
         output_is_non_sensitive=True,
+        logfile="12_an_tablecontent_HRtable_SENSE.log",
     )
 
 all_actions_str = "\n        - ".join(sorted(leaf_action_names))

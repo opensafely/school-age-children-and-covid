@@ -840,7 +840,7 @@ actions:
     run: stata-mp:latest analysis/15_anHRfigure_all_outcomes.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/15_anHRfigure_all_outcomes_covidadmission.log
+        log: 15_anHRfigure_all_outcomes.log
         data: "output/15_an_tablecontents_HRtable_all_outcomes_ANALYSES.txt"
         figure: "output/15_an_HRforest_all_outcomes_ageband_*.svg"
 
@@ -853,7 +853,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do any
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_any.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_any.txt"
 
   11_an_interaction_HR_tables_forest_non_covid_death:
@@ -865,7 +865,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_non_covid_death.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_non_covid_death.txt"
 
   11_an_interaction_HR_tables_forest_covid_tpp_prob:
@@ -877,7 +877,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_covid_tpp_prob.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_covid_tpp_prob.txt"
 
   11_an_interaction_HR_tables_forest_covid_death:
@@ -889,7 +889,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_covid_death.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_covid_death.txt"
 
   11_an_interaction_HR_tables_forest_covid_icu:
@@ -901,7 +901,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_covid_icu.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_covid_icu.txt"
 
   11_an_interaction_HR_tables_forest_covidadmission:
@@ -913,7 +913,7 @@ actions:
     run: stata-mp:latest analysis/11_an_interaction_HR_tables_forest.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/11_an_interaction_HR_tables_forest_covidadmission.log
+        log: 11_an_interaction_HR_tables_forest.log
         data: "output/11_an_int_tab_contents_HRtable_covidadmission.txt"
 
   11a_an_interaction_HR_tables_forest_WEEKS_covidadmission:
@@ -941,7 +941,7 @@ actions:
     run: stata-mp:latest analysis/11a_an_interaction_HR_tables_forest_WEEKS.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/11a_an_interaction_HR_tables_forest_WEEKS_covidadmission.log
+        log: 11a_an_interaction_HR_tables_forest_WEEKS.log
         data: "output/an_int_tab_contents_HRtable_WEEKS.txt"
         figure: "output/an_tablecontent_HRtable_HRforest_int_*_ageband_*.svg"
 
@@ -950,7 +950,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do any
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_any.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_any_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_any:
@@ -963,7 +963,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do any
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_any.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_any_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_any_ageband_*.svg"
 
@@ -972,7 +972,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_non_covid_death.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_non_covid_death_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_non_covid_death:
@@ -985,7 +985,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_non_covid_death.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_non_covid_death_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_non_covid_death_ageband_*.svg"
 
@@ -994,7 +994,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_covid_tpp_prob.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_covid_tpp_prob_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_tpp_prob:
@@ -1007,7 +1007,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_covid_tpp_prob.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_covid_tpp_prob_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_covid_tpp_prob_ageband_*.svg"
 
@@ -1016,7 +1016,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_covid_death.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_covid_death_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_death:
@@ -1029,7 +1029,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_covid_death.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_covid_death_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_covid_death_ageband_*.svg"
 
@@ -1038,7 +1038,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_covid_icu.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_covid_icu_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_icu:
@@ -1051,7 +1051,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_covid_icu.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_covid_icu_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_covid_icu_ageband_*.svg"
 
@@ -1060,7 +1060,7 @@ actions:
     run: stata-mp:latest analysis/09_an_agesplinevisualisation.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/09_an_agesplinevisualisation_covidadmission.log
+        log: 09_an_agesplinevisualisation.log
         figure: "output/an_agesplinevisualisation_covidadmission_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covidadmission:
@@ -1073,7 +1073,7 @@ actions:
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/12_an_tablecontent_HRtable_SENSE_covidadmission.log
+        log: 12_an_tablecontent_HRtable_SENSE.log
         data: "output/12_an_sense_HRtable_covidadmission_SENSE_ANALYSES.txt"
         figure: "output/12_an_HRforest_SENSE_covidadmission_ageband_*.svg"
 
