@@ -11,7 +11,7 @@
 *************************************************************************
 
 local outcome `1' 
-
+set trace on
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
