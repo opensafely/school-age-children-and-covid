@@ -12,6 +12,10 @@
 *Date drafted: 30th June 2020
 *************************************************************************
 
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
+
 local outcome `1' 
 
 * Open a log file

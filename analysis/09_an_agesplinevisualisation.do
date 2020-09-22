@@ -10,6 +10,9 @@
 *************************************************************************
 
 
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 local outcome `1' 
 
