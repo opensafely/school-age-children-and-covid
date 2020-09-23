@@ -81,5 +81,3 @@ estimates save ./output/an_sense_`outcome'_multiple_imputation_ageband_`x', repl
 
 log close
 
-
-exit, clear STATA

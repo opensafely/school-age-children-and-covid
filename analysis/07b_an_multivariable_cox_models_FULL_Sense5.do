@@ -121,7 +121,7 @@ estat phtest, d
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_`outcome'_time_int_ageband_0", replace
-estat phtest, d
+*estat phtest, d
 
 
 ******************************
@@ -174,7 +174,7 @@ stcox 	i.kids_cat3 	 ///
 estimates
 estimates save "./output/an_sense_`outcome'_time_int_ageband_1", replace
 
-estat phtest, d
+*estat phtest, d
 
 
 log close

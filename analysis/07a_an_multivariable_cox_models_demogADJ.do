@@ -102,8 +102,10 @@ estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_DEM
 *estat concordance /*c-statistic*/
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
+}
+}
 
-
+/*
 *Complete case ethnicity model
 basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")  ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
@@ -150,7 +152,7 @@ else di "WARNING 12 MO FUP MODEL W/ AGE SPLINE  DID NOT FIT (OUTCOME `outcome')"
 
 }	
 
-}	
+}	*/
 	
 log close
 

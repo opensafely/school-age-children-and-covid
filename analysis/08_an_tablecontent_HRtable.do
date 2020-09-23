@@ -42,8 +42,9 @@ local endwith "_tab"
 	local event = r(N)
     bysort `variable': egen total_follow_up = total(_t)
 	su total_follow_up if `variable' == `i'
-	local person_years = r(mean)
-	local rate = 1000*(`event'/`person_years')
+	local person_days = r(mean)
+	local person_years=`person_days'/365.25
+	local rate = 100000*(`event'/`person_years')
 	
 	file write tablecontents (`event') _tab %10.0f (`person_years') _tab %3.2f (`rate') _tab
 	drop total_follow_up
