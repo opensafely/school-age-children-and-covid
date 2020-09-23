@@ -61,7 +61,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense2_`outcome'", text replace
+log using "$logdir/07b_an_multivariable_cox_models_FULL_Sense2_`outcome'", text replace
 
 *set trace on
 
@@ -73,7 +73,7 @@ log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense2_`outcome'", text 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 foreach exposure_type in 	kids_cat3  {
  

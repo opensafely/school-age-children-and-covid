@@ -39,12 +39,12 @@ local lastvar = word("`0'", `arguments')
 
 * Open a log file
 capture log close
-log using "$logdir\06a_univariate_analysis_SENSE_12mo`outcome'", replace t
+log using "$logdir/06a_univariate_analysis_SENSE_12mo`outcome'", replace t
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *SENSITIVITY ANALYSIS: 12 months FUP
 keep if has_12_m_follow_up == 1

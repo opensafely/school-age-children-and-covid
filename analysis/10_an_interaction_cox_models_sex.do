@@ -57,7 +57,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_male_MAIN
 
 
 cap log close
-log using "$logdir\10_an_interaction_cox_models_sex_`outcome'", text replace
+log using "$logdir/10_an_interaction_cox_models_sex_`outcome'", text replace
 
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
@@ -78,7 +78,7 @@ end
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 foreach int_type in  male  {
 
 tab male `outcome'

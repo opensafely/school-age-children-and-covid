@@ -49,7 +49,7 @@ global comordidadjlist  i.htdiag_or_highbp				///
 local outcome `1' 
 
 cap log close
-log using "$logdir\10_an_interaction_cox_models_shield_`outcome'", text replace
+log using "$logdir/10_an_interaction_cox_models_shield_`outcome'", text replace
 
 
 ************************************************************************************
@@ -83,7 +83,7 @@ end
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 	
 
 

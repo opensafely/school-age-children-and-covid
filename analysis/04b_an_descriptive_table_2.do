@@ -70,7 +70,7 @@ cap file close tablecontent
 file open tablecontent using ./output/04b_an_descriptive_table_2_`outcome'_ageband`x'.txt, write text replace
 
 
-use $tempdir\analysis_dataset_ageband_`x', clear
+use $tempdir/analysis_dataset_ageband_`x', clear
 
 
 gen byte cons=1

@@ -58,7 +58,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_`exposure_type'_cat_time_
 
 
 cap log close
-log using "$logdir\10_an_interaction_cox_models_time_`outcome'", text replace
+log using "$logdir/10_an_interaction_cox_models_time_`outcome'", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -82,7 +82,7 @@ end
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *Split data by time of study period: days to April 3rd (29d Feb, 31 d March, 3d April)
 stsplit cat_time, at(0,63, 200)

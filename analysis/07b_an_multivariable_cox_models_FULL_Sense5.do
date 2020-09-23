@@ -55,13 +55,13 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
+log using "$logdir/07b_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
 
 
 ******************************
 *  Multivariable Cox models  *
 ******************************
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_0.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_0.dta", clear
 *make vars binary
 gen anyreduced_kidney_function = reduced_kidney_function_cat>=2
 gen anyobesity = obese4cat>=2
@@ -127,7 +127,7 @@ estimates save "./output/an_sense_`outcome'_time_int_ageband_0", replace
 ******************************
 *  Multivariable Cox models  *
 ******************************
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_1.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_1.dta", clear
 stsplit timeperiod, at(60 90)
 
 *make vars binary

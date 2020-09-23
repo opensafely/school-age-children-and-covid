@@ -24,13 +24,13 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\13_multiple_imputation_dataset_`outcome'", text replace
+log using "$logdir/13_multiple_imputation_dataset_`outcome'", text replace
 
 
 *******************************************************************************
 forvalues x=0/1 {
 
-use $tempdir\analysis_dataset_ageband_`x', clear
+use $tempdir/analysis_dataset_ageband_`x', clear
 replace ethnicity=. if ethnicity==.u 
 count
 * Save a version set on NON ONS covid death outcome
@@ -79,7 +79,7 @@ mi impute mlogit ethnicity ///
 			, add(10) rseed(894726318) augment
 
 
-save "$tempdir\cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", replace
+save "$tempdir/cr_imputed_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", replace
 	
 }	
 
