@@ -17,6 +17,13 @@ actions:
         data: "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta"
         ageband_data: "tempdata/analysis_dataset_ageband_*.dta"
 
+  02_an_data_checks:
+    needs: [01_cr_analysis_dataset]
+    run: stata-mp:latest analysis/02_an_data_checks.do
+    outputs:
+      moderately_sensitive:
+        log: log/02_an_data_checks.log
+
   03a_an_descriptive_tables:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/03a_an_descriptive_tables.do
@@ -913,6 +920,7 @@ actions:
 
   run_all:
     needs:
+      - 02_an_data_checks
       - 03a_an_descriptive_tables
       - 03b_an_descriptive_table_1
       - 04a_an_descriptive_tables

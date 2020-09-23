@@ -82,11 +82,7 @@ add_action(
     },
 )
 
-# This script requires the `datacheck.ado` library which is vendored in but
-# doesn't get loaded for reasons which I think Seb determined but which I can't
-# remember
-#
-# add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
+add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
 
 add_action("03a_an_descriptive_tables", needs="01_cr_analysis_dataset")
 
@@ -110,21 +106,7 @@ for outcome in outcomes:
         logfile="04b_an_descriptive_table_2.log",
     )
 
-# Various scripts are called with the outcome argument "any" from the main
-# model.do file but can't in fact handle being called with this outcome. This
-# is because they try to load the corresponding analysis dataset for the
-# outcome, but there is no analysis dataset for the outcome "any". Affected
-# scripts can be identified by the pattern:
-#
-#   rg 'cr_create_analysis_dataset_STSET_.outcome._ageband' analysis/
-#
-# Anna was going to look into this, but for now I've just removed the "any"
-# outcome.
-#
-# outcomes_any = ["any"] + outcomes
-outcomes_any = outcomes
-
-for outcome in outcomes_any:
+for outcome in outcomes:
     add_action(
         "06_univariate_analysis",
         needs="01_cr_analysis_dataset",
@@ -195,7 +177,7 @@ for outcome in outcomes_any:
             output_is_non_sensitive=True,
         )
 
-for outcome in outcomes_any:
+for outcome in outcomes:
     add_action(
         "08_an_tablecontent_HRtable",
         needs=[
@@ -221,7 +203,7 @@ add_action(
     logfile="15_anHRfigure_all_outcomes.log",
 )
 
-for outcome in outcomes_any:
+for outcome in outcomes:
     add_action(
         "11_an_interaction_HR_tables_forest",
         needs=[
@@ -230,7 +212,7 @@ for outcome in outcomes_any:
         args=outcome,
         output={"data": f"output/11_an_int_tab_contents_HRtable_{outcome}.txt"},
         output_is_non_sensitive=True,
-        logfile="11_an_interaction_HR_tables_forest.log"
+        logfile="11_an_interaction_HR_tables_forest.log",
     )
 
 add_action(
@@ -241,14 +223,12 @@ add_action(
         for outcome in outcomes
     ],
     args=outcome,
-    output={
-        "data": "output/an_int_tab_contents_HRtable_WEEKS.txt",
-    },
+    output={"data": "output/an_int_tab_contents_HRtable_WEEKS.txt",},
     output_is_non_sensitive=True,
     logfile="11a_an_interaction_HR_tables_forest_WEEKS.log",
 )
 
-for outcome in outcomes_any:
+for outcome in outcomes:
     add_action(
         "09_an_agesplinevisualisation",
         needs=[
@@ -258,7 +238,7 @@ for outcome in outcomes_any:
         args=outcome,
         output={"figure": f"output/an_agesplinevisualisation_{outcome}_ageband_*.svg"},
         output_is_non_sensitive=True,
-        logfile="09_an_agesplinevisualisation.log"
+        logfile="09_an_agesplinevisualisation.log",
     )
     add_action(
         "12_an_tablecontent_HRtable_SENSE",
