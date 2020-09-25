@@ -127,7 +127,7 @@ local total_`outcome'=`r(N)'
 hist date_`outcome', saving(`outcome', replace) ///
 xlabel(21946 22006 22067 22128,labsize(tiny))  xtitle(, size(vsmall)) ///
 graphregion(color(white))  legend(off) freq  ///
-yscale(range(0 3000)) ylab(0 (500) 3000, labsize(vsmall)) ytitle("Number", size(vsmall))  ///
+yscale(range(0 3000)) ylab(0 (500) 6000, labsize(vsmall)) ytitle("Number", size(vsmall))  ///
 title("N=`total_`outcome''", size(vsmall)) 
 }
 * Combine histograms

@@ -33,10 +33,10 @@ local outcome `1'
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agegroup_bmicat_noeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCeth.ster
-cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespline_bmicat_CCnoeth.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_0.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_1.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_0.ster
+cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_MAINFULLYADJMODEL_noeth_ageband_1.ster
 
 
 * Open a log file
@@ -98,18 +98,18 @@ use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 foreach exposure_type in kids_cat3  gp_number_kids {
 
 *Age spline model (not adj ethnicity)
-basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(0) bmi(i.obese4cat) smoking(i.smoke_nomiss)
+basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3") ethnicity(1) bmi(i.obese4cat) smoking(i.smoke_nomiss)
 if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
 *estat concordance /*c-statistic*/
-	/*  Proportional Hazards test  */
+	/*  Proportional Hazards test 
 	* Based on Schoenfeld residuals
 	timer clear 
 	timer on 1
 	if e(N_fail)>0 estat phtest, d
 	timer off 1
-	timer list
+	timer list */
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 

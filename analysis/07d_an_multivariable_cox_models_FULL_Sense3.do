@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models_FULL_Sense3.do
+*	Do-file:		07d_an_multivariable_cox_models_FULL_Sense3.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -28,7 +28,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male i.bmicat i.smoke	i.imd i.tot_adults_hh
+global demogadjlist  age1 age2 age3 i.male i.bmicat i.smoke	i.imd i.tot_adults_hh i.ethnicity
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -61,7 +61,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_MAINFULLYADJMODEL_agespl
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_FULL_Sense3_`outcome'", text replace
+log using "$logdir\07d_an_multivariable_cox_models_FULL_Sense3_`outcome'", text replace
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
@@ -82,7 +82,7 @@ stcox 	i.`exposure_type'			///
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_sense_`outcome'_CCnoeth_bmi_smok_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCeth_bmi_smok_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 

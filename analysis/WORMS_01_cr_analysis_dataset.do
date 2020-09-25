@@ -707,6 +707,9 @@ drop if died_date_ons <= date("$indexdate", "DMY")
 	
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
+
+noi di "DROP NO ETHNICITY DATA"
+keep if ethnicity!=.u	
 	
 ***************
 *  Save data  *
@@ -730,19 +733,11 @@ mkspline age = age, cubic nknots(4)
 save $tempdir\analysis_dataset_worms_ageband_1, replace
 
 
-
+*STSET data
 forvalues x=0/1 {
-
 use $tempdir\analysis_dataset_worms_ageband_`x', clear
 * Save a version set on NON ONS covid death outcome
 stset stime_worms, fail(worms) 				///
-	id(patient_id) enter(enter_date) origin(enter_date)
-*WEIGHTING - TO REDUCE TIME 
-set seed 30459820
-keep if _d==1|uniform()<.03
-gen pw = 1
-replace pw = (1/0.03) if _d==0
-stset stime_worms [pweight = pw],  fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
 	

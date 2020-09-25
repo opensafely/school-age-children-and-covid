@@ -1,6 +1,6 @@
 ********************************************************************************
 *
-*	Do-file:		07b_an_multivariable_cox_models_Sense5.do
+*	Do-file:		07d_an_multivariable_cox_models_Sense5.do
 *
 *	Project:		Exposure children and COVID risk
 *
@@ -27,7 +27,7 @@
 global outdir  	  "output" 
 global logdir     "log"
 global tempdir    "tempdata"
-global demogadjlist  age1 age2 age3 i.male	`bmi' `smoking'	`ethnicity'	i.imd i.tot_adults_hh
+
 global comordidadjlist  i.htdiag_or_highbp				///
 			i.chronic_respiratory_disease 	///
 			i.asthma						///
@@ -55,7 +55,7 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
+log using "$logdir\07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
 
 
 ******************************
@@ -101,6 +101,7 @@ estat phtest, d
 			i.obese4cat 					///
 			i.smoke_nomiss					///
 			i.imd 						///
+			i.ethnicity ///
 			$comordidadjlist	///	
 		60.timeperiod#1.anyobesity							///
 			90.timeperiod#1.anyobesity						///
@@ -165,6 +166,7 @@ stcox 	i.kids_cat3 	 ///
 			i.obese4cat 					///
 			i.smoke_nomiss					///
 			i.imd 						///
+			i.ethnicity ///
 			`comordidadjlist'	///	
 		60.timeperiod#1.male							///
 			90.timeperiod#1.male						///

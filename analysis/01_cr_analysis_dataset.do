@@ -840,6 +840,11 @@ count
 *  Save data  *
 ***************
 sort patient_id
+save $tempdir\analysis_dataset_with_missing_ethnicity, replace
+
+noi di "DROP NO ETHNICITY DATA"
+keep if ethnicity!=.u	
+
 save $tempdir\analysis_dataset, replace
 
 

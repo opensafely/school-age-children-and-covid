@@ -47,7 +47,7 @@ local endwith "_tab"
 	
 	
 	*models
-	foreach modeltype of any minadj demogadj fulladj {
+	foreach modeltype of any minadj demogadj fulladj  {
 	
 		local noestimatesflag 0 /*reset*/
 
@@ -62,13 +62,13 @@ local endwith "_tab"
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="demogadj" {
-			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_noeth_ageband_`x'
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_DEMOGADJ_ageband_`x'
 			if _rc!=0 local noestimatesflag 1
 			}
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_noeth_ageband_`x'  
-				if _rc!=0 local noestimatesflag 1
-				}
+			cap estimates use ./output/an_multivariate_cox_models_`outcome'_`variable'_MAINFULLYADJMODEL_ageband_`x'  
+			if _rc!=0 local noestimatesflag 1
+			}
 		
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
