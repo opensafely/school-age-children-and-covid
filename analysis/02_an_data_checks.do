@@ -15,6 +15,10 @@ OTHER OUTPUT: 			Log file: $logdir/02_an_data_checks
 							
 ==============================================================================*/
 
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
+
 * Open a log file
 
 capture log close

@@ -14,10 +14,17 @@ DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 							
 ==============================================================================*/
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 cap log close
 log using $logdir/01_cr_analysis_dataset, replace t
+
+
+*Import dataset into STATA
+import delimited "output/input.csv", clear
 
 
 /* CONVERT STRINGS TO DATE====================================================*/

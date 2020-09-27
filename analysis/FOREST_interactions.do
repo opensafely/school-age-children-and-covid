@@ -24,7 +24,7 @@ ssc install metan
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
 foreach age in 0 1  {
 
-import delimited $globalpath/11_an_int_tab_contents_HRtable_`outcome'.txt, clear
+import delimited ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, clear
 keep if age==`age'
 
 list
@@ -96,7 +96,7 @@ metan log_est log_lci log_uci, eform random ///
 
 *Save text files as stata files
 foreach outcome of any non_covid_death covid_tpp_prob covidadmission covid_icu covid_death {
-import delimited $globalpath/11_an_int_tab_contents_HRtable_`outcome'.txt, clear
+import delimited ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, clear
 save $shared_folder/`outcome', replace
 }
 

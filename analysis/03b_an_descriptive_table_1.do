@@ -23,6 +23,8 @@ global tempdir    "tempdata"
 *******************************************************************************
 *Generic code to output one row of table
 cap prog drop generaterow
+log using $logdir/03b_an_descriptive_table_1, replace t
+
 program define generaterow
 syntax, variable(varname) condition(string) outcome(string)
 	
