@@ -58,7 +58,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_1
 }
 
 cap log close
-log using "$logdir\10a_an_interaction_cox_models_weeks_covidad", text replace
+log using "$logdir/10a_an_interaction_cox_models_weeks_covidad", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -81,7 +81,7 @@ end
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 *SPLITTING TAKES TOO MUCH MEMORY - STRATIFY INSTEAD
 /*Split data by week following start of pandemic: weeks 1 to 6 and remaining time
@@ -92,7 +92,7 @@ recode covidadmission .=0
 tab weeks
 tab weeks covidadmission*/
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 gen new_exit=d(03april2020)
 format new_exit %td

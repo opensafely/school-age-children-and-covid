@@ -79,7 +79,7 @@ forvalues x=0/1 {
 cap file close tablecontent
 file open tablecontent using ./output/03b_an_descriptive_table_1_kids_cat3_ageband`x'.txt, write text replace
 
-use $tempdir\analysis_dataset_ageband_`x', clear
+use $tempdir/analysis_dataset_ageband_`x', clear
 
 gen byte cons=1
 tabulatevariable, variable(cons) start(1) end(1) outcome(kids_cat3)

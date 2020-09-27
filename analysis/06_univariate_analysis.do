@@ -38,12 +38,12 @@ local lastvar = word("`0'", `arguments')
 
 * Open a log file
 capture log close
-log using "$logdir\06_univariate_analysis_`outcome'", replace t
+log using "$logdir/06_univariate_analysis_`outcome'", replace t
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 
 foreach var of any `varlist' {

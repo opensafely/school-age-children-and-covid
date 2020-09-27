@@ -11,8 +11,8 @@ capture log close
 * create a filename global that can be used throughout the file
 global filename "forest_plot"
 
-global globalpath "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output"
-global shared_folder "C:\Users\ENCDHFOR\Dropbox\EHR-Working\Harriet\Covid19\Schools_study\graphs"
+global globalpath "C:/Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output"
+global shared_folder "C:/Users\ENCDHFOR\Dropbox\EHR-Working\Harriet\Covid19\Schools_study\graphs"
 ssc install metan
 *ssc install admetan
 
@@ -83,7 +83,7 @@ metan log_est log_lci log_uci, eform random ///
 	nowarning nobox effect(Hazard Ratio) xlab (.8,1,1.25,1.5)  ///
 	graphregion(color(white)) nooverall nowt nohet texts(100) astext(55) ///
 	nosubgroup by(exposurelevel) title("`title': `agetitle'", size(small))
-	graph export "$shared_folder\interactions_`outcome'_`age'.png", as(png) replace 
+	graph export "$shared_folder/interactions_`outcome'_`age'.png", as(png) replace 
 
 	} /*ages*/
 	

@@ -17,7 +17,7 @@ OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
 
 * Open a log file
 cap log close
-log using $logdir\WORMS_01_cr_analysis_dataset, replace t
+log using $logdir/WORMS_01_cr_analysis_dataset, replace t
 
 /* CONVERT STRINGS TO DATE====================================================*/
 /* Comorb dates dates are given with month only, so adding day 
@@ -715,31 +715,31 @@ keep if ethnicity!=.u
 *  Save data  *
 ***************
 sort patient_id
-save $tempdir\analysis_dataset_worms, replace
+save $tempdir/analysis_dataset_worms, replace
 
 
 
-use  $tempdir\analysis_dataset_worms, clear
+use  $tempdir/analysis_dataset_worms, clear
 keep if age66==0
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
-save $tempdir\analysis_dataset_worms_ageband_0, replace
+save $tempdir/analysis_dataset_worms_ageband_0, replace
 
 
-use  $tempdir\analysis_dataset_worms, clear
+use  $tempdir/analysis_dataset_worms, clear
 keep if age66==1
 * Create restricted cubic splines for age
 mkspline age = age, cubic nknots(4)
-save $tempdir\analysis_dataset_worms_ageband_1, replace
+save $tempdir/analysis_dataset_worms_ageband_1, replace
 
 
 *STSET data
 forvalues x=0/1 {
-use $tempdir\analysis_dataset_worms_ageband_`x', clear
+use $tempdir/analysis_dataset_worms_ageband_`x', clear
 * Save a version set on NON ONS covid death outcome
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
-save "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
+save "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
 	
 }
 

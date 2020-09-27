@@ -49,7 +49,7 @@ local outcome `1'
 
 * Open a log file
 capture log close
-log using "$logdir\16_exploratory_analysis_`outcome'", text replace
+log using "$logdir/16_exploratory_analysis_`outcome'", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
@@ -72,7 +72,7 @@ end
 
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 keep if tot_adults_hh==1	
 tab male `outcome'
 foreach int_type in  male  {

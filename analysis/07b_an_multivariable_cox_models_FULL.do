@@ -59,7 +59,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_MAINFULLY
 
 * Open a log file
 capture log close
-log using "$logdir\07b_an_multivariable_cox_models_`outcome'", text replace
+log using "$logdir/07b_an_multivariable_cox_models_`outcome'", text replace
 
 
 *************************************************************************************
@@ -84,7 +84,7 @@ end
 * Open dataset and fit specified model(s)
 forvalues x=0/1 {
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 
 ******************************
 *  Multivariable Cox models  *

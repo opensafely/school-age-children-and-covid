@@ -25,11 +25,11 @@
 
 * Open a log file
 capture log close
-log using "$logdir\WORMS_03a_an_descriptive_safetables", replace t
+log using "$logdir/WORMS_03a_an_descriptive_safetables", replace t
 
 forvalues x=0/1 {
 
-use $tempdir\analysis_dataset_worms_ageband_`x', clear
+use $tempdir/analysis_dataset_worms_ageband_`x', clear
 
 
 **********************************
@@ -132,7 +132,7 @@ safetab worms
 *  Cumulative incidence of worms.*
 ********************************************
 
-use "$tempdir\cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", clear
 
 sts list , at(0 80) by(agegroup male) fail
 

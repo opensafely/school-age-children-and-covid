@@ -24,9 +24,9 @@ global comordidadjlist  i.htdiag_or_highbp				///
 
 * Open a log file
 capture log close
-log using "$logdir\17_exploratory_analyses", text replace
+log using "$logdir/17_exploratory_analyses", text replace
 
-use "$tempdir\cr_create_analysis_dataset_STSET_covid_icu_ageband_0.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_covid_icu_ageband_0.dta", clear
 keep if ethnicity!=.u
 
 stcox i.kids_cat3 age1 age2 age3 i.male, strata(stp) vce(cluster household_id)
