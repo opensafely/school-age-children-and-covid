@@ -116,16 +116,16 @@ for outcome in outcomes:
         },
         output_is_non_sensitive=True,
     )
-    add_action(
-        "06a_univariate_analysis_SENSE_12mo",
-        needs="01_cr_analysis_dataset",
-        args=f"{outcome} kids_cat3",
-        output={
-            "data": f"output/an_univariable_cox_models_{outcome}_AGESEX_*_12mo_ageband_*.ster"
-        },
-        output_is_non_sensitive=True,
-        logfile=f"log/06a_univariate_analysis_SENSE_12mo{outcome}.log",
-    )
+    # add_action(
+    #     "06a_univariate_analysis_SENSE_12mo",
+    #     needs="01_cr_analysis_dataset",
+    #     args=f"{outcome} kids_cat3",
+    #     output={
+    #         "data": f"output/an_univariable_cox_models_{outcome}_AGESEX_*_12mo_ageband_*.ster"
+    #     },
+    #     output_is_non_sensitive=True,
+    #     logfile=f"log/06a_univariate_analysis_SENSE_12mo{outcome}.log",
+    # )
     add_action(
         "07a_an_multivariable_cox_models_demogADJ",
         needs="01_cr_analysis_dataset",
@@ -159,12 +159,12 @@ for outcome in outcomes:
             output_is_non_sensitive=True,
             logfile=logfile,
         )
-    add_action(
-        "16_exploratory_analysis",
-        needs="01_cr_analysis_dataset",
-        args=outcome,
-        output_is_non_sensitive=True,
-    )
+    # add_action(
+    #     "16_exploratory_analysis",
+    #     needs="01_cr_analysis_dataset",
+    #     args=outcome,
+    #     output_is_non_sensitive=True,
+    # )
     interaction_keys = ["sex", "shield", "time", "weeks"]
     for key in interaction_keys:
         add_action(
@@ -229,17 +229,17 @@ add_action(
 )
 
 for outcome in outcomes:
-    add_action(
-        "09_an_agesplinevisualisation",
-        needs=[
-            "01_cr_analysis_dataset",
-            f"07b_an_multivariable_cox_models_FULL_{outcome}",
-        ],
-        args=outcome,
-        output={"figure": f"output/an_agesplinevisualisation_{outcome}_ageband_*.svg"},
-        output_is_non_sensitive=True,
-        logfile="09_an_agesplinevisualisation.log",
-    )
+    # add_action(
+    #     "09_an_agesplinevisualisation",
+    #     needs=[
+    #         "01_cr_analysis_dataset",
+    #         f"07b_an_multivariable_cox_models_FULL_{outcome}",
+    #     ],
+    #     args=outcome,
+    #     output={"figure": f"output/an_agesplinevisualisation_{outcome}_ageband_*.svg"},
+    #     output_is_non_sensitive=True,
+    #     logfile="09_an_agesplinevisualisation.log",
+    # )
     add_action(
         "12_an_tablecontent_HRtable_SENSE",
         needs=[
