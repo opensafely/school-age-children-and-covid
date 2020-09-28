@@ -16,9 +16,12 @@ venv/
 output/*
 .dta
 analysis/tempdata/
+/tempdata/
 analysis/output/
+/output/
 !*.txt
 !*.svg
 analysis/log/
+/log/
 !*.txt
 
