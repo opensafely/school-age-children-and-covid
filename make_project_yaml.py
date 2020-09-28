@@ -165,7 +165,7 @@ for outcome in outcomes:
     #     args=outcome,
     #     output_is_non_sensitive=True,
     # )
-    interaction_keys = ["sex", "shield", "time", "weeks"]
+    interaction_keys = ["shield", "time", "weeks"]
     for key in interaction_keys:
         add_action(
             f"10_an_interaction_cox_models_{key}",
