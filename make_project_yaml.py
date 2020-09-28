@@ -3,18 +3,20 @@ import textwrap
 
 
 def add_action(
-    script_name,
+    action_name,
     needs,
+    script_name=None,
     output=None,
     args=None,
     output_is_non_sensitive=False,
     logfile=None,
 ):
-    action_name = script_name
+    if script_name is None:
+        script_name = action_name
     extra_args = ""
     if args:
         first_arg = args.split()[0]
-        action_name = f"{script_name}_{first_arg}"
+        action_name = f"{action_name}_{first_arg}"
         extra_args = f" {args}"
     if output:
         if not output_is_non_sensitive:
@@ -169,6 +171,11 @@ for outcome in outcomes:
     for key in interaction_keys:
         add_action(
             f"10_an_interaction_cox_models_{key}",
+            script_name=(
+                "10a_an_interaction_cox_models_weeks_covidad"
+                if key == "weeks" and outcome == "covidadmission"
+                else None
+            ),
             needs="01_cr_analysis_dataset",
             args=outcome,
             output={

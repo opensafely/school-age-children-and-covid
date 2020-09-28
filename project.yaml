@@ -525,7 +525,7 @@ actions:
 
   10_an_interaction_cox_models_weeks_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/10_an_interaction_cox_models_weeks.do covidadmission
+    run: stata-mp:latest analysis/10a_an_interaction_cox_models_weeks_covidad.do covidadmission
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_covidadmission.log
