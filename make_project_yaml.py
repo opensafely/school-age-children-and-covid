@@ -131,7 +131,7 @@ for outcome in outcomes:
         needs="01_cr_analysis_dataset",
         args=outcome,
         output={
-            "data": f"output/an_multivariate_cox_models_{outcome}_*_DEMOGADJ_*_ageband_*.ster"
+            "data": f"output/an_multivariate_cox_models_{outcome}_*_DEMOGADJ_ageband_*.ster"
         },
         output_is_non_sensitive=True,
         logfile=f"log/07a_an_multivariable_cox_models_{outcome}.log",
@@ -141,7 +141,7 @@ for outcome in outcomes:
         needs="01_cr_analysis_dataset",
         args=outcome,
         output={
-            "data": f"output/an_multivariate_cox_models_{outcome}_*_MAINFULLYADJMODEL_*_ageband_*.ster",
+            "data": f"output/an_multivariate_cox_models_{outcome}_*_MAINFULLYADJMODEL_ageband_*.ster",
             "other_data": f"output/an_sense_{outcome}_*_ageband_*.ster",
         },
         output_is_non_sensitive=True,
@@ -172,7 +172,7 @@ for outcome in outcomes:
             needs="01_cr_analysis_dataset",
             args=outcome,
             output={
-                "data": f"output/an_interaction_cox_models_{outcome}_*_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_*.ster"
+                "data": f"output/an_interaction_cox_models_{outcome}_week*_ageband_*.ster"
             },
             output_is_non_sensitive=True,
         )
