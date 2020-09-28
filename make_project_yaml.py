@@ -150,9 +150,9 @@ for outcome in outcomes:
     for i in range(1, 6):
         logfile = None
         if i in (4, 5):
-            logfile = f"log/07b_an_multivariable_cox_models_{outcome}_Sense{i}_*.log"
+            logfile = f"log/07d_an_multivariable_cox_models_{outcome}_Sense{i}_*.log"
         add_action(
-            f"07b_an_multivariable_cox_models_FULL_Sense{i}",
+            f"07d_an_multivariable_cox_models_FULL_Sense{i}",
             needs="01_cr_analysis_dataset",
             args=outcome,
             output={"data": f"output/an_sense_{outcome}_*_ageband_*.ster"},
@@ -243,7 +243,7 @@ for outcome in outcomes:
     add_action(
         "12_an_tablecontent_HRtable_SENSE",
         needs=[
-            f"07b_an_multivariable_cox_models_FULL_Sense{i}_{outcome}"
+            f"07d_an_multivariable_cox_models_FULL_Sense{i}_{outcome}"
             for i in range(1, 6)
         ],
         args=outcome,

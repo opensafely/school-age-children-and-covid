@@ -111,44 +111,44 @@ actions:
         data: "output/an_multivariate_cox_models_non_covid_death_*_MAINFULLYADJMODEL_*_ageband_*.ster"
         other_data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense1_non_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense1_non_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do non_covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense1.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_non_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense1_non_covid_death.log
         data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense2_non_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense2_non_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do non_covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense2.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_non_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense2_non_covid_death.log
         data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense3_non_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense3_non_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do non_covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense3.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_non_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense3_non_covid_death.log
         data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense4_non_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense4_non_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do non_covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense4.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_non_covid_death_Sense4_*.log
+        log: log/07d_an_multivariable_cox_models_non_covid_death_Sense4_*.log
         data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense5_non_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense5_non_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do non_covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do non_covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_non_covid_death_Sense5_*.log
+        log: log/07d_an_multivariable_cox_models_non_covid_death_Sense5_*.log
         data: "output/an_sense_non_covid_death_*_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_non_covid_death:
@@ -200,44 +200,44 @@ actions:
         data: "output/an_multivariate_cox_models_covid_tpp_prob_*_MAINFULLYADJMODEL_*_ageband_*.ster"
         other_data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do covid_tpp_prob
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense1.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob.log
         data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do covid_tpp_prob
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense2.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob.log
         data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do covid_tpp_prob
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense3.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob.log
         data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do covid_tpp_prob
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense4.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_tpp_prob_Sense4_*.log
+        log: log/07d_an_multivariable_cox_models_covid_tpp_prob_Sense4_*.log
         data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do covid_tpp_prob
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_tpp_prob
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_tpp_prob_Sense5_*.log
+        log: log/07d_an_multivariable_cox_models_covid_tpp_prob_Sense5_*.log
         data: "output/an_sense_covid_tpp_prob_*_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covid_tpp_prob:
@@ -289,44 +289,44 @@ actions:
         data: "output/an_multivariate_cox_models_covid_death_*_MAINFULLYADJMODEL_*_ageband_*.ster"
         other_data: "output/an_sense_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense1_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense1_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense1.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense1_covid_death.log
         data: "output/an_sense_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense2_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense2_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense2.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense2_covid_death.log
         data: "output/an_sense_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense3_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense3_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense3.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_covid_death.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense3_covid_death.log
         data: "output/an_sense_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense4_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense4_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense4.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_death_Sense4_*.log
+        log: log/07d_an_multivariable_cox_models_covid_death_Sense4_*.log
         data: "output/an_sense_covid_death_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense5_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_death:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do covid_death
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_death
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_death_Sense5_*.log
+        log: log/07d_an_multivariable_cox_models_covid_death_Sense5_*.log
         data: "output/an_sense_covid_death_*_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covid_death:
@@ -378,44 +378,44 @@ actions:
         data: "output/an_multivariate_cox_models_covid_icu_*_MAINFULLYADJMODEL_*_ageband_*.ster"
         other_data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense1_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense1_covid_icu:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense1.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_covid_icu.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense1_covid_icu.log
         data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense2_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense2_covid_icu:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense2.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_covid_icu.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense2_covid_icu.log
         data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense3_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense3_covid_icu:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense3.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_covid_icu.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense3_covid_icu.log
         data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense4_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense4_covid_icu:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense4.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_icu_Sense4_*.log
+        log: log/07d_an_multivariable_cox_models_covid_icu_Sense4_*.log
         data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense5_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_icu:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_icu
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covid_icu_Sense5_*.log
+        log: log/07d_an_multivariable_cox_models_covid_icu_Sense5_*.log
         data: "output/an_sense_covid_icu_*_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covid_icu:
@@ -467,44 +467,44 @@ actions:
         data: "output/an_multivariate_cox_models_covidadmission_*_MAINFULLYADJMODEL_*_ageband_*.ster"
         other_data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense1_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense1_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense1.do covidadmission
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense1.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense1_covidadmission.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense1_covidadmission.log
         data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense2_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense2_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense2.do covidadmission
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense2.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense2_covidadmission.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense2_covidadmission.log
         data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense3_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense3_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense3.do covidadmission
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense3.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_FULL_Sense3_covidadmission.log
+        log: log/07d_an_multivariable_cox_models_FULL_Sense3_covidadmission.log
         data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense4_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense4_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense4.do covidadmission
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense4.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covidadmission_Sense4_*.log
+        log: log/07d_an_multivariable_cox_models_covidadmission_Sense4_*.log
         data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
-  07b_an_multivariable_cox_models_FULL_Sense5_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense5_covidadmission:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07b_an_multivariable_cox_models_FULL_Sense5.do covidadmission
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covidadmission
     outputs:
       moderately_sensitive:
-        log: log/07b_an_multivariable_cox_models_covidadmission_Sense5_*.log
+        log: log/07d_an_multivariable_cox_models_covidadmission_Sense5_*.log
         data: "output/an_sense_covidadmission_*_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covidadmission:
@@ -685,11 +685,11 @@ actions:
 
   12_an_tablecontent_HRtable_SENSE_non_covid_death:
     needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_non_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense2_non_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense3_non_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense4_non_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense5_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense1_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense2_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense3_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense4_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense5_non_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do non_covid_death
     outputs:
       moderately_sensitive:
@@ -699,11 +699,11 @@ actions:
 
   12_an_tablecontent_HRtable_SENSE_covid_tpp_prob:
     needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob
-      - 07b_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob
-      - 07b_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob
-      - 07b_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob
-      - 07b_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense1_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense2_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_tpp_prob
     outputs:
       moderately_sensitive:
@@ -713,11 +713,11 @@ actions:
 
   12_an_tablecontent_HRtable_SENSE_covid_death:
     needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense2_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense3_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense4_covid_death
-      - 07b_an_multivariable_cox_models_FULL_Sense5_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense1_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense2_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense3_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense4_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_death
     outputs:
       moderately_sensitive:
@@ -727,11 +727,11 @@ actions:
 
   12_an_tablecontent_HRtable_SENSE_covid_icu:
     needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_covid_icu
-      - 07b_an_multivariable_cox_models_FULL_Sense2_covid_icu
-      - 07b_an_multivariable_cox_models_FULL_Sense3_covid_icu
-      - 07b_an_multivariable_cox_models_FULL_Sense4_covid_icu
-      - 07b_an_multivariable_cox_models_FULL_Sense5_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense1_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense2_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense3_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense4_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_icu
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_icu
     outputs:
       moderately_sensitive:
@@ -741,11 +741,11 @@ actions:
 
   12_an_tablecontent_HRtable_SENSE_covidadmission:
     needs: 
-      - 07b_an_multivariable_cox_models_FULL_Sense1_covidadmission
-      - 07b_an_multivariable_cox_models_FULL_Sense2_covidadmission
-      - 07b_an_multivariable_cox_models_FULL_Sense3_covidadmission
-      - 07b_an_multivariable_cox_models_FULL_Sense4_covidadmission
-      - 07b_an_multivariable_cox_models_FULL_Sense5_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense1_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense2_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense3_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense4_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense5_covidadmission
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covidadmission
     outputs:
       moderately_sensitive:
