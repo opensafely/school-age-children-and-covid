@@ -1,13 +1,7 @@
 *Model do file
 
-<<<<<<< HEAD
-*When running in parallel locally use "C:/Program Files (x86)\Stata15\Stata-64.exe"
-*When running on server use "c:/program files\stata16\statamp-64.exe"
-=======
 *When running in parallel locally use "C:/Program Files (x86)/Stata15/Stata-64.exe"
 *When running on server use "c:/program files/stata16/statamp-64.exe"
->>>>>>> add-project-file
-
 
 *Import dataset into STATA
 import delimited `c(pwd)'/output/input.csv, clear
