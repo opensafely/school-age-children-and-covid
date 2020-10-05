@@ -46,6 +46,7 @@ global comordidadjlist  i.htdiag_or_highbp				///
 			i.ra_sle_psoriasis  			///
 			i.other_immuno		
 			
+local outcome `1'
 
 cap log close
 log using "$logdir/10_an_interaction_cox_models_shield_`outcome'", text replace
