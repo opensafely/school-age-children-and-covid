@@ -157,7 +157,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_shield_non_covid_death.log
-        data: "output/an_interaction_cox_models_non_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_non_covid_death_*.ster"
 
   10_an_interaction_cox_models_time_non_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -165,7 +165,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_time_non_covid_death.log
-        data: "output/an_interaction_cox_models_non_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_non_covid_death_*.ster"
 
   10_an_interaction_cox_models_weeks_non_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -173,7 +173,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_non_covid_death.log
-        data: "output/an_interaction_cox_models_non_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_non_covid_death_*.ster"
 
   06_univariate_analysis_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
@@ -246,7 +246,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_shield_covid_tpp_prob.log
-        data: "output/an_interaction_cox_models_covid_tpp_prob_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_tpp_prob_*.ster"
 
   10_an_interaction_cox_models_time_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
@@ -254,7 +254,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_time_covid_tpp_prob.log
-        data: "output/an_interaction_cox_models_covid_tpp_prob_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_tpp_prob_*.ster"
 
   10_an_interaction_cox_models_weeks_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
@@ -262,7 +262,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_covid_tpp_prob.log
-        data: "output/an_interaction_cox_models_covid_tpp_prob_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_tpp_prob_*.ster"
 
   06_univariate_analysis_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -335,7 +335,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_shield_covid_death.log
-        data: "output/an_interaction_cox_models_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_death_*.ster"
 
   10_an_interaction_cox_models_time_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -343,7 +343,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_time_covid_death.log
-        data: "output/an_interaction_cox_models_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_death_*.ster"
 
   10_an_interaction_cox_models_weeks_covid_death:
     needs: [01_cr_analysis_dataset]
@@ -351,7 +351,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_covid_death.log
-        data: "output/an_interaction_cox_models_covid_death_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_death_*.ster"
 
   06_univariate_analysis_covid_icu:
     needs: [01_cr_analysis_dataset]
@@ -424,7 +424,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_shield_covid_icu.log
-        data: "output/an_interaction_cox_models_covid_icu_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_icu_*.ster"
 
   10_an_interaction_cox_models_time_covid_icu:
     needs: [01_cr_analysis_dataset]
@@ -432,7 +432,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_time_covid_icu.log
-        data: "output/an_interaction_cox_models_covid_icu_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_icu_*.ster"
 
   10_an_interaction_cox_models_weeks_covid_icu:
     needs: [01_cr_analysis_dataset]
@@ -440,7 +440,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_covid_icu.log
-        data: "output/an_interaction_cox_models_covid_icu_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covid_icu_*.ster"
 
   06_univariate_analysis_covidadmission:
     needs: [01_cr_analysis_dataset]
@@ -513,7 +513,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_shield_covidadmission.log
-        data: "output/an_interaction_cox_models_covidadmission_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covidadmission_*.ster"
 
   10_an_interaction_cox_models_time_covidadmission:
     needs: [01_cr_analysis_dataset]
@@ -521,7 +521,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_time_covidadmission.log
-        data: "output/an_interaction_cox_models_covidadmission_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covidadmission_*.ster"
 
   10_an_interaction_cox_models_weeks_covidadmission:
     needs: [01_cr_analysis_dataset]
@@ -529,7 +529,7 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/10_an_interaction_cox_models_weeks_covidadmission.log
-        data: "output/an_interaction_cox_models_covidadmission_week*_ageband_*.ster"
+        data: "output/an_interaction_cox_models_covidadmission_*.ster"
 
   08_an_tablecontent_HRtable_non_covid_death:
     needs: 
