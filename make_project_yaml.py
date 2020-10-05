@@ -79,6 +79,7 @@ add_action(
     "01_cr_analysis_dataset",
     needs="generate_cohort",
     output={
+        "check_data": "tempdata/analysis_dataset.dta",
         "data": "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta",
         "ageband_data": "tempdata/analysis_dataset_ageband_*.dta",
     },

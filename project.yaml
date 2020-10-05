@@ -14,6 +14,7 @@ actions:
       moderately_sensitive:
         log: log/01_cr_analysis_dataset.log
       highly_sensitive:
+        check_data: "tempdata/analysis_dataset.dta"
         data: "tempdata/cr_create_analysis_dataset_STSET_*_ageband_*.dta"
         ageband_data: "tempdata/analysis_dataset_ageband_*.dta"
 
