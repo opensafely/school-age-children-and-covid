@@ -178,9 +178,7 @@ for outcome in outcomes:
             ),
             needs="01_cr_analysis_dataset",
             args=outcome,
-            output={
-                "data": f"output/an_interaction_cox_models_{outcome}_week*_ageband_*.ster"
-            },
+            output={"data": f"output/an_interaction_cox_models_{outcome}_*.ster"},
             output_is_non_sensitive=True,
         )
 
