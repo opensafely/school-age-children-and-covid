@@ -58,7 +58,7 @@ cap erase ./output/an_interaction_cox_models_`outcome'_week`week'_ageband_1
 }
 
 cap log close
-log using "$logdir/10a_an_interaction_cox_models_weeks_covidad", text replace
+log using "$logdir/10_an_interaction_cox_models_weeks_covidadmission.log", text replace
 
 *PROG TO DEFINE THE BASIC COX MODEL WITH OPTIONS FOR HANDLING OF AGE, BMI, ETHNICITY:
 cap prog drop basemodel
