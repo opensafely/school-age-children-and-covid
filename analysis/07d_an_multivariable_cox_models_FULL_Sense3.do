@@ -82,7 +82,7 @@ stcox 	i.`exposure_type'			///
 			, strata(stp) vce(cluster household_id)
 if _rc==0{
 estimates
-estimates save ./output/an_sense_`outcome'_CCeth_bmi_smok_ageband_`x', replace
+estimates save ./output/an_sense_`outcome'_CCbmi_smok_ageband_`x', replace
 *estat concordance /*c-statistic*/
  }
  else di "WARNING CC BMI SMOK MODEL WITH AGESPLINE DID NOT FIT (OUTCOME `outcome')" 
