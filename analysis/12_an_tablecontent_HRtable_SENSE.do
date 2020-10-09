@@ -11,6 +11,10 @@
 *************************************************************************
 
 local outcome `1' 
+* Open a log file
+capture log close
+log using "12_an_tablecontent_HRtable_SENSE_`outcome'.log", text replace
+
 set trace on
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
@@ -228,3 +232,5 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 
 graph export ./output/12_an_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
 }
+
+log close

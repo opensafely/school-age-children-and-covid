@@ -106,7 +106,7 @@ for outcome in outcomes:
         args=outcome,
         output={"data": f"output/04b_an_descriptive_table_2_{outcome}_ageband*.txt"},
         output_is_non_sensitive=True,
-        logfile="04b_an_descriptive_table_2.log",
+        logfile=f"04b_an_descriptive_table_2_{outcome}.log",
     )
 
 for outcome in outcomes:
@@ -218,7 +218,7 @@ for outcome in outcomes:
         args=outcome,
         output={"data": f"output/11_an_int_tab_contents_HRtable_{outcome}.txt"},
         output_is_non_sensitive=True,
-        logfile="11_an_interaction_HR_tables_forest.log",
+        logfile=f"11_an_interaction_HR_tables_forest_{outcome}.log",
     )
 
 add_action(
@@ -258,7 +258,7 @@ for outcome in outcomes:
             "figure": f"output/12_an_HRforest_SENSE_{outcome}_ageband_*.svg",
         },
         output_is_non_sensitive=True,
-        logfile="12_an_tablecontent_HRtable_SENSE.log",
+        logfile=f"12_an_tablecontent_HRtable_SENSE_{outcome}.log",
     )
 
 all_actions_str = "\n        - ".join(sorted(leaf_action_names))

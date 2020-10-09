@@ -23,6 +23,10 @@ global tempdir    "tempdata"
 
 local outcome `1' 
 
+* Open a log file
+capture log close
+log using "04b_an_descriptive_table_2_`outcome'.log", text replace
+
 *******************************************************************************
 *Generic code to output one row of table
 cap prog drop generaterow
@@ -145,3 +149,4 @@ file close tablecontent
 
 }
 
+log close
