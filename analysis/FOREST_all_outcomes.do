@@ -10,7 +10,7 @@ capture log close
 * create a filename global that can be used throughout the file
 global filename "forest_plot"
 
-global globalpath "C:\Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output"
+global globalpath "C:/Users\ENCDHFOR\Documents\GitHub\school-age-children-and-covid\analysis\output"
 
 ssc install metan
 *ssc install admetan

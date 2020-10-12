@@ -29,11 +29,11 @@ global tempdir    "tempdata"
 
 * Open a log file
 capture log close
-log using "$logdir\03a_an_descriptive_tables", replace t
+log using "$logdir/03a_an_descriptive_tables", replace t
 
 forvalues x=0/1 {
 
-use $tempdir\analysis_dataset_ageband_`x', clear
+use $tempdir/analysis_dataset_ageband_`x', clear
 
 
 **********************************

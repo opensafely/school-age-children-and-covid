@@ -11,6 +11,10 @@
 *************************************************************************
 
 local outcome `1' 
+* Open a log file
+capture log close
+log using "12_an_tablecontent_HRtable_SENSE_`outcome'.log", text replace
+
 set trace on
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
@@ -19,7 +23,7 @@ prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 forvalues x=0/1 {
 file write tablecontents_sense ("age") ("`x'") _n
-foreach sense in AAmain CCeth_bmi_smok plus_eth_12mo age_underlying_timescale time_int {
+foreach sense in AAmain CCeth_not_adj_eth CCeth_bmi_smok CCbmi_smok plus_eth_12mo age_underlying_timescale time_int {
 file write tablecontents_sense _n ("sense=") ("`sense'") _n
 forvalues i=1/2 {
 local endwith "_tab"
@@ -228,3 +232,5 @@ scatter graphorder hr, mcol(black)	msize(small)		///										///
 
 graph export ./output/12_an_HRforest_SENSE_`outcome'_ageband_`x'.svg, as(svg) replace
 }
+
+log close

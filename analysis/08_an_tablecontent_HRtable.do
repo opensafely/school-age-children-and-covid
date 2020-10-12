@@ -12,11 +12,15 @@
 *Date drafted: 30th June 2020
 *************************************************************************
 
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
+
 local outcome `1' 
 
 * Open a log file
 capture log close
-log using "$logdir\08_an_tablecontent_HRtable_`outcome'", text replace
+log using "$logdir/08_an_tablecontent_HRtable_`outcome'", text replace
 
 
 ***********************************************************************************************************************
@@ -32,7 +36,7 @@ local endwith "_tab"
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents ("`variable'") _tab ("`i'") _tab
 	
-	use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
+	use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_`x'.dta", clear
 	*put total N, PYFU and Rate in table
 	cou if `variable' == `i' & _d == 1
 	local event = r(N)

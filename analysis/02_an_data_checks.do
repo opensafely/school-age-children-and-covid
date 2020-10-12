@@ -9,19 +9,23 @@ DESCRIPTION OF FILE:	Run sanity checks on all variables
 							- Cross-check logical relationships 
 							- Explore expected relationships 
 							- Check stsettings 
-DATASETS USED:			$tempdir\`analysis_dataset'.dta
+DATASETS USED:			$tempdir/`analysis_dataset'.dta
 DATASETS CREATED: 		None
-OTHER OUTPUT: 			Log file: $logdir\02_an_data_checks
+OTHER OUTPUT: 			Log file: $logdir/02_an_data_checks
 							
 ==============================================================================*/
+
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 
 capture log close
-log using $logdir\02_an_data_checks, replace t
+log using $logdir/02_an_data_checks, replace t
 
 * Open Stata dataset
-use $tempdir\analysis_dataset, clear
+use $tempdir/analysis_dataset, clear
 
 *run ssc install if not on local machine - server needs datacheck.ado file
 *ssc install datacheck 

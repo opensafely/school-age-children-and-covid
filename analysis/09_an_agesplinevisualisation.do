@@ -10,11 +10,14 @@
 *************************************************************************
 
 
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 local outcome `1' 
 
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_0.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_0.dta", clear
 
 cap estimates use ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_0
 
@@ -42,7 +45,7 @@ if _rc==0 {
 
 }
 
-use "$tempdir\cr_create_analysis_dataset_STSET_`outcome'_ageband_1.dta", clear
+use "$tempdir/cr_create_analysis_dataset_STSET_`outcome'_ageband_1.dta", clear
 
 cap estimates use ./output/an_multivariate_cox_models_`outcome'_kids_cat3_MAINFULLYADJMODEL_noeth_ageband_1
 

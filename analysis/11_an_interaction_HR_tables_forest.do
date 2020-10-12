@@ -13,6 +13,10 @@
 local outcome `1' 
 
 
+* Open a log file
+capture log close
+log using "11_an_interaction_HR_tables_forest_`outcome'.log", text replace
+
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -99,3 +103,5 @@ file write tablecontents_int _n
 file close tablecontents_int
 
 postclose HRestimates_int
+
+log close
