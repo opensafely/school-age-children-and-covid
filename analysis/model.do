@@ -53,8 +53,8 @@ do "04b_an_descriptive_table_2.do" covid_death
 
 ************************************************************
 *UNIVARIATE MODELS (these fit the models needed for age/sex adj col of Table 2)
-foreach outcome of any  non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
-winexec "c:\program files\stata16\statamp-64.exe" do "06_univariate_analysis.do" `outcome' ///
+foreach outcome of any non_covid_death covid_tpp_prob covid_death covid_icu covidadmission   {
+winexec "C:\Program Files (x86)\Stata15\Stata-64.exe" do "06_univariate_analysis.do" `outcome' ///
 		kids_cat3  ///
 		gp_number_kids
 }

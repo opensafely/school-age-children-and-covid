@@ -114,12 +114,13 @@ erase  $shared_folder/covid_icu.dta
 erase  $shared_folder/covid_death.dta 
 
 
+foreach x in 0 1 {
 
 foreach int_type in male cat_time shield {
 
 use $shared_folder/interactions_all, clear
 keep if int_type=="`int_type'"
-
+keep if age==`x'
 list
 
 gen log_est = log(hr)
@@ -158,7 +159,7 @@ tab outcome outcome_new
 lab var outcome_new "Outcome"
 lab var exposurelevel "Exposure"
 
-sort outcome_new int_level_new exposurelevel
+sort outcome_new exposurelevel int_level_new 
 **********************************************************************
 ***Pool the odds ratios for the studies
 **********************************************************************
@@ -166,12 +167,11 @@ metan log_est log_lci log_uci, eform random ///
 	lcols(outcome_new exposurelevel int_level_new ) olineopt(lpattern(dash) lwidth(vthin)) ///
 	diamopt(lcolor(blue)) ///
 	nowarning nobox effect(Hazard Ratio) xlab (.8,1,1.25,1.5)  ///
-	graphregion(color(white)) nooverall nowt nohet texts(100) astext(55) ///
-	nosubgroup by(age) 
-	graph export $shared_folder/interactions_`int_type'.png, as(png) replace 
+	graphregion(color(white)) nooverall nowt nohet texts(100) astext(75)
+	graph export $shared_folder/interactions_`int_type'_age_`x'.png, as(png) replace 
 
 	} 
-	
+	}
 
 *******************************************************************************
 *Weeks
