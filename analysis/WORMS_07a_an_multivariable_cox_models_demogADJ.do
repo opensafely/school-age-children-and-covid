@@ -14,19 +14,19 @@
 *
 ********************************************************************************
 *
-*	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models. 
-*  
+*	Purpose:		This do-file performs multivariable (fully adjusted)
+*					Cox models.
+*
 ********************************************************************************
-*	
-*	Stata routines needed:	stbrier	  
+*
+*	Stata routines needed:	stbrier
 *
 ********************************************************************************
 * Set globals that will print in programs and direct output
-global outdir  	  "output" 
+global outdir  	  "output"
 global logdir     "log"
 global tempdir    "tempdata"
-local outcome `1' 
+local outcome `1'
 
 
 ************************************************************************************
@@ -41,7 +41,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_DEMOGADJ_agespline_bmica
 
 * Open a log file
 capture log close
-log using "$logdir/WORMS_07a_an_multivariable_cox_models_demogADJ_`outcome'", text replace
+log using "$logdir/WORMS_07a_an_multivariable_cox_models_demogADJ", text replace
 
 
 ******************************

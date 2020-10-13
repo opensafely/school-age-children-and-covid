@@ -10,22 +10,22 @@
 *
 *	Data created:	None
 *
-*	Other output:	Log file: an_univariable_cox_models.log 
+*	Other output:	Log file: an_univariable_cox_models.log
 *
 *	Comments: 		I had to create a folder called models within the output folder.
 ********************************************************************************
 *
-*	Purpose:		Fit age/sex adjusted Cox models, stratified by STP and 
+*	Purpose:		Fit age/sex adjusted Cox models, stratified by STP and
 *with hh size as random effect
-*  
+*
 ******* Set globals that will print in programs and direct output
-global outdir  	  "output" 
+global outdir  	  "output"
 global logdir     "log"
 global tempdir    "tempdata"
 **************************************************************************
 
 *PARSE DO-FILE ARGUMENTS (first should be outcome, rest should be variables)
-local arguments = wordcount("`0'") 
+local arguments = wordcount("`0'")
 local outcome `1'
 local varlist
 forvalues i=2/`arguments'{
@@ -33,11 +33,11 @@ forvalues i=2/`arguments'{
 	}
 local firstvar = word("`0'", 2)
 local lastvar = word("`0'", `arguments')
-	
+
 
 * Open a log file
 capture log close
-log using "$logdir/WORMS_06_univariate_analysis_`outcome'", replace t
+log using "$logdir/WORMS_06_univariate_analysis", replace t
 
 
 forvalues x=0/1 {

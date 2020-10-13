@@ -1,7 +1,7 @@
 *************************************************************************
-*Purpose: Create content that is ready to paste into a pre-formatted Word 
-* shell table containing HRs for interaction analyses.  Also output forest 
-*plot of results as SVG file. 
+*Purpose: Create content that is ready to paste into a pre-formatted Word
+* shell table containing HRs for interaction analyses.  Also output forest
+*plot of results as SVG file.
 *
 *Requires: final analysis dataset (analysis_dataset.dta)
 *
@@ -10,7 +10,7 @@
 *Date drafted: 30th June 2020
 *************************************************************************
 
-local outcome `1' 
+local outcome `1'
 
 
 * Open a log file
@@ -35,9 +35,9 @@ local endwith "_tab"
 
 	*put the varname and condition to left so that alignment can be checked vs shell
 	file write tablecontents_int ("`x'") _tab ("`variable'") _tab ("`i'") _tab ("`outcome'") _tab ("`int_type'") _tab ("`int_level'") _tab
-	
+
 	foreach modeltype of any fulladj {
-	
+
 		local noestimatesflag 0 /*reset*/
 
 *CHANGE THE OUTCOME BELOW TO LAST IF BRINGING IN MORE COLS
@@ -47,12 +47,12 @@ local endwith "_tab"
 		*1) GET THE RIGHT ESTIMATES INTO MEMORY
 
 		if "`modeltype'"=="fulladj" {
-				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'  
+				cap estimates use ./output/an_interaction_cox_models_`outcome'_`variable'_`int_type'_MAINFULLYADJMODEL_agespline_bmicat_noeth_ageband_`x'
 				if _rc!=0 local noestimatesflag 1
 				}
 		***********************
 		*2) WRITE THE HRs TO THE OUTPUT FILE
-		
+
 		if `noestimatesflag'==0{
 			if `int_level'==0 {
 			cap lincom `i'.`variable', eform
@@ -65,8 +65,8 @@ local endwith "_tab"
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			}
-			else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith' 
-			
+			else file write tablecontents_int %4.2f ("DID NOT FIT") `endwith'
+
 		*3) Save the estimates for plotting
 		if `noestimatesflag'==0{
 			if "`modeltype'"=="fulladj" {
@@ -78,11 +78,11 @@ local endwith "_tab"
 				post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
 				drop `variable'
 				}
-		}	
-		} 
+		}
+		}
 		} /*int_level*/
 		} /*full adj*/
-		
+
 } /*variable levels*/
 } /*agebands*/
 end
@@ -90,14 +90,14 @@ end
 
 *MAIN CODE TO PRODUCE TABLE CONTENTS
 cap file close tablecontents_int
-file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace 
+file open tablecontents_int using ./output/11_an_int_tab_contents_HRtable_`outcome'.txt, t w replace
 
 tempfile HRestimates_int
 cap postutil clear
 postfile HRestimates_int str10 x str10 outcome str27 variable str27 int_type level int_level hr lci uci pval using `HRestimates_int'
 
 *Primary exposure
-outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome') 
+outputHRsforvar, variable("kids_cat3") min(1) max(2) outcome(`outcome')
 file write tablecontents_int _n
 
 file close tablecontents_int
