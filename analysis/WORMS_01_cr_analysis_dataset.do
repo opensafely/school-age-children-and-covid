@@ -1,28 +1,32 @@
 /*==============================================================================
 DO FILE NAME:			WORMS_01_cr_analysis_dataset
 PROJECT:				Exposure children and COVID risk
-DATE: 					25th June 2020 
+DATE: 					25th June 2020
 AUTHOR:					Harriet Forbes adapted from A Wong, A Schultze, C Rentsch,
-						 K Baskharan, E Williamson 										
-DESCRIPTION OF FILE:	program 00, data management for project  
-						reformat variables 
+						 K Baskharan, E Williamson
+DESCRIPTION OF FILE:	program 00, data management for project
+						reformat variables
 						categorise variables
-						label variables 
+						label variables
 						apply exclusion criteria
 DATASETS USED:			data in memory (from analysis/input.csv)
 DATASETS CREATED: 		none
 OTHER OUTPUT: 			logfiles, printed to folder analysis/$logdir
-							
+
 ==============================================================================*/
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 cap log close
 log using $logdir/WORMS_01_cr_analysis_dataset, replace t
 
 /* CONVERT STRINGS TO DATE====================================================*/
-/* Comorb dates dates are given with month only, so adding day 
+/* Comorb dates dates are given with month only, so adding day
 15 to enable  them to be processed as dates 											  */
-
+*Import dataset into STATA
+import delimited "output/input_worms.csv", clear
 
 *cr date for diabetes based on adjudicated type
 gen diabetes=type1_diabetes if diabetes_type=="T1DM"
@@ -40,8 +44,8 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						temporary_immunodeficiency  ///
 						dialysis					///
 						kidney_transplant			///
-						other_transplant 			/// 
-						asplenia 			/// 
+						other_transplant 			///
+						asplenia 			///
 						chronic_liver_disease  ///
 						other_neuro  ///
 						stroke_dementia				///
@@ -56,34 +60,34 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						dereg_date ///
 						worms ///
 						{
-							
+
 		capture confirm string variable `var'
 		if _rc!=0 {
 			assert `var'==.
 			rename `var' `var'_date
 		}
-	
+
 		else {
 				replace `var' = `var' + "-15"
 				rename `var' `var'_dstr
 				replace `var'_dstr = " " if `var'_dstr == "-15"
-				gen `var'_date = date(`var'_dstr, "YMD") 
+				gen `var'_date = date(`var'_dstr, "YMD")
 				order `var'_date, after(`var'_dstr)
 				drop `var'_dstr
 		}
-	
+
 	format `var'_date %td
 }
 
-* Recode to dates from the strings 
+* Recode to dates from the strings
 foreach var of varlist 	died_date_ons				{
-						
+
 	confirm string variable `var'
 	rename `var' `var'_dstr
 	gen `var' = date(`var'_dstr, "YMD")
 	drop `var'_dstr
-	format `var' %td 
-	
+	format `var' %td
+
 }
 
 /*Tab all variables in initial extract*/
@@ -91,13 +95,13 @@ sum, d f
 
 /* CREATE VARIABLES===========================================================*/
 
-/* DEMOGRAPHICS */ 
+/* DEMOGRAPHICS */
 
 * Sex
 gen male = 1 if sex == "M"
 replace male = 0 if sex == "F"
 
-* Ethnicity 
+* Ethnicity
 replace ethnicity = .u if ethnicity == .
 
 label define ethnicity 	1 "White"  					///
@@ -109,7 +113,7 @@ label define ethnicity 	1 "White"  					///
 
 label values ethnicity ethnicity
 
-* STP 
+* STP
 rename stp stp_old
 bysort stp_old: gen stp = 1 if _n==1
 replace stp = sum(stp)
@@ -120,10 +124,10 @@ drop stp_old
 rename imd imd_o
 egen imd = cut(imd_o), group(5) icodes
 
-* add one to create groups 1 - 5 
+* add one to create groups 1 - 5
 replace imd = imd + 1
 
-* - 1 is missing, should be excluded from population 
+* - 1 is missing, should be excluded from population
 replace imd = .u if imd_o == -1
 drop imd_o
 
@@ -131,18 +135,18 @@ drop imd_o
 recode imd 5 = 1 4 = 2 3 = 3 2 = 4 1 = 5 .u = .u
 
 label define imd 1 "1 least deprived" 2 "2" 3 "3" 4 "4" 5 "5 most deprived" .u "Unknown"
-label values imd imd 
+label values imd imd
 
-/*  Age variables  */ 
+/*  Age variables  */
 
-* Create categorised age 
-recode age 18/29.9999 = 1 /// 
-		   30/39.9999 = 2 /// 
+* Create categorised age
+recode age 18/29.9999 = 1 ///
+		   30/39.9999 = 2 ///
            40/49.9999 = 3 ///
 		   50/59.9999 = 4 ///
 	       60/69.9999 = 5 ///
 		   70/79.9999 = 6 ///
-		   80/max = 7, gen(agegroup) 
+		   80/max = 7, gen(agegroup)
 
 label define agegroup 	1 "18-<30" ///
 						2 "30-<40" ///
@@ -151,7 +155,7 @@ label define agegroup 	1 "18-<30" ///
 						5 "60-<70" ///
 						6 "70-<80" ///
 						7 "80+"
-						
+
 label values agegroup agegroup
 
 * Create binary age (for age stratification)
@@ -169,7 +173,7 @@ assert age66 < .
 
 
 
-/* APPLY HH level INCLUSION/EXCLUIONS==================================================*/ 
+/* APPLY HH level INCLUSION/EXCLUIONS==================================================*/
 *tab care_home_type household_size
 drop if care_home_type!="U"
 
@@ -207,10 +211,10 @@ drop if imd_drop==9
 *No kids/kids under 12/up to 18
 *Identify kids under 12, or kids under 18
 gen nokids=1 if age<12
-recode nokids .=2 if age<18 
-bysort household_id: egen min_kids=min(nokids) 
+recode nokids .=2 if age<18
+bysort household_id: egen min_kids=min(nokids)
 gen kids_cat3=min_kids
-recode kids_cat3 .=0 
+recode kids_cat3 .=0
 lab define kids_cat3  0 "No kids" 1 "Kids under 12" 2 "Kids under 18"
 lab val kids_cat3 kids_cat3
 drop min_kids
@@ -221,8 +225,8 @@ bysort household_id: egen number_kids=count(nokids)
 gen gp_number_kids=number_kids
 recode gp_number_kids 3/max=3
 recode gp_number_kids 1=2 2=3 3=4
-replace gp_number_kids=0 if kids_cat3==0 
-replace gp_number_kids=1 if kids_cat3==2 
+replace gp_number_kids=0 if kids_cat3==0
+replace gp_number_kids=1 if kids_cat3==2
 
 lab var gp_number_kids "Number kids under 12 years in hh"
 drop nokids
@@ -233,7 +237,7 @@ lab define   gp_number_kids 0 none  1 "only >12 years" ///
 lab val gp_number_kids gp_number_kids
 
 tab kids_cat3 gp_number_kids, miss
- 
+
 /* DROP ALL KIDS, AS HH COMPOSITION VARS ARE NOW MADE */
 drop if age<18
 
@@ -242,10 +246,10 @@ bysort household_id: gen tot_adults_hh=_N
 recode tot_adults_hh 3/max=3
 
 
-/* SET FU DATES===============================================================*/ 
+/* SET FU DATES===============================================================*/
 * Censoring dates for each outcome (largely, last date outcome data available)
 *****NEEDS UPDATING WHEN INFO AVAILABLE*******************
-global tpp_infec_censor			= "01/02/2020" 
+global tpp_infec_censor			= "01/02/2020"
 
 *Start dates
 global indexdate 			    = "01/02/2019"
@@ -265,7 +269,7 @@ rename bmi_date_measured_date  			bmi_measured_date
 rename dereg_date_date 						dereg_date
 
 /* CREATE BINARY VARIABLES====================================================*/
-*  Make indicator variables for all conditions where relevant 
+*  Make indicator variables for all conditions where relevant
 
 foreach var of varlist 	chronic_respiratory_disease ///
 						chronic_cardiac_disease  ///
@@ -276,8 +280,8 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						temp_immunodef  ///
 						dialysis					///
 						kidney_transplant			///
-						other_transplant 			///  			/// 
-						asplenia 			/// 
+						other_transplant 			///  			///
+						asplenia 			///
 						chronic_liver_disease  ///
 						other_neuro  ///
 						stroke_dementia				///
@@ -290,13 +294,13 @@ foreach var of varlist 	chronic_respiratory_disease ///
 						creatinine_date  ///
 						smoking_status_date ///
 						{
-						
-	/* date ranges are applied in python, so presence of date indicates presence of 
-	  disease in the correct time frame */ 
+
+	/* date ranges are applied in python, so presence of date indicates presence of
+	  disease in the correct time frame */
 	local newvar =  substr("`var'", 1, length("`var'") - 5)
 	gen `newvar' = (`var'!=. )
 	order `newvar', after(`var')
-	
+
 }
 
 
@@ -305,21 +309,21 @@ foreach var of varlist 	chronic_respiratory_disease ///
 /*  Body Mass Index  */
 * NB: watch for missingness
 
-* Recode strange values 
-replace bmi = . if bmi == 0 
+* Recode strange values
+replace bmi = . if bmi == 0
 replace bmi = . if !inrange(bmi, 15, 50)
 
-* Restrict to within 10 years of index and aged > 16 
+* Restrict to within 10 years of index and aged > 16
 gen bmi_time = (date("$indexdate", "DMY") - bmi_measured_date)/365.25
 gen bmi_age = age - bmi_time
 
-replace bmi = . if bmi_age < 16 
-replace bmi = . if bmi_time > 10 & bmi_time != . 
+replace bmi = . if bmi_age < 16
+replace bmi = . if bmi_time > 10 & bmi_time != .
 
-* Set to missing if no date, and vice versa 
-replace bmi = . if bmi_measured_date == . 
-replace bmi_measured_date = . if bmi == . 
-replace bmi_measured = . if bmi == . 
+* Set to missing if no date, and vice versa
+replace bmi = . if bmi_measured_date == .
+replace bmi_measured_date = . if bmi == .
+replace bmi_measured = . if bmi == .
 
 gen 	bmicat = .
 recode  bmicat . = 1 if bmi < 18.5
@@ -337,7 +341,7 @@ label define bmicat 1 "Underweight (<18.5)" 	///
 					5 "Obese II (35-39.9)"		///
 					6 "Obese III (40+)"			///
 					.u "Unknown (.u)"
-					
+
 label values bmicat bmicat
 
 * Create less  granular categorisation
@@ -346,7 +350,7 @@ recode bmicat 1/3 .u = 1 4 = 2 5 = 3 6 = 4, gen(obese4cat)
 label define obese4cat 	1 "No record of obesity" 	///
 						2 "Obese I (30-34.9)"		///
 						3 "Obese II (35-39.9)"		///
-						4 "Obese III (40+)"		
+						4 "Obese III (40+)"
 
 label values obese4cat obese4cat
 order obese4cat, after(bmicat)
@@ -354,25 +358,25 @@ order obese4cat, after(bmicat)
 
 /*  Smoking  */
 
-* Smoking 
+* Smoking
 label define smoke 1 "Never" 2 "Former" 3 "Current" .u "Unknown (.u)"
 
 gen     smoke = 1  if smoking_status == "N"
 replace smoke = 2  if smoking_status == "E"
 replace smoke = 3  if smoking_status == "S"
 replace smoke = .u if smoking_status == "M"
-replace smoke = .u if smoking_status == "" 
+replace smoke = .u if smoking_status == ""
 
 label values smoke smoke
 drop smoking_status
 
 * Create non-missing 3-category variable for current smoking
-* Assumes missing smoking is never smoking 
+* Assumes missing smoking is never smoking
 recode smoke .u = 1, gen(smoke_nomiss)
 order smoke_nomiss, after(smoke)
 label values smoke_nomiss smoke
 
-/* CLINICAL COMORBIDITIES */ 
+/* CLINICAL COMORBIDITIES */
 
 /*  Cancer */
 label define cancer 1 "Never" 2 "Last year" 3 "2-5 years ago" 4 "5+ years"
@@ -386,9 +390,9 @@ label values cancer_haem_cat cancer
 
 
 * All other cancers
-gen     cancer_exhaem_cat = 4 if inrange(cancer_nonhaem_date,  d(1/1/1900), d(1/2/2015)) 
+gen     cancer_exhaem_cat = 4 if inrange(cancer_nonhaem_date,  d(1/1/1900), d(1/2/2015))
 replace cancer_exhaem_cat = 3 if inrange(cancer_nonhaem_date,  d(1/2/2015), d(1/2/2019))
-replace cancer_exhaem_cat = 2 if inrange(cancer_nonhaem_date,  d(1/2/2019), d(1/2/2020)) 
+replace cancer_exhaem_cat = 2 if inrange(cancer_nonhaem_date,  d(1/2/2019), d(1/2/2020))
 recode  cancer_exhaem_cat . = 1
 label values cancer_exhaem_cat cancer
 
@@ -396,13 +400,13 @@ label values cancer_exhaem_cat cancer
 /*  Immunosuppression  */
 
 * Immunosuppressed:
-* Permanent immunodeficiency ever, OR 
+* Permanent immunodeficiency ever, OR
 * Temporary immunodeficiency  last year
 gen temp1  = 1 if perm_immunodef_date!=.
 gen temp2  = inrange(temp_immunodef_date, (date("$indexdate", "DMY") - 365), date("$indexdate", "DMY"))
 
 egen other_immuno = rowmax(temp1 temp2)
-drop temp1 temp2 
+drop temp1 temp2
 order other_immuno, after(temp_immunodef)
 
 /*  Blood pressure   */
@@ -411,7 +415,7 @@ order other_immuno, after(temp_immunodef)
 gen     bpcat = 1 if bp_sys < 120 &  bp_dias < 80
 replace bpcat = 2 if inrange(bp_sys, 120, 130) & bp_dias<80
 replace bpcat = 3 if inrange(bp_sys, 130, 140) | inrange(bp_dias, 80, 90)
-replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.) 
+replace bpcat = 4 if (bp_sys>=140 & bp_sys<.) | (bp_dias>=90 & bp_dias<.)
 replace bpcat = .u if bp_sys>=. | bp_dias>=. | bp_sys==0 | bp_dias==0
 
 label define bpcat 1 "Normal" 2 "Elevated" 3 "High, stage I"	///
@@ -427,7 +431,7 @@ gen bphigh = (bpcat==4)
 /*  Hypertension  */
 
 gen htdiag_or_highbp = bphigh
-recode htdiag_or_highbp 0 = 1 if hypertension==1 
+recode htdiag_or_highbp 0 = 1 if hypertension==1
 
 
 ************
@@ -435,8 +439,8 @@ recode htdiag_or_highbp 0 = 1 if hypertension==1
 ************
 
 * Set implausible creatinine values to missing (Note: zero changed to missing)
-replace creatinine = . if !inrange(creatinine, 20, 3000) 
-	
+replace creatinine = . if !inrange(creatinine, 20, 3000)
+
 * Divide by 88.4 (to convert umol/l to mg/dl)
 gen SCr_adj = creatinine/88.4
 
@@ -468,13 +472,13 @@ label values ckd ckd
 
 * Convert into CKD group
 *recode ckd 2/5=1, gen(chronic_kidney_disease)
-*replace chronic_kidney_disease = 0 if creatinine==. 
-	
+*replace chronic_kidney_disease = 0 if creatinine==.
+
 recode ckd 0=1 2/3=2 4/5=3, gen(reduced_kidney_function_cat)
-replace reduced_kidney_function_cat = 1 if creatinine==. 
+replace reduced_kidney_function_cat = 1 if creatinine==.
 label define reduced_kidney_function_catlab ///
 	1 "None" 2 "Stage 3a/3b egfr 30-60	" 3 "Stage 4/5 egfr<30"
-label values reduced_kidney_function_cat reduced_kidney_function_catlab 
+label values reduced_kidney_function_cat reduced_kidney_function_catlab
 lab var  reduced "Reduced kidney function"
 
 
@@ -492,15 +496,15 @@ recode esrd .=0
 replace hba1c_percentage   = . if hba1c_percentage <= 0
 replace hba1c_mmol_per_mol = . if hba1c_mmol_per_mol <= 0
 
-/* Express  HbA1c as percentage  */ 
+/* Express  HbA1c as percentage  */
 
-* Express all values as perecentage 
-noi summ hba1c_percentage hba1c_mmol_per_mol 
-gen 	hba1c_pct = hba1c_percentage 
-replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<. 
+* Express all values as perecentage
+noi summ hba1c_percentage hba1c_mmol_per_mol
+gen 	hba1c_pct = hba1c_percentage
+replace hba1c_pct = (hba1c_mmol_per_mol/10.929)+2.15 if hba1c_mmol_per_mol<.
 
 * Valid % range between 0-20  /195 mmol/mol
-replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20) 
+replace hba1c_pct = . if !inrange(hba1c_pct, 0, 20)
 replace hba1c_pct = round(hba1c_pct, 0.1)
 
 
@@ -583,12 +587,12 @@ gen enter_date = date("$indexdate", "DMY")
 * Date of study end (typically: last date of outcome data available)
 **** NOTE!! NEEDS UPDATING!!!!
 gen tpp_infec_censor_date    	    = date("$tpp_infec_censor", 	"DMY")
- 	
+
 * Format the dates
 format 	enter_date					///
 		tpp_infec_censor_date   %td
-		 	
-		
+
+
 			/****   Outcome definitions   ****/
 
 
@@ -602,14 +606,14 @@ gen worms = (worms_date < .)
 gen stime_worms = min(tpp_infec_censor_date, died_date_ons, worms_date, dereg_date)
 
 * If outcome was after censoring occurred, set to zero
-replace worms 	= 0 if (worms_date	> tpp_infec_censor_date) 
+replace worms 	= 0 if (worms_date	> tpp_infec_censor_date)
 
 * Format date variables
-format  stime* %td 
+format  stime* %td
 
 
 /* LABEL VARIABLES============================================================*/
-*  Label variables you are intending to keep, drop the rest 
+*  Label variables you are intending to keep, drop the rest
 
 *HH variable
 label var kids_cat3 "Presence of children or young people in the household"
@@ -637,7 +641,7 @@ label var stp 						"Sustainability and Transformation Partnership"
 lab var tot_adults_hh 				"Total number adults in hh"
 
 
-* Comorbidities of interest 
+* Comorbidities of interest
 label var asthma						"Asthma category"
 label var egfr_cat						"Calculated eGFR"
 label var hypertension				    "Diagnosed hypertension"
@@ -646,13 +650,13 @@ label var chronic_cardiac_disease 		"Chronic Cardiac Diseases"
 label var diabcat						"Diabetes"
 label var cancer_haem_cat				"Haematological cancer"
 label var cancer_exhaem_cat				"Non-haematological cancer"
-label var kidney_transplant				"Kidney transplant"	
+label var kidney_transplant				"Kidney transplant"
 label var other_transplant 	 			"Other solid organ transplant"
 label var asplenia 						"Asplenia"
 label var other_immuno					"Immunosuppressed (combination algorithm)"
 label var chronic_liver_disease 		"Chronic liver disease"
-label var other_neuro 					"Neurological disease"			
-label var stroke_dementia 			    "Stroke or dementia"							
+label var other_neuro 					"Neurological disease"
+label var stroke_dementia 			    "Stroke or dementia"
 label var ra_sle_psoriasis				"Autoimmune disease"
 lab var egfr							eGFR
 lab var perm_immunodef  				"Permanent immunosuppression"
@@ -667,11 +671,11 @@ label var cancer_haem_date 					"Haem cancer Date"
 label var cancer_nonhaem_date 				"Non-haem cancer Date"
 label var chronic_liver_disease_date  		"Chronic liver disease Date"
 label var other_neuro_date 					"Neurological disease  Date"
-label var stroke_dementia_date			    "Stroke or dementia date"							
+label var stroke_dementia_date			    "Stroke or dementia date"
 label var ra_sle_psoriasis_date 			"Autoimmune disease  Date"
 lab var perm_immunodef_date  				"Permanent immunosuppression date"
 lab var temp_immunodef_date   				"Temporary immunosuppression date"
-label var kidney_transplant_date						"Kidney transplant"	
+label var kidney_transplant_date						"Kidney transplant"
 label var other_transplant_date 					"Other solid organ transplant"
 label var asplenia_date  						"Asplenia date"
 lab var  bphigh "non-missing indicator of known high blood pressure"
@@ -696,21 +700,21 @@ label var  stime_worms			"Survival time (date); outcome worms"
 *  Drop variables that are not needed (those not labelled)
 ds, not(varlabel)
 drop `r(varlist)'
-	
 
-/* APPLY INCLUSION/EXCLUIONS==================================================*/ 
+
+/* APPLY INCLUSION/EXCLUIONS==================================================*/
 noi di "DROP AGE >110:"
 drop if age > 110 & age != .
 
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
-	
+
 noi di "DROP IF DIED BEFORE INDEX"
 drop if died_date_ons <= date("$indexdate", "DMY")
 
 noi di "DROP NO ETHNICITY DATA"
-keep if ethnicity!=.u	
-	
+keep if ethnicity!=.u
+
 ***************
 *  Save data  *
 ***************
@@ -740,10 +744,10 @@ use $tempdir/analysis_dataset_worms_ageband_`x', clear
 stset stime_worms, fail(worms) 				///
 	id(patient_id) enter(enter_date) origin(enter_date)
 save "$tempdir/cr_create_analysis_dataset_STSET_worms_ageband_`x'.dta", replace
-	
+
 }
 
 
-* Close log file 
+* Close log file
 log close
 

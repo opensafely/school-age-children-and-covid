@@ -14,19 +14,19 @@
 *
 ********************************************************************************
 *
-*	Purpose:		This do-file performs multivariable (fully adjusted) 
-*					Cox models. 
-*  
+*	Purpose:		This do-file performs multivariable (fully adjusted)
+*					Cox models.
+*
 ********************************************************************************
-*	
-*	Stata routines needed:	stbrier	  
+*
+*	Stata routines needed:	stbrier
 *
 ********************************************************************************
 * Set globals that will print in programs and direct output
-global outdir  	  "output" 
+global outdir  	  "output"
 global logdir     "log"
 global tempdir    "tempdata"
-local outcome `1' 
+local outcome `1'
 
 
 ************************************************************************************
@@ -41,7 +41,7 @@ cap erase ./output/an_multivariate_cox_models_`outcome'_gp_number_kids_MAINFULLY
 
 * Open a log file
 capture log close
-log using "$logdir/WORMS_07b_an_multivariable_cox_models_FULL_`outcome'", text replace
+log using "$logdir/WORMS_07b_an_multivariable_cox_models_FULL", text replace
 
 
 *************************************************************************************
@@ -103,9 +103,9 @@ if _rc==0{
 estimates
 estimates save ./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_noeth_ageband_`x', replace
 *estat concordance /*c-statistic*/
-	/*  Proportional Hazards test 
+	/*  Proportional Hazards test
 	* Based on Schoenfeld residuals
-	timer clear 
+	timer clear
 	timer on 1
 	if e(N_fail)>0 estat phtest, d
 	timer off 1

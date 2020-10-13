@@ -3,17 +3,20 @@ DO FILE NAME:			WORMS_02_an_data_checks
 PROJECT:				Exposure children and COVID risk
 AUTHOR:					HFORBES Adapted from A Wong, A Schultze, C Rentsch
 						 K Baskharan, E Williamson
-DATE: 					30th June 2020 
+DATE: 					30th June 2020
 DESCRIPTION OF FILE:	Run sanity checks on all variables
-							- Check variables take expected ranges 
-							- Cross-check logical relationships 
-							- Explore expected relationships 
-							- Check stsettings 
+							- Check variables take expected ranges
+							- Cross-check logical relationships
+							- Explore expected relationships
+							- Check stsettings
 DATASETS USED:			$tempdir/`analysis_dataset'.dta
 DATASETS CREATED: 		None
 OTHER OUTPUT: 			Log file: $logdir/02_an_data_checks
-							
+
 ==============================================================================*/
+global outdir  	  "output"
+global logdir     "log"
+global tempdir    "tempdata"
 
 * Open a log file
 
@@ -24,25 +27,25 @@ log using $logdir/WORMS_02_an_data_checks, replace t
 use $tempdir/analysis_dataset_worms, clear
 
 *run ssc install if not on local machine - server needs datacheck.ado file
-*ssc install datacheck 
+*ssc install datacheck
 
 *Duplicate patient check
 datacheck _n==1, by(patient_id) nol
 
 
-/* CHECK INCLUSION AND EXCLUSION CRITERIA=====================================*/ 
+/* CHECK INCLUSION AND EXCLUSION CRITERIA=====================================*/
 
-* DATA STRUCTURE: Confirm one row per patient 
+* DATA STRUCTURE: Confirm one row per patient
 duplicates tag patient_id, generate(dup_check)
-assert dup_check == 0 
+assert dup_check == 0
 drop dup_check
 
-* INCLUSION 1: >=18 and <=110 at 1 March 2020 
+* INCLUSION 1: >=18 and <=110 at 1 March 2020
 assert age < .
-assert age >= 18 
+assert age >= 18
 assert age <= 110
- 
-* INCLUSION 2: M or F gender at 1 March 2020 
+
+* INCLUSION 2: M or F gender at 1 March 2020
 assert inlist(sex, "M", "F")
 
 * EXCLUDE 1:  MISSING IMD
@@ -51,7 +54,7 @@ assert inlist(imd, 1, 2, 3, 4, 5)
 * EXCLUDE 2:  HH with more than 10 people
 datacheck inlist(household_size, 1, 2, 3, 4, 5,6, 7, 8, 9, 10), nol
 
-/* EXPECTED VALUES============================================================*/ 
+/* EXPECTED VALUES============================================================*/
 
 *HH
 datacheck kids_cat3<., nol
@@ -68,7 +71,7 @@ datacheck inlist(age66, 0, 1), nol
 * Sex
 datacheck inlist(male, 0, 1), nol
 
-* BMI 
+* BMI
 datacheck inlist(obese4cat, 1, 2, 3, 4), nol
 datacheck inlist(bmicat, 1, 2, 3, 4, 5, 6, .u), nol
 
@@ -80,10 +83,10 @@ datacheck inlist(ethnicity, 1, 2, 3, 4, 5, .u), nol
 
 * Smoking
 datacheck inlist(smoke, 1, 2, 3, .u), nol
-datacheck inlist(smoke_nomiss, 1, 2, 3), nol 
+datacheck inlist(smoke_nomiss, 1, 2, 3), nol
 
 
-* Check date ranges for all comorbidities 
+* Check date ranges for all comorbidities
 
 foreach var of varlist  chronic_respiratory_disease 	///
 					chronic_cardiac_disease		///
@@ -93,27 +96,27 @@ foreach var of varlist  chronic_respiratory_disease 	///
 					ra_sle_psoriasis				///
 					perm_immunodef  ///
 					temp_immunodef  ///
-					other_transplant 			/// 
-					asplenia 			/// 
+					other_transplant 			///
+					asplenia 			///
 					hypertension			 	///
 					{
-						
+
 	summ `var'_date, format
 
 }
 
-foreach comorb in $varlist { 
+foreach comorb in $varlist {
 
 	local comorb: subinstr local comorb "i." ""
 	safetab `comorb', m
-	
+
 }
 
 * Outcome dates
 summ  worms, format
 
 
-/* LOGICAL RELATIONSHIPS======================================================*/ 
+/* LOGICAL RELATIONSHIPS======================================================*/
 
 *HH variables
 safetab kids_cat3 tot_adults_hh
@@ -138,36 +141,36 @@ safetab smoke smoke_nomiss, m
 safetab reduced egfr_cat, m
 
 
-/* EXPECTED RELATIONSHIPS=====================================================*/ 
+/* EXPECTED RELATIONSHIPS=====================================================*/
 
 /*  Relationships between demographic/lifestyle variables  */
-safetab agegroup bmicat, 	row 
-safetab agegroup smoke, 	row  
-safetab agegroup ethnicity, row 
-safetab agegroup imd, 		row 
-safetab agegroup shield,    row 
+safetab agegroup bmicat, 	row
+safetab agegroup smoke, 	row
+safetab agegroup ethnicity, row
+safetab agegroup imd, 		row
+safetab agegroup shield,    row
 
-safetab bmicat smoke, 		 row   
-safetab bmicat ethnicity, 	 row 
-safetab bmicat imd, 	 	 row 
-safetab bmicat hypertension, row 
-safetab bmicat shield,    row 
+safetab bmicat smoke, 		 row
+safetab bmicat ethnicity, 	 row
+safetab bmicat imd, 	 	 row
+safetab bmicat hypertension, row
+safetab bmicat shield,    row
 
-                            
-safetab smoke ethnicity, 	row 
-safetab smoke imd, 			row 
-safetab smoke hypertension, row 
-safetab smoke shield,    row 
-                      
-safetab ethnicity imd, 		row 
-safetab shield imd, 		row 
 
-safetab shield ethnicity, 		row 
+safetab smoke ethnicity, 	row
+safetab smoke imd, 			row
+safetab smoke hypertension, row
+safetab smoke shield,    row
+
+safetab ethnicity imd, 		row
+safetab shield imd, 		row
+
+safetab shield ethnicity, 		row
 
 /* SENSE CHECK OUTCOMES=======================================================*/
 
 safetab worms
 
 
-* Close log file 
+* Close log file
 log close

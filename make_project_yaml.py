@@ -16,7 +16,8 @@ def add_action(
     extra_args = ""
     if args:
         first_arg = args.split()[0]
-        action_name = f"{action_name}_{first_arg}"
+        if first_arg != "worms":
+            action_name = f"{action_name}_{first_arg}"
         extra_args = f" {args}"
     if output:
         if not output_is_non_sensitive:
@@ -71,6 +72,13 @@ actions = [
         highly_sensitive:
           cohort: output/input.csv
     """,
+    """
+    worms_generate_cohort:
+      run: cohortextractor:latest generate_cohort --study-definition study_definition_worms
+      outputs:
+        highly_sensitive:
+          cohort: output/input_worms.csv
+    """,
 ]
 leaf_action_names = set()
 
@@ -85,7 +93,25 @@ add_action(
     },
 )
 
-add_action("02_an_data_checks", needs="01_cr_analysis_dataset")
+add_action(
+    "WORMS_01_cr_analysis_dataset",
+    needs="worms_generate_cohort",
+    output={
+        "check_data": "tempdata/analysis_dataset_worms.dta",
+        "data": "tempdata/cr_create_analysis_dataset_STSET_worms_ageband_*.dta",
+        "ageband_data": "tempdata/analysis_dataset_worms_ageband_*.dta",
+    },
+)
+
+add_action(
+    "02_an_data_checks",
+    needs="01_cr_analysis_dataset",
+    output={"histogram": "output/01_histogram_outcomes.svg"},
+)
+
+add_action(
+    "WORMS_02_an_data_checks", needs="WORMS_01_cr_analysis_dataset",
+)
 
 add_action("03a_an_descriptive_tables", needs="01_cr_analysis_dataset")
 
@@ -150,7 +176,7 @@ for outcome in outcomes:
         output_is_non_sensitive=True,
         logfile=f"log/07b_an_multivariable_cox_models_{outcome}.log",
     )
-    for i in range(1, 6):
+    for i in range(3, 6):
         logfile = None
         if i in (4, 5):
             logfile = f"log/07d_an_multivariable_cox_models_{outcome}_Sense{i}_*.log"
@@ -168,21 +194,56 @@ for outcome in outcomes:
     #     args=outcome,
     #     output_is_non_sensitive=True,
     # )
-    interaction_keys = ["shield", "time", "weeks"]
+    interaction_keys = ["shield", "time", "weeks", "sex"]
     for key in interaction_keys:
+        if key == "weeks" and outcome == "covidadmission":
+            script_name = "10a_an_interaction_cox_models_weeks_covidad"
+            output = f"output/an_interaction_cox_models_{outcome}_week*_ageband_*.ster"
+        else:
+            script_name = f"10_an_interaction_cox_models_{key}"
+            if key == "weeks":
+                output = (
+                    f"output/an_interaction_cox_models_{outcome}_week0_ageband_*.ster"
+                )
+            else:
+                output = f"output/an_interaction_cox_models_{outcome}_kids_cat3_*_MAINFULLYADJMODEL_*.ster"
+
         add_action(
             f"10_an_interaction_cox_models_{key}",
-            script_name=(
-                "10a_an_interaction_cox_models_weeks_covidad"
-                if key == "weeks" and outcome == "covidadmission"
-                else None
-            ),
+            script_name=script_name,
             needs="01_cr_analysis_dataset",
             args=outcome,
-            output={"data": f"output/an_interaction_cox_models_{outcome}_*.ster"},
+            output={"data": output},
             output_is_non_sensitive=True,
         )
 
+add_action(
+    "WORMS_06_univariate_analysis",
+    needs="WORMS_01_cr_analysis_dataset",
+    args="worms kids_cat3 gp_number_kids",
+    output={"data": f"output/an_univariable_cox_models_worms_AGESEX_*_ageband_*.ster"},
+    output_is_non_sensitive=True,
+)
+
+add_action(
+    "WORMS_07a_an_multivariable_cox_models_demogADJ",
+    needs="WORMS_01_cr_analysis_dataset",
+    args="worms",
+    output={
+        "data": f"output/an_multivariate_cox_models_worms_*_DEMOGADJ_noeth_ageband_*.ster"
+    },
+    output_is_non_sensitive=True,
+)
+
+add_action(
+    "WORMS_07b_an_multivariable_cox_models_FULL",
+    needs="WORMS_01_cr_analysis_dataset",
+    args="worms",
+    output={
+        "data": f"output/an_multivariate_cox_models_worms_*_MAINFULLYADJMODEL_noeth_ageband_*.ster",
+    },
+    output_is_non_sensitive=True,
+)
 for outcome in outcomes:
     add_action(
         "08_an_tablecontent_HRtable",
@@ -196,6 +257,18 @@ for outcome in outcomes:
         output={"data": f"output/an_tablecontents_HRtable_{outcome}.txt"},
         output_is_non_sensitive=True,
     )
+add_action(
+    "WORMS_08_an_tablecontent_HRtable",
+    needs=[
+        "WORMS_01_cr_analysis_dataset",
+        "WORMS_06_univariate_analysis",
+        "WORMS_07a_an_multivariable_cox_models_demogADJ",
+        "WORMS_07b_an_multivariable_cox_models_FULL",
+    ],
+    args="worms",
+    output={"data": f"output/an_tablecontents_HRtable_worms.txt"},
+    output_is_non_sensitive=True,
+)
 
 add_action(
     "15_anHRfigure_all_outcomes",
@@ -250,7 +323,7 @@ for outcome in outcomes:
         "12_an_tablecontent_HRtable_SENSE",
         needs=[
             f"07d_an_multivariable_cox_models_FULL_Sense{i}_{outcome}"
-            for i in range(1, 6)
+            for i in range(3, 6)
         ],
         args=outcome,
         output={
