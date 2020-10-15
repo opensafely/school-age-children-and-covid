@@ -721,6 +721,7 @@ actions:
       - 07d_an_multivariable_cox_models_FULL_Sense3_non_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense4_non_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense5_non_covid_death
+      - 07b_an_multivariable_cox_models_FULL_non_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do non_covid_death
     outputs:
       moderately_sensitive:
@@ -733,6 +734,7 @@ actions:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob
       - 07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob
+      - 07b_an_multivariable_cox_models_FULL_covid_tpp_prob
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_tpp_prob
     outputs:
       moderately_sensitive:
@@ -745,6 +747,7 @@ actions:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense5_covid_death
+      - 07b_an_multivariable_cox_models_FULL_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_death
     outputs:
       moderately_sensitive:
@@ -757,6 +760,7 @@ actions:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_icu
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_icu
       - 07d_an_multivariable_cox_models_FULL_Sense5_covid_icu
+      - 07b_an_multivariable_cox_models_FULL_covid_icu
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_icu
     outputs:
       moderately_sensitive:
@@ -769,6 +773,7 @@ actions:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covidadmission
       - 07d_an_multivariable_cox_models_FULL_Sense4_covidadmission
       - 07d_an_multivariable_cox_models_FULL_Sense5_covidadmission
+      - 07b_an_multivariable_cox_models_FULL_covidadmission
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covidadmission
     outputs:
       moderately_sensitive:

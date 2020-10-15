@@ -319,12 +319,13 @@ for outcome in outcomes:
     #     output_is_non_sensitive=True,
     #     logfile="09_an_agesplinevisualisation.log",
     # )
+    needs = [
+        f"07d_an_multivariable_cox_models_FULL_Sense{i}_{outcome}" for i in range(3, 6)
+    ]
+    needs += [f"07b_an_multivariable_cox_models_FULL_{outcome}"]
     add_action(
         "12_an_tablecontent_HRtable_SENSE",
-        needs=[
-            f"07d_an_multivariable_cox_models_FULL_Sense{i}_{outcome}"
-            for i in range(3, 6)
-        ],
+        needs=needs,
         args=outcome,
         output={
             "data": f"output/12_an_sense_HRtable_{outcome}_SENSE_ANALYSES.txt",
