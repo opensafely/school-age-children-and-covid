@@ -1,0 +1,80 @@
+cons	==1	2567671 (100.0)	675 (0.03)
+
+agegroup	==1	0 (0.0)	0 (   .)
+agegroup	==2	0 (0.0)	0 (   .)
+agegroup	==3	0 (0.0)	0 (   .)
+agegroup	==4	0 (0.0)	0 (   .)
+agegroup	==5	609634 (23.7)	222 (0.04)
+agegroup	==6	1300326 (50.6)	395 (0.03)
+agegroup	==7	657711 (25.6)	58 (0.01)
+
+male	==0	1384514 (53.9)	189 (0.01)
+male	==1	1183157 (46.1)	486 (0.04)
+
+bmicat	==1	44163 (1.7)	REDACTED
+bmicat	==2	760180 (29.6)	109 (0.01)
+bmicat	==3	949715 (37.0)	257 (0.03)
+bmicat	==4	462119 (18.0)	173 (0.04)
+bmicat	==5	151009 (5.9)	78 (0.05)
+bmicat	==6	58570 (2.3)	24 (0.04)
+bmicat	>=.	141915 (5.5)	31 (0.02)
+
+smoke	==1	1011539 (39.4)	203 (0.02)
+smoke	==2	1336686 (52.1)	443 (0.03)
+smoke	==3	213854 (8.3)	27 (0.01)
+smoke	>=.	5592 (0.2)	REDACTED
+
+ethnicity	==1	2419165 (94.2)	558 (0.02)
+ethnicity	==2	9797 (0.4)	7 (0.07)
+ethnicity	==3	90017 (3.5)	64 (0.07)
+ethnicity	==4	27290 (1.1)	28 (0.10)
+ethnicity	==5	21402 (0.8)	18 (0.08)
+ethnicity	>=.	0 (0.0)	0 (   .)
+
+imd	==1	618192 (24.1)	135 (0.02)
+imd	==2	596748 (23.2)	132 (0.02)
+imd	==3	548147 (21.3)	148 (0.03)
+imd	==4	460588 (17.9)	146 (0.03)
+imd	==5	343996 (13.4)	114 (0.03)
+
+tot_adults_hh	==1	877922 (34.2)	170 (0.02)
+tot_adults_hh	==2	1319765 (51.4)	358 (0.03)
+tot_adults_hh	==3	369984 (14.4)	147 (0.04)
+
+bpcat	==1	298019 (11.6)	75 (0.03)
+bpcat	==2	400138 (15.6)	109 (0.03)
+bpcat	==3	947144 (36.9)	246 (0.03)
+bpcat	==4	909480 (35.4)	241 (0.03)
+bpcat	>=.	12890 (0.5)	REDACTED
+htdiag_or_highbp	==1	1769252 (68.9)	499 (0.03)
+
+chronic_respiratory_disease	==1	317732 (12.4)	108 (0.03)
+asthma	==1	347416 (13.5)	107 (0.03)
+chronic_cardiac_disease	==1	536239 (20.9)	153 (0.03)
+
+diabcat	==1	2103299 (81.9)	472 (0.02)
+diabcat	==2	3270 (0.1)	REDACTED
+diabcat	==3	6772 (0.3)	REDACTED
+diabcat	==4	311147 (12.1)	115 (0.04)
+diabcat	==5	141345 (5.5)	84 (0.06)
+diabcat	==6	1838 (0.1)	0 (0.00)
+
+cancer_haem_cat	==2	3661 (0.1)	REDACTED
+cancer_haem_cat	==3	11073 (0.4)	13 (0.12)
+cancer_haem_cat	==4	22672 (0.9)	8 (0.04)
+
+cancer_exhaem_cat	==2	30875 (1.2)	6 (0.02)
+cancer_exhaem_cat	==3	91267 (3.6)	19 (0.02)
+cancer_exhaem_cat	==4	243542 (9.5)	57 (0.02)
+
+reduced_kidney_function_cat	==2	535850 (20.9)	146 (0.03)
+reduced_kidney_function_cat	==3	39509 (1.5)	15 (0.04)
+esrd	==1	6279 (0.2)	11 (0.18)
+chronic_liver_disease	==1	24604 (1.0)	7 (0.03)
+stroke_dementia	==1	187946 (7.3)	54 (0.03)
+other_neuro	==1	50577 (2.0)	12 (0.02)
+other_transplant	==1	825 (0.0)	REDACTED
+asplenia	==1	6355 (0.2)	REDACTED
+ra_sle_psoriasis	==1	199014 (7.8)	65 (0.03)
+other_immuno	==1	5235 (0.2)	REDACTED
+shield	==1	903291 (35.2)	281 (0.03)

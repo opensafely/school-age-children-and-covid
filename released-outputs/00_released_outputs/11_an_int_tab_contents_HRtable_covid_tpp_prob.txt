@@ -1,0 +1,26 @@
+age	exposure	exposure level	outcome	int_type	int_level	HR	lci	uci
+0	kids_cat3	1	covid_tpp_prob	male	0	0.99	0.96	1.03	
+0	kids_cat3	1	covid_tpp_prob	male	1	1.09	1.04	1.13	
+0	kids_cat3	1	covid_tpp_prob	cat_time	0	0.80	0.73	0.87	
+0	kids_cat3	1	covid_tpp_prob	cat_time	1	1.06	1.02	1.09	
+0	kids_cat3	1	covid_tpp_prob	shield	0	1.04	1.01	1.08	
+0	kids_cat3	1	covid_tpp_prob	shield	1	0.99	0.93	1.04	
+0	kids_cat3	2	covid_tpp_prob	male	0	1.08	1.02	1.13	
+0	kids_cat3	2	covid_tpp_prob	male	1	1.09	1.03	1.16	
+0	kids_cat3	2	covid_tpp_prob	cat_time	0	0.97	0.86	1.10	
+0	kids_cat3	2	covid_tpp_prob	cat_time	1	1.10	1.05	1.15	
+0	kids_cat3	2	covid_tpp_prob	shield	0	1.08	1.03	1.14	
+0	kids_cat3	2	covid_tpp_prob	shield	1	1.09	1.01	1.18	
+1	kids_cat3	1	covid_tpp_prob	male	0	1.13	0.97	1.33	
+1	kids_cat3	1	covid_tpp_prob	male	1	1.01	0.86	1.18	
+1	kids_cat3	1	covid_tpp_prob	cat_time	0	0.96	0.74	1.24	
+1	kids_cat3	1	covid_tpp_prob	cat_time	1	1.10	0.96	1.25	
+1	kids_cat3	1	covid_tpp_prob	shield	0	1.08	0.92	1.26	
+1	kids_cat3	1	covid_tpp_prob	shield	1	1.06	0.89	1.25	
+1	kids_cat3	2	covid_tpp_prob	male	0	0.94	0.75	1.20	
+1	kids_cat3	2	covid_tpp_prob	male	1	0.87	0.69	1.11	
+1	kids_cat3	2	covid_tpp_prob	cat_time	0	0.69	0.44	1.07	
+1	kids_cat3	2	covid_tpp_prob	cat_time	1	0.96	0.80	1.17	
+1	kids_cat3	2	covid_tpp_prob	shield	0	0.97	0.78	1.22	
+1	kids_cat3	2	covid_tpp_prob	shield	1	0.83	0.65	1.08	
+
