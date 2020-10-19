@@ -18,7 +18,7 @@ local outcome `1'
 capture log close
 log using "12_an_tablecontent_HRtable_SENSE_`outcome'.log", text replace
 
-set trace on
+*set trace on
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
