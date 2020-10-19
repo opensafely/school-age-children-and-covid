@@ -107,6 +107,7 @@ add_action(
     "02_an_data_checks",
     needs="01_cr_analysis_dataset",
     output={"histogram": "output/01_histogram_outcomes.svg"},
+    output_is_non_sensitive=True,
 )
 
 add_action(
