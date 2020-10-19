@@ -115,7 +115,7 @@ gen obsorder=_n
 *Levels
 gen leveldesc = ""
 replace leveldesc = "Children under 12 years" if i==1 & hr!=1 & hr!=.
-replace leveldesc = "Children/young people aged 11-<18 years" if i==2
+replace leveldesc = "Children/young people aged 12-<18 years" if i==2
 
 gen Name = outcome if hr==.
 replace Name = "COVID-19 death" if Name=="covid_deat"
