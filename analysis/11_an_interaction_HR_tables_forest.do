@@ -13,6 +13,7 @@
 local outcome `1'
 
 
+
 * Open a log file
 capture log close
 log using "11_an_interaction_HR_tables_forest_`outcome'.log", text replace
@@ -24,7 +25,7 @@ prog define outputHRsforvar
 syntax, variable(string) min(real) max(real) outcome(string)
 file write tablecontents_int ("age") _tab ("exposure") _tab ("exposure level") ///
 _tab ("outcome") _tab ("int_type") _tab ("int_level") ///
-_tab ("HR")  _tab ("lci")  _tab ("uci") _n
+_tab ("HR")  _tab ("lci")  _tab ("uci") _tab ("pval") _n
 forvalues x=0/1 {
 forvalues i=`min'/`max'{
 foreach int_type in male cat_time shield {
@@ -55,13 +56,17 @@ local endwith "_tab"
 
 		if `noestimatesflag'==0{
 			if `int_level'==0 {
+			test 1.`int_type'#`i'.`variable'
+			*overall p-value for interaction: test 1.`int_type'#1.`variable' test 1.`int_type'#2.`variable'
+			local pval=r(p)
 			cap lincom `i'.`variable', eform
-			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab %4.2f (`pval') `endwith'
+
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			if `int_level'==1 {
 			cap lincom `i'.`variable'+ 1.`int_type'#`i'.`variable', eform
-			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab `endwith'
+			if _rc==0 file write tablecontents_int %4.2f (r(estimate)) _tab %4.2f (r(lb)) _tab %4.2f (r(ub)) _tab  `endwith'
 				else file write tablecontents_int %4.2f ("ERR IN MODEL") `endwith'
 				}
 			}
@@ -74,8 +79,9 @@ local endwith "_tab"
 				local lb = r(lb)
 				local ub = r(ub)
 				cap gen `variable'=.
-				testparm i.`variable'
-				post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (r(p))
+				test 1.`int_type'#2.`variable' 1.`int_type'#1.`variable'
+				local pval=r(p)
+				post HRestimates_int ("`x'") ("`outcome'") ("`variable'") ("`int_type'") (`i') (`int_level') (`hr') (`lb') (`ub') (`pval')
 				drop `variable'
 				}
 		}
