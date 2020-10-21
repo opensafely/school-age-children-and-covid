@@ -52,7 +52,10 @@ def add_action(
 
 def format_project_yaml(actions):
     project_yaml = """
-    version: '1.0'
+    version: '3.0'
+    expectations:
+        population_size: 10000
+
     actions:
     """
 
@@ -172,7 +175,7 @@ for outcome in outcomes:
         args=outcome,
         output={
             "data": f"output/an_multivariate_cox_models_{outcome}_*_MAINFULLYADJMODEL_ageband_*.ster",
-            "other_data": f"output/an_sense_{outcome}_*_ageband_*.ster",
+            "other_data": f"output/an_sense_{outcome}_plus_eth_12mo_ageband_*.ster",
         },
         output_is_non_sensitive=True,
         logfile=f"log/07b_an_multivariable_cox_models_{outcome}.log",
@@ -181,11 +184,21 @@ for outcome in outcomes:
         logfile = None
         if i in (4, 5):
             logfile = f"log/07d_an_multivariable_cox_models_{outcome}_Sense{i}_*.log"
+        if i == 3:
+            output = {
+                "data": f"output/an_sense_{outcome}_CCeth_bmi_smok_ageband_*.ster"
+            }
+        elif i == 4:
+            output = {
+                "data": f"output/an_sense_{outcome}_age_underlying_timescale_ageband_*.ster"
+            }
+        elif i == 5:
+            output = {"data": f"output/an_sense_{outcome}_time_int_ageband_*.ster"}
         add_action(
             f"07d_an_multivariable_cox_models_FULL_Sense{i}",
             needs="01_cr_analysis_dataset",
             args=outcome,
-            output={"data": f"output/an_sense_{outcome}_*_ageband_*.ster"},
+            output=output,
             output_is_non_sensitive=True,
             logfile=logfile,
         )
@@ -206,8 +219,12 @@ for outcome in outcomes:
                 output = (
                     f"output/an_interaction_cox_models_{outcome}_week0_ageband_*.ster"
                 )
-            else:
-                output = f"output/an_interaction_cox_models_{outcome}_kids_cat3_*_MAINFULLYADJMODEL_*.ster"
+            elif key == "time":
+                output = f"output/an_interaction_cox_models_{outcome}_kids_cat3_cat_time_MAINFULLYADJMODEL_*.ster"
+            elif key == "shield":
+                output = f"output/an_interaction_cox_models_{outcome}_kids_cat3_shield_MAINFULLYADJMODEL_*.ster"
+            elif key == "sex":
+                output = f"output/an_interaction_cox_models_{outcome}_kids_cat3_male_MAINFULLYADJMODEL_*.ster"
 
         add_action(
             f"10_an_interaction_cox_models_{key}",
