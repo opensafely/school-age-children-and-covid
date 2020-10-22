@@ -99,7 +99,6 @@ basecoxmodel, exposure("i.`exposure_type'") age("age1 age2 age3")
 if _rc==0{
 estimates
 estimates save "./output/an_multivariate_cox_models_`outcome'_`exposure_type'_MAINFULLYADJMODEL_ageband_`x'", replace
-estat concordance /*c-statistic*/
 	*  Proportional Hazards test 
 	* Based on Schoenfeld residuals
 	timer clear 
@@ -107,6 +106,7 @@ estat concordance /*c-statistic*/
 	if e(N_fail)>0 estat phtest, d
 	timer off 1
 	timer list 
+	
 }
 else di "WARNING AGE SPLINE MODEL DID NOT FIT (OUTCOME `outcome')"
 
