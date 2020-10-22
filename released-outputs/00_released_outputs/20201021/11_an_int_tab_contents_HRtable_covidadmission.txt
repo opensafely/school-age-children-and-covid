@@ -1,0 +1,26 @@
+age	exposure	exposure level	outcome	int_type	int_level	HR	lci	uci	pval
+0	kids_cat3	1	covidadmission	male	0	0.91	0.81	1.02	0.13
+0	kids_cat3	1	covidadmission	male	1	1.02	0.92	1.12	
+0	kids_cat3	1	covidadmission	cat_time	0	0.92	0.83	1.03	0.17
+0	kids_cat3	1	covidadmission	cat_time	1	1.02	0.92	1.13	
+0	kids_cat3	1	covidadmission	shield	0	0.98	0.89	1.07	0.80
+0	kids_cat3	1	covidadmission	shield	1	0.96	0.83	1.10	
+0	kids_cat3	2	covidadmission	male	0	0.88	0.76	1.03	0.00
+0	kids_cat3	2	covidadmission	male	1	1.24	1.10	1.40	
+0	kids_cat3	2	covidadmission	cat_time	0	1.10	0.96	1.26	0.69
+0	kids_cat3	2	covidadmission	cat_time	1	1.06	0.92	1.21	
+0	kids_cat3	2	covidadmission	shield	0	1.09	0.97	1.22	0.74
+0	kids_cat3	2	covidadmission	shield	1	1.05	0.89	1.25	
+1	kids_cat3	1	covidadmission	male	0	1.07	0.85	1.36	0.22
+1	kids_cat3	1	covidadmission	male	1	0.89	0.72	1.10	
+1	kids_cat3	1	covidadmission	cat_time	0	0.98	0.79	1.21	0.80
+1	kids_cat3	1	covidadmission	cat_time	1	0.94	0.75	1.19	
+1	kids_cat3	1	covidadmission	shield	0	1.03	0.84	1.26	0.33
+1	kids_cat3	1	covidadmission	shield	1	0.89	0.70	1.12	
+1	kids_cat3	2	covidadmission	male	0	1.15	0.85	1.56	0.34
+1	kids_cat3	2	covidadmission	male	1	0.94	0.70	1.25	
+1	kids_cat3	2	covidadmission	cat_time	0	0.87	0.63	1.18	0.11
+1	kids_cat3	2	covidadmission	cat_time	1	1.21	0.91	1.61	
+1	kids_cat3	2	covidadmission	shield	0	0.95	0.70	1.28	0.45
+1	kids_cat3	2	covidadmission	shield	1	1.11	0.83	1.49	
+

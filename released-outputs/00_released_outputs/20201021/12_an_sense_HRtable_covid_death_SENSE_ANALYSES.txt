@@ -1,0 +1,39 @@
+age0
+
+sense=AAmain
+kids_cat3	1	0.75	0.62	0.92	9157814
+kids_cat3	2	0.85	0.67	1.07	9157814
+
+sense=CCeth_bmi_smok
+
+sense=plus_eth_12mo
+kids_cat3	1	0.78	0.64	0.96	8415027
+kids_cat3	2	0.86	0.68	1.10	8415027
+
+sense=age_underlying_timescale
+kids_cat3	1	0.74	0.61	0.91	9157814
+kids_cat3	2	0.85	0.67	1.08	9157814
+
+sense=time_int
+kids_cat3	1	0.75	0.61	0.91	9157814
+kids_cat3	2	0.84	0.67	1.06	9157814
+age1
+
+sense=AAmain
+kids_cat3	1	0.85	0.71	1.01	2567671
+kids_cat3	2	0.82	0.64	1.05	2567671
+
+sense=CCeth_bmi_smok
+
+sense=plus_eth_12mo
+kids_cat3	1	0.88	0.73	1.06	2495871
+kids_cat3	2	0.81	0.62	1.05	2495871
+
+sense=age_underlying_timescale
+kids_cat3	1	0.83	0.69	1.00	2567671
+kids_cat3	2	0.82	0.63	1.05	2567671
+
+sense=time_int
+kids_cat3	1	0.93	0.78	1.10	2567671
+kids_cat3	2	0.87	0.68	1.12	2567671
+
