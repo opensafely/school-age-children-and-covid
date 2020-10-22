@@ -18,7 +18,7 @@ local outcome `1'
 capture log close
 log using "12_an_tablecontent_HRtable_SENSE_`outcome'.log", text replace
 
-set trace on
+*set trace on
 ***********************************************************************************************************************
 *Generic code to ouput the HRs across outcomes for all levels of a particular variables, in the right shape for table
 cap prog drop outputHRsforvar
@@ -183,8 +183,8 @@ gen disx=2.5
 
 *Levels
 gen leveldesc = ""
-replace leveldesc = "Children under 12 years" if i==1 & hr!=1 & hr!=.
-replace leveldesc = "Children/young people aged 11-<18 years" if i==2
+replace leveldesc = "Children aged 0-11 years" if i==1 & hr!=1 & hr!=.
+replace leveldesc = "Children aged ≥12 years" if i==2
 
 gen Name = sense if hr==1
 

@@ -114,13 +114,13 @@ gen obsorder=_n
 
 *Levels
 gen leveldesc = ""
-replace leveldesc = "Children under 12 years" if i==1 & hr!=1 & hr!=.
-replace leveldesc = "Children/young people aged 11-<18 years" if i==2
+replace leveldesc = "Children aged 0-11 years" if i==1 & hr!=1 & hr!=.
+replace leveldesc = "Children aged ≥12 years" if i==2
 
 gen Name = outcome if hr==.
 replace Name = "COVID-19 death" if Name=="covid_deat"
 replace Name = "COVID-19 ICU admission" if Name=="covid_icu"
-replace Name = "COVID-19 diagnosed in primary care" if Name=="covid_tpp_"
+replace Name = "SARS-CoV-2 infection" if Name=="covid_tpp_"
 replace Name = "COVID-19 hospital admission" if Name=="covidadmis"
 replace Name = "Non COVID-19 death" if Name=="non_covid_"
 

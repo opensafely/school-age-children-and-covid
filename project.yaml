@@ -41,7 +41,6 @@ actions:
     outputs:
       moderately_sensitive:
         log: log/02_an_data_checks.log
-      highly_sensitive:
         histogram: "output/01_histogram_outcomes.svg"
 
   WORMS_02_an_data_checks:
