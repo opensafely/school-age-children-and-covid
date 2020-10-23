@@ -54,7 +54,7 @@ def format_project_yaml(actions):
     project_yaml = """
     version: '3.0'
     expectations:
-        population_size: 10000
+        population_size: 20000
 
     actions:
     """
