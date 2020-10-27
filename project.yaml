@@ -379,7 +379,7 @@ actions:
     run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do
     outputs:
       moderately_sensitive:
-        tpp_prob: "output/an_sense_covid_tpp_prob_int_ageband_*.ster"
+        tpp_prob: "output/an_sense_covid_tpp_prob_time_int_ageband_*.ster"
         covidadmission: "output/an_sense_covidadmission_time_int_ageband_*.ster"
         covid_icu: "output/an_sense_covid_icu_time_int_ageband_*.ster"
         covid_death: "output/an_sense_covid_death_time_int_ageband_*.ster"
