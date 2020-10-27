@@ -1,9 +1,8 @@
-version: '3.0'
+version: "3.0"
 expectations:
-    population_size: 20000
+  population_size: 20000
 
 actions:
-
   generate_cohort:
     run: cohortextractor:latest generate_cohort --study-definition study_definition
     outputs:
@@ -156,14 +155,6 @@ actions:
         log: log/07d_an_multivariable_cox_models_non_covid_death_Sense4_*.log
         data: "output/an_sense_non_covid_death_age_underlying_timescale_ageband_*.ster"
 
-  07d_an_multivariable_cox_models_FULL_Sense5_non_covid_death:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do non_covid_death
-    outputs:
-      moderately_sensitive:
-        log: log/07d_an_multivariable_cox_models_non_covid_death_Sense5_*.log
-        data: "output/an_sense_non_covid_death_time_int_ageband_*.ster"
-
   10_an_interaction_cox_models_shield_non_covid_death:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/10_an_interaction_cox_models_shield.do non_covid_death
@@ -236,14 +227,6 @@ actions:
       moderately_sensitive:
         log: log/07d_an_multivariable_cox_models_covid_tpp_prob_Sense4_*.log
         data: "output/an_sense_covid_tpp_prob_age_underlying_timescale_ageband_*.ster"
-
-  07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_tpp_prob
-    outputs:
-      moderately_sensitive:
-        log: log/07d_an_multivariable_cox_models_covid_tpp_prob_Sense5_*.log
-        data: "output/an_sense_covid_tpp_prob_time_int_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
@@ -318,14 +301,6 @@ actions:
         log: log/07d_an_multivariable_cox_models_covid_death_Sense4_*.log
         data: "output/an_sense_covid_death_age_underlying_timescale_ageband_*.ster"
 
-  07d_an_multivariable_cox_models_FULL_Sense5_covid_death:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_death
-    outputs:
-      moderately_sensitive:
-        log: log/07d_an_multivariable_cox_models_covid_death_Sense5_*.log
-        data: "output/an_sense_covid_death_time_int_ageband_*.ster"
-
   10_an_interaction_cox_models_shield_covid_death:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/10_an_interaction_cox_models_shield.do covid_death
@@ -399,13 +374,15 @@ actions:
         log: log/07d_an_multivariable_cox_models_covid_icu_Sense4_*.log
         data: "output/an_sense_covid_icu_age_underlying_timescale_ageband_*.ster"
 
-  07d_an_multivariable_cox_models_FULL_Sense5_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes:
     needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_icu
+    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do
     outputs:
       moderately_sensitive:
-        log: log/07d_an_multivariable_cox_models_covid_icu_Sense5_*.log
-        data: "output/an_sense_covid_icu_time_int_ageband_*.ster"
+        tpp_prob: "output/an_sense_covid_tpp_prob_time_int_ageband_*.ster"
+        covidadmission: "output/an_sense_covidadmission_time_int_ageband_*.ster"
+        covid_icu: "output/an_sense_covid_icu_time_int_ageband_*.ster"
+        covid_death: "output/an_sense_covid_death_time_int_ageband_*.ster"
 
   10_an_interaction_cox_models_shield_covid_icu:
     needs: [01_cr_analysis_dataset]
@@ -480,14 +457,6 @@ actions:
         log: log/07d_an_multivariable_cox_models_covidadmission_Sense4_*.log
         data: "output/an_sense_covidadmission_age_underlying_timescale_ageband_*.ster"
 
-  07d_an_multivariable_cox_models_FULL_Sense5_covidadmission:
-    needs: [01_cr_analysis_dataset]
-    run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covidadmission
-    outputs:
-      moderately_sensitive:
-        log: log/07d_an_multivariable_cox_models_covidadmission_Sense5_*.log
-        data: "output/an_sense_covidadmission_time_int_ageband_*.ster"
-
   10_an_interaction_cox_models_shield_covidadmission:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/10_an_interaction_cox_models_shield.do covidadmission
@@ -545,7 +514,7 @@ actions:
         data: "output/an_multivariate_cox_models_worms_*_MAINFULLYADJMODEL_noeth_ageband_*.ster"
 
   08_an_tablecontent_HRtable_non_covid_death:
-    needs: 
+    needs:
       - 01_cr_analysis_dataset
       - 06_univariate_analysis_non_covid_death
       - 07a_an_multivariable_cox_models_demogADJ_non_covid_death
@@ -557,7 +526,7 @@ actions:
         data: "output/an_tablecontents_HRtable_non_covid_death.txt"
 
   08_an_tablecontent_HRtable_covid_tpp_prob:
-    needs: 
+    needs:
       - 01_cr_analysis_dataset
       - 06_univariate_analysis_covid_tpp_prob
       - 07a_an_multivariable_cox_models_demogADJ_covid_tpp_prob
@@ -569,7 +538,7 @@ actions:
         data: "output/an_tablecontents_HRtable_covid_tpp_prob.txt"
 
   08_an_tablecontent_HRtable_covid_death:
-    needs: 
+    needs:
       - 01_cr_analysis_dataset
       - 06_univariate_analysis_covid_death
       - 07a_an_multivariable_cox_models_demogADJ_covid_death
@@ -581,7 +550,7 @@ actions:
         data: "output/an_tablecontents_HRtable_covid_death.txt"
 
   08_an_tablecontent_HRtable_covid_icu:
-    needs: 
+    needs:
       - 01_cr_analysis_dataset
       - 06_univariate_analysis_covid_icu
       - 07a_an_multivariable_cox_models_demogADJ_covid_icu
@@ -593,7 +562,7 @@ actions:
         data: "output/an_tablecontents_HRtable_covid_icu.txt"
 
   08_an_tablecontent_HRtable_covidadmission:
-    needs: 
+    needs:
       - 01_cr_analysis_dataset
       - 06_univariate_analysis_covidadmission
       - 07a_an_multivariable_cox_models_demogADJ_covidadmission
@@ -605,7 +574,7 @@ actions:
         data: "output/an_tablecontents_HRtable_covidadmission.txt"
 
   WORMS_08_an_tablecontent_HRtable:
-    needs: 
+    needs:
       - WORMS_01_cr_analysis_dataset
       - WORMS_06_univariate_analysis
       - WORMS_07a_an_multivariable_cox_models_demogADJ
@@ -617,7 +586,7 @@ actions:
         data: "output/an_tablecontents_HRtable_worms.txt"
 
   15_anHRfigure_all_outcomes_covidadmission:
-    needs: 
+    needs:
       - 07b_an_multivariable_cox_models_FULL_non_covid_death
       - 07b_an_multivariable_cox_models_FULL_covid_tpp_prob
       - 07b_an_multivariable_cox_models_FULL_covid_death
@@ -631,7 +600,7 @@ actions:
         figure: "output/15_an_HRforest_all_outcomes_ageband_*.svg"
 
   11_an_interaction_HR_tables_forest_non_covid_death:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_non_covid_death
       - 10_an_interaction_cox_models_time_non_covid_death
       - 10_an_interaction_cox_models_weeks_non_covid_death
@@ -643,7 +612,7 @@ actions:
         data: "output/11_an_int_tab_contents_HRtable_non_covid_death.txt"
 
   11_an_interaction_HR_tables_forest_covid_tpp_prob:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_covid_tpp_prob
       - 10_an_interaction_cox_models_time_covid_tpp_prob
       - 10_an_interaction_cox_models_weeks_covid_tpp_prob
@@ -655,7 +624,7 @@ actions:
         data: "output/11_an_int_tab_contents_HRtable_covid_tpp_prob.txt"
 
   11_an_interaction_HR_tables_forest_covid_death:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_covid_death
       - 10_an_interaction_cox_models_time_covid_death
       - 10_an_interaction_cox_models_weeks_covid_death
@@ -667,7 +636,7 @@ actions:
         data: "output/11_an_int_tab_contents_HRtable_covid_death.txt"
 
   11_an_interaction_HR_tables_forest_covid_icu:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_covid_icu
       - 10_an_interaction_cox_models_time_covid_icu
       - 10_an_interaction_cox_models_weeks_covid_icu
@@ -679,7 +648,7 @@ actions:
         data: "output/11_an_int_tab_contents_HRtable_covid_icu.txt"
 
   11_an_interaction_HR_tables_forest_covidadmission:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_covidadmission
       - 10_an_interaction_cox_models_time_covidadmission
       - 10_an_interaction_cox_models_weeks_covidadmission
@@ -691,7 +660,7 @@ actions:
         data: "output/11_an_int_tab_contents_HRtable_covidadmission.txt"
 
   11a_an_interaction_HR_tables_forest_WEEKS_covidadmission:
-    needs: 
+    needs:
       - 10_an_interaction_cox_models_shield_non_covid_death
       - 10_an_interaction_cox_models_shield_covid_tpp_prob
       - 10_an_interaction_cox_models_shield_covid_death
@@ -719,10 +688,10 @@ actions:
         data: "output/an_int_tab_contents_HRtable_WEEKS.txt"
 
   12_an_tablecontent_HRtable_SENSE_non_covid_death:
-    needs: 
+    needs:
       - 07d_an_multivariable_cox_models_FULL_Sense3_non_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense4_non_covid_death
-      - 07d_an_multivariable_cox_models_FULL_Sense5_non_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes
       - 07b_an_multivariable_cox_models_FULL_non_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do non_covid_death
     outputs:
@@ -732,10 +701,10 @@ actions:
         figure: "output/12_an_HRforest_SENSE_non_covid_death_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_tpp_prob:
-    needs: 
+    needs:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_tpp_prob
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_tpp_prob
-      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob
+      - 07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes
       - 07b_an_multivariable_cox_models_FULL_covid_tpp_prob
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_tpp_prob
     outputs:
@@ -745,10 +714,10 @@ actions:
         figure: "output/12_an_HRforest_SENSE_covid_tpp_prob_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_death:
-    needs: 
+    needs:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_death
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_death
-      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_death
+      - 07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes
       - 07b_an_multivariable_cox_models_FULL_covid_death
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_death
     outputs:
@@ -758,10 +727,10 @@ actions:
         figure: "output/12_an_HRforest_SENSE_covid_death_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covid_icu:
-    needs: 
+    needs:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covid_icu
       - 07d_an_multivariable_cox_models_FULL_Sense4_covid_icu
-      - 07d_an_multivariable_cox_models_FULL_Sense5_covid_icu
+      - 07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes
       - 07b_an_multivariable_cox_models_FULL_covid_icu
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covid_icu
     outputs:
@@ -771,10 +740,10 @@ actions:
         figure: "output/12_an_HRforest_SENSE_covid_icu_ageband_*.svg"
 
   12_an_tablecontent_HRtable_SENSE_covidadmission:
-    needs: 
+    needs:
       - 07d_an_multivariable_cox_models_FULL_Sense3_covidadmission
       - 07d_an_multivariable_cox_models_FULL_Sense4_covidadmission
-      - 07d_an_multivariable_cox_models_FULL_Sense5_covidadmission
+      - 07d_an_multivariable_cox_models_FULL_Sense5_all_outcomes
       - 07b_an_multivariable_cox_models_FULL_covidadmission
     run: stata-mp:latest analysis/12_an_tablecontent_HRtable_SENSE.do covidadmission
     outputs:
