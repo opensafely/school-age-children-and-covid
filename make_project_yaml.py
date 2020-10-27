@@ -1,6 +1,10 @@
 #!/usr/bin/env python
 import textwrap
 
+raise RuntimeError(
+    "This file is no longer in sync with project.yaml; edit that directly instead and consider deleting this!"
+)
+
 
 def add_action(
     action_name,
