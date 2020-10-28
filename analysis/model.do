@@ -109,9 +109,9 @@ forvalues i = 1/20 {
 *pause Stata for 8 hours: 1/2880 whilst testing on server, on full data
 
 ************************************************************
-
-winexec "C:/Program Files (x86)/Stata15/Stata-64.exe" do "07d_an_multivariable_cox_models_FULL_Sense5.do"
-
+foreach outcome of any covid_tpp_prob covidadmission covid_icu covid_death {
+winexec "C:/Program Files (x86)/Stata15/Stata-64.exe" do "07d_an_multivariable_cox_models_FULL_Sense5.do" `outcome'	
+}
 
 *INTERACTIONS 
 *Sex
