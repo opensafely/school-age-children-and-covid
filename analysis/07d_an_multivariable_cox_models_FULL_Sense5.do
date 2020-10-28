@@ -113,7 +113,7 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_tpp_prob_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
 }
 
 foreach x in 0 1 {
@@ -161,7 +161,7 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covidadmission_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
 
 }
 
@@ -205,7 +205,7 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_icu_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
 }
 
 
@@ -248,7 +248,7 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_death_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
 }
 
 log close
