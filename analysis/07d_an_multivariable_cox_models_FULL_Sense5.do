@@ -49,11 +49,15 @@ local comordidadjlist  i.htdiag_or_highbp				///
 *First clean up all old saved estimates for this outcome
 *This is to guard against accidentally displaying left-behind results from old runs
 ************************************************************************************
+local outcome `1' 
 
 * Open a log file
 capture log close
 log using "$logdir/07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
 
+
+
+if "`outcome'"=="covid_tpp_prob" {
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -113,9 +117,11 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_tpp_prob_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
+}
 }
 
+if "`outcome'"=="covidadmission" {
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -161,10 +167,11 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covidadmission_time_int_ageband_`x'", replace
-estat phtest, d
-
+*estat phtest, d
+}
 }
 
+if "`outcome'"=="covid_icu" {
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -205,10 +212,12 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_icu_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
+}
 }
 
 
+if "`outcome'"=="covid_death" {
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -248,9 +257,9 @@ stcox 	i.kids_cat3 	 ///
 			, strata(stp) vce(cluster household_id)
 estimates
 estimates save "./output/an_sense_covid_death_time_int_ageband_`x'", replace
-estat phtest, d
+*estat phtest, d
 }
-
+}
 log close
 
 
