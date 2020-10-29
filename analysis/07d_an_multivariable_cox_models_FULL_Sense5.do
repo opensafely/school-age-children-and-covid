@@ -51,13 +51,13 @@ local comordidadjlist  i.htdiag_or_highbp				///
 ************************************************************************************
 local outcome `1' 
 
+
+if "`outcome'"=="covid_tpp_prob" {
 * Open a log file
 capture log close
 log using "$logdir/07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
 
 
-
-if "`outcome'"=="covid_tpp_prob" {
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -122,6 +122,10 @@ estimates save "./output/an_sense_covid_tpp_prob_time_int_ageband_`x'", replace
 }
 
 if "`outcome'"=="covidadmission" {
+* Open a log file
+capture log close
+log using "$logdir/07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
+
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -172,6 +176,10 @@ estimates save "./output/an_sense_covidadmission_time_int_ageband_`x'", replace
 }
 
 if "`outcome'"=="covid_icu" {
+* Open a log file
+capture log close
+log using "$logdir/07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
+
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
@@ -218,6 +226,10 @@ estimates save "./output/an_sense_covid_icu_time_int_ageband_`x'", replace
 
 
 if "`outcome'"=="covid_death" {
+* Open a log file
+capture log close
+log using "$logdir/07d_an_multivariable_cox_models_`outcome'_Sense5_time_ints", text replace
+
 foreach x in 0 1 {
 ******************************
 *  Multivariable Cox models  *
