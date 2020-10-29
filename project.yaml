@@ -374,7 +374,7 @@ actions:
         log: log/07d_an_multivariable_cox_models_covid_icu_Sense4_*.log
         data: "output/an_sense_covid_icu_age_underlying_timescale_ageband_*.ster"
         
-   07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_tpp_prob:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_tpp_prob
     outputs:
@@ -382,7 +382,7 @@ actions:
         log: log/07d_an_multivariable_cox_models_covid_tpp_prob_Sense5_time_ints.log
         data: "output/an_sense_covid_tpp_prob_time_int_ageband_*.ster"       
  
-   07d_an_multivariable_cox_models_FULL_Sense5_covidadmission:
+  07d_an_multivariable_cox_models_FULL_Sense5_covidadmission:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covidadmission
     outputs:
@@ -390,7 +390,7 @@ actions:
         log: log/07d_an_multivariable_cox_models_covidadmission_Sense5_time_ints.log
         data: "output/an_sense_covidadmission_time_int_ageband_*.ster" 
         
-   07d_an_multivariable_cox_models_FULL_Sense5_covid_icu:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_icu:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_icu
     outputs:
@@ -398,7 +398,7 @@ actions:
         log: log/07d_an_multivariable_cox_models_covid_icu_Sense5_time_ints.log
         data: "output/an_sense_covid_icu_time_int_ageband_*.ster" 
         
-   07d_an_multivariable_cox_models_FULL_Sense5_covid_death:
+  07d_an_multivariable_cox_models_FULL_Sense5_covid_death:
     needs: [01_cr_analysis_dataset]
     run: stata-mp:latest analysis/07d_an_multivariable_cox_models_FULL_Sense5.do covid_death
     outputs:
