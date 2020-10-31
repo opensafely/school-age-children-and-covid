@@ -168,11 +168,6 @@ assert agegroup < .
 assert age66 < .
 
 
-
-
-
-
-
 /* APPLY HH level INCLUSION/EXCLUIONS==================================================*/
 *tab care_home_type household_size
 drop if care_home_type!="U"
@@ -253,13 +248,6 @@ global tpp_infec_censor			= "01/02/2020"
 
 *Start dates
 global indexdate 			    = "01/02/2019"
-
-
-
-
-
-
-
 
 
 * Some names too long for loops below, shorten
