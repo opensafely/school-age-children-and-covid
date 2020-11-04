@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - name: Delete non-master branch release
-      uses: author/action-rollback@stable
+      uses: author/action-rollback@9ec72a6
       with:
         tag: draft-assets-for-${{ github.event.pull_request.head.ref }}
         always_delete_tag: true
